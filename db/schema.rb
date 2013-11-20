@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131120040145) do
+ActiveRecord::Schema.define(:version => 20131120041759) do
 
   create_table "project_memberships", :force => true do |t|
     t.integer  "project_id"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(:version => 20131120040145) do
     t.string   "firstname"
     t.string   "lastname"
     t.string   "sign"
+    t.integer  "rootproject_id"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
