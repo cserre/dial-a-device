@@ -2,13 +2,163 @@
 <html>
 <head>
   <title>LsiRailsPrototype</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+
+    <style>
+      body {
+        padding-top: 60px;
+      }
+
+      /*
+       * Style tweaks
+       * --------------------------------------------------
+       */
+      html {
+        overflow-x: hidden; /* Prevent scroll on narrow devices */
+      }
+      body {
+        padding-top: 70px;
+      }
+      footer {
+        padding: 30px 0;
+      }
+
+      /*
+       * Off Canvas
+       * --------------------------------------------------
+       */
+      @media screen and (max-width: 767px) {
+        .row-offcanvas {
+          position: relative;
+          -webkit-transition: all 0.25s ease-out;
+          -moz-transition: all 0.25s ease-out;
+          transition: all 0.25s ease-out;
+        }
+
+        .row-offcanvas-right
+        .sidebar-offcanvas {
+          right: -50%; /* 6 columns */
+        }
+
+        .row-offcanvas-left
+        .sidebar-offcanvas {
+          left: -50%; /* 6 columns */
+        }
+
+        .row-offcanvas-right.active {
+          right: 50%; /* 6 columns */
+        }
+
+        .row-offcanvas-left.active {
+          left: 50%; /* 6 columns */
+        }
+
+        .sidebar-offcanvas {
+          position: absolute;
+          top: 0;
+          width: 50%; /* 6 columns */
+        }
+      }
+    </style>
+
 </head>
 <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
 
-<%= yield %>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/logo.png" height="20px" width="20px">&nbsp;LsiRailsPrototype</a>
+        </div>
 
-</body>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/about">About</a></li>
+            
+          </ul>
+
+          
+
+        
+        </div>
+      </div>
+    </div>
+
+
+<% @showsidebar = true %>
+
+<% @shownavbar = nil %>
+
+
+    <!--left sidebar navigator -->
+    <% if (@shownavbar != nil) then %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+      <div class="well">
+
+        
+      </div>
+    </div>
+
+    <% end %>
+
+    <!-- main page content -->
+    <div class="container">
+
+      <div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-xs-12 col-sm-9">
+
+          <!-- small toggle button -->
+          <% if (@showsidebar != nil) then %>
+
+            <p class="pull-right visible-xs">
+              <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Sidebar</button>
+            </p>
+          <% end %>
+
+          <!-- actual content -->
+
+          <%= yield %>
+
+        </div>
+
+        <!-- right sidebar content -->
+        <% if (@showsidebar != nil) then %>
+
+            <%= yield :sidebar %>
+  
+        <% end %>
+
+
+      </div>
+    </div><!-- end main page content -->
+
+
+    <!-- toggle button logic -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('[data-toggle=offcanvas]').click(function() {
+          $('.row-offcanvas').toggleClass('active');
+        });
+
+      });
+    </script>
+
+
+    <!-- footer -->
+  
+
+  </body>
 </html>

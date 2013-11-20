@@ -13,3 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+//= require bootstrap
+//= require cocoon
+//= require bootstrap-wysiwyg
+//= require jquery-hotkeys
