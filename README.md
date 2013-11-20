@@ -1,2 +1,18 @@
 lsi-rails-prototype
 ===================
+
+deploy on heroku
+
+heroku create yourappname
+
+heroku labs:enable user-env-compile
+
+heroku config:set BUNDLE_WITHOUT="development:test:localserver"
+
+heroku labs:enable websockets 
+
+heroku addons:add sendgrid
+
+heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+
+heroku config:add LD_LIBRARY_PATH=/app/vendor/openbabel/lib
