@@ -1,6 +1,13 @@
 LsiRailsPrototype::Application.routes.draw do
 
 
+  resources :projects do
+    match 'adduser/:user_id', :to => 'projects#adduser', :on => :member
+    match 'adduser', :to => 'projects#adduser', :on => :member
+    match 'invite', :to => 'projects#invite', :on => :member
+  end
+
+
   devise_for :users
 
   match 'about' => 'pages#about'

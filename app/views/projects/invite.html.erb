@@ -1,0 +1,13 @@
+<h1>Invite someone to <%= @project.title %></h1>
+
+<%= form_for(@project, url: {action: "adduser"}, method: "GET") do |f| %>
+
+  <%= text_field_tag(:email) %>
+  <br/>
+
+  <%= link_to 'Back', projects_path, :class => "btn btn-sm" %>
+<%= submit_tag("Invite", :class => "btn btn-sm btn-success") %>
+<% end %>
+
+
+
