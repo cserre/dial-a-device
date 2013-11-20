@@ -13,10 +13,10 @@ gem 'pg'
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  gem 'coffee-rails'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
+  gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
 end
@@ -53,8 +53,6 @@ gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
 gem "jquery-hotkeys-rails"
 
 gem 'noVNC', :git => "git://github.com/davidw/noVNCgem.git"
-
-gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
 
 gem 'audited-activerecord', '~> 3.0'
 
