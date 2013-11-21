@@ -28,9 +28,9 @@ class ProjectsController < ApplicationController
 
       if (additionaluser.nil?) then
 
-        User.invite!(:email => params[:email]) do |u|
-          additionaluser = u
-        end
+        # User.invite!(:email => params[:email]) do |u|
+        #   additionaluser = u
+        # end
       end
 
     end
@@ -115,7 +115,7 @@ class ProjectsController < ApplicationController
         pm.role_id = 99
         pm.save
 
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.html { redirect_to projects_path, notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }
       else
         format.html { render action: "new" }
