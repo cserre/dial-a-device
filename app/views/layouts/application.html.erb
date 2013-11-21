@@ -10,6 +10,25 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="/assets/ChemDoodleWeb/ChemDoodleWeb.css" type="text/css">
+
+  <style>
+      canvas.ChemDoodleWebComponent {
+      border: none;
+    }
+
+  </style>
+
+   <script type="text/javascript" src="/assets/ChemDoodleWeb/ChemDoodleWeb-libs.js"></script>
+  <script type="text/javascript" src="/assets/ChemDoodleWeb/ChemDoodleWeb.js"></script>
+
+  <link rel="stylesheet" href="/assets/ChemDoodleWeb/sketcher/jquery-ui-1.9.2.custom.css" type="text/css">
+
+  <script type="text/javascript" src="/assets/ChemDoodleWeb/sketcher/jquery-ui-1.9.2.custom.min.js"></script>
+
+
     <style>
       body {
         padding-top: 60px;
@@ -147,6 +166,8 @@
           <% end %>
 
           <!-- actual content -->
+
+          <%= render 'layouts/messages', flash: flash %>
 
           <%= yield %>
 

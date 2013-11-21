@@ -1,0 +1,120 @@
+<% @shownavbar = true %>
+
+<% if @filter then %>
+
+<div class="alert alert-info">
+<p>This molecule list is filtered.&nbsp;<a class="btn btn-primary btn-xs" href="/molecules">Remove filter</a></p>
+</div>
+
+<% else %>
+
+<div class="alert alert-info">
+
+<p>All molecules are displayed.&nbsp;<a class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#searchwindow" href="#">Filter...</a></p>
+
+
+<div id="searchwindow" class="collapse" role="collapse">
+
+        <script type="text/javascript" src="/assets/ChemDoodleWeb/sketcher/ChemDoodleWeb-sketcher.js"></script>
+
+          <canvas id="sketcher_search" onclick="updatemoleculesearch();" >
+
+          
+          </canvas>
+
+          <script type="text/javascript">
+
+
+            var sketcher = new ChemDoodle.SketcherCanvas('sketcher_search', 600, 200, {useServices: false, oneMolecule: true, isMobile: true});
+
+
+            function updatemoleculesearch() {
+                mol = sketcher.getMolecule();
+
+                document.getElementById("search_molfile").value = ( ChemDoodle.writeMOL(mol));
+
+            }
+
+        </script>
+
+
+          
+
+          <form id="moldetailform" action="/molecules/filter" method="get">
+
+            <textarea id="search_molfile" name="molfile" rows="50" cols="300" style="display:none;">temporary molfile</textarea>
+
+            <button type="submit" class="btn btn-primary" onclick="">Structure Search &raquo;</button>
+            
+
+          </form>
+
+          <br/>
+
+          <form id="moldetailform" action="/molecules/filter" method="get">
+
+            <p>Molecule name:&nbsp;
+            <input type="text" id="search_molfile" name="title" rows="1" cols="30"></input>&nbsp; <button type="submit" class="btn btn-primary" onclick="">Name Search &raquo;</button></p>
+
+            
+            
+
+          </form>
+
+
+        </div>
+
+  </div>
+
+<% end %>
+
+<% if !current_user.nil? then %>
+
+<% current_user.projects.each do |project| %>
+
+<h1><% if project.title.nil? then %>My Molecules<% else %>Molecules in <%= project.title %><% end %>&nbsp;
+<%= link_to 'New Molecule', new_molecule_path, :class => "btn btn-sm btn-success" %></h1>
+
+<% projectmolecules = @molecules.where(["project_memberships.project_id = ?", project.id]) %>
+<% if projectmolecules.length > 0 then %>
+<table>
+    
+<% projectmolecules.each do |molecule| %>
+  <tr>
+    <td>
+      <% uid = Random.new.rand(1..1000000)  %>
+    <textarea id="molfile_<%= uid %>" name="sample.compound[molfile]" rows="50" cols="300" style="display:none;"><%= molecule.molfile %></textarea>
+
+<span id="molecule_<%= uid %>">
+                            <script type="text/javascript">
+
+                          viewACS  = new ChemDoodle.ViewerCanvas('viewACS_<%= uid %>', 50, 50);
+                          molfile = document.getElementById("molfile_<%= uid %>").value;
+                          molecule = ChemDoodle.readMOL (molfile);
+                          molecule.scaleToAverageBondLength(14.4);
+                          viewACS.loadMolecule(molecule);
+
+                            </script>
+</span>
+</td>
+
+    <td><%= link_to molecule do %><%= molecule.title %><% end %></td>
+    <td><% molecule.projects.each do |p| %><%= p.id %><% end %></td>
+  </tr>
+<% end %>
+</table>
+
+<% else %>
+
+<p>No molecules found.</p>
+
+<% end %>
+
+<% end %>
+
+<% end %>
+
+<br/>
+
+
+<br/>

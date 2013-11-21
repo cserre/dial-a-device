@@ -1,0 +1,10 @@
+<h1>Assign to Project</h1>
+
+<ul>
+
+<% @projects.each do |project| %>
+  <li><%= link_to "Assign #{@molecule.title} with #{project.title}", assign_to_project_do_molecule_path(@molecule, project_id: project.id), method: :post %></li>
+<% end %>
+</ul>
+
+<%= link_to 'Back', molecules_path %>

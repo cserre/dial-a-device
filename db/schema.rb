@@ -11,7 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131120041759) do
+ActiveRecord::Schema.define(:version => 20131121112204) do
+
+  create_table "molecules", :force => true do |t|
+    t.string   "smiles"
+    t.string   "inchi"
+    t.string   "inchikey"
+    t.text     "molfile"
+    t.float    "mass"
+    t.string   "formula"
+    t.float    "charge"
+    t.float    "spin"
+    t.string   "title"
+    t.datetime "published_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "project_memberships", :force => true do |t|
     t.integer  "project_id"
@@ -19,6 +34,13 @@ ActiveRecord::Schema.define(:version => 20131120041759) do
     t.integer  "role_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "project_molecules", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "molecule_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "projects", :force => true do |t|

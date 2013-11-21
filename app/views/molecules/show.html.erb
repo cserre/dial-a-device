@@ -1,0 +1,60 @@
+
+<h1>
+  <%= @molecule.title %><% if !current_user.nil? then %><% if current_user.moleculeowner_of?(@molecule) then %>&nbsp;<%= link_to("Remove from My Molecules", @molecule, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{@molecule.title}.", :class => "btn btn-sm btn-warning") %><% end %><% end %>
+</h1>
+
+<textarea id="molfile_<%= @molecule.id %>" name="sample.compound[molfile]" rows="50" cols="300" style="display:none;"><%= @molecule.molfile %></textarea>
+
+<table style="border-spacing: 10px; border-collapse: separate;">
+  <tr>
+
+    <td>
+
+<span id="molecule_<%= @molecule.id %>">
+                            <script type="text/javascript">
+
+                          viewACS  = new ChemDoodle.ViewerCanvas('viewACS_<%= @molecule.id %>', 200, 150);
+                          molfile = document.getElementById("molfile_<%= @molecule.id %>").value;
+                          molecule = ChemDoodle.readMOL (molfile);
+                          molecule.scaleToAverageBondLength(14.4);
+                          viewACS.loadMolecule(molecule);
+
+                            </script>
+</span>
+
+</td>
+
+<td>
+
+<p>
+  <b>Formula:</b>
+  <%= @molecule.formula %>
+</p>
+
+<p>
+  <b>Canonical Smiles:</b>
+  <%= @molecule.smiles %>
+</p>
+
+<p>
+  <b>Inchi:</b>
+  <%= @molecule.inchi %>
+</p>
+
+<p>
+  <b>Inchikey:</b>
+  <%= @molecule.inchikey %>
+</p>
+
+<p>
+  <b>Mass:</b>
+  <%= @molecule.mass %>
+</p>
+
+</td>
+</tr>
+</table>
+
+
+<%= link_to 'Back', molecules_path, :class => "btn btn-default btn-sm" %>
+

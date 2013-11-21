@@ -1,0 +1,88 @@
+<%= render 'pick' %>
+
+<%= form_for(@molecule) do |f| %>
+  <% if @molecule.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@molecule.errors.count, "error") %> prohibited this molecule from being saved:</h2>
+
+      <ul>
+      <% @molecule.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <script type="text/javascript">
+
+    function updatemolecule(data) {
+ 
+      document.getElementById("molecule_smiles").value = data.smiles;
+
+      document.getElementById("molecule_inchi").value = data.inchi;
+
+      document.getElementById("molecule_inchikey").value = data.inchikey;
+
+      document.getElementById("molecule_mass").value = data.mass;
+
+      document.getElementById("molecule_formula").value = data.formula;
+
+      document.getElementById("molecule_charge").value = data.charge;
+
+      document.getElementById("molecule_spin").value = data.spin;
+
+      document.getElementById("molecule_molfile").value = data.molfile;
+
+      document.getElementById("molecule_title").value = data.title;
+ 
+    }
+
+  </script>
+
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :smiles %><br />
+    <%= f.text_field :smiles %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :inchi %><br />
+    <%= f.text_field :inchi %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :inchikey %><br />
+    <%= f.text_field :inchikey %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :molfile %><br />
+    <%= f.text_area :molfile %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :mass %><br />
+    <%= f.text_field :mass %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :formula %><br />
+    <%= f.text_field :formula %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :charge %><br />
+    <%= f.text_field :charge %>
+  </div>
+  <div class="field" style="display:none;">
+    <%= f.label :spin %><br />
+    <%= f.text_field :spin %>
+  </div>
+
+  <br/>
+  
+  <div class="actions">
+
+    <%= f.submit :class => "btn  btn-success" %>
+    
+  </div>
+
+  </div>
+<% end %>

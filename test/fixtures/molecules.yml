@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  smiles: MyString
+  inchi: MyString
+  inchikey: MyString
+  molfile: MyText
+  mass: 1.5
+  formula: MyString
+  charge: 1.5
+  sin: 1.5
+  title: MyString
+  published_at: 2013-11-21 12:21:27
+
+two:
+  smiles: MyString
+  inchi: MyString
+  inchikey: MyString
+  molfile: MyText
+  mass: 1.5
+  formula: MyString
+  charge: 1.5
+  sin: 1.5
+  title: MyString
+  published_at: 2013-11-21 12:21:27

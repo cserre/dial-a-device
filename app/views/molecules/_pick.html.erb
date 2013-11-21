@@ -1,0 +1,53 @@
+<script type="text/javascript" src="/assets/ChemDoodleWeb/sketcher/ChemDoodleWeb-sketcher.js"></script>
+
+<canvas id="sketcher" onclick="getdetails();" onmousemove="getdetailsdelayed();">
+
+</canvas>
+
+<form id="moldetailform" action="/molecules/getdetails" method="post">
+
+  <textarea id="pick_molfile" name="molecule[molfile]" rows="50" cols="300" style="display:none;">temporary molfile</textarea>
+
+</form>
+
+<script type="text/javascript">
+
+  window.addEventListener("load", getdetails, true);
+
+
+	var sketcher = new ChemDoodle.SketcherCanvas('sketcher', 400, 200, {useServices: false, oneMolecule: true});
+
+
+  var tim;
+
+  function getdetailsdelayed() {
+
+    window.clearInterval(tim);
+
+    tim = setInterval(function() {
+      getdetails();
+    }, 800);
+
+  }
+
+	function getdetails() {
+		mol = sketcher.getMolecule();
+
+		document.getElementById("pick_molfile").value = ( ChemDoodle.writeMOL(mol));
+
+
+		var url = "/molecules/getdetails"; 
+
+    $.ajax({
+           type: "GET",
+           url: url,
+           data: $("#moldetailform").serialize(), 
+           success: function(data)
+           {
+                updatemolecule (data);
+           }
+         });
+
+
+	}
+</script>

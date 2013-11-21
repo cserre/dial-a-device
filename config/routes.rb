@@ -1,6 +1,16 @@
 LsiRailsPrototype::Application.routes.draw do
 
 
+  resources :molecules do
+    get 'pick', :on => :collection
+    get 'getdetails', :on => :collection
+    get 'filter', :on => :collection, :to => 'molecules#index'
+
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'molecules#assign_do'
+  end
+
+
   resources :projects do
     match 'adduser/:user_id', :to => 'projects#adduser', :on => :member
     match 'adduser', :to => 'projects#adduser', :on => :member

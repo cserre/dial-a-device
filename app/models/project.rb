@@ -11,4 +11,11 @@ class Project < ActiveRecord::Base
   	User.joins(:project_memberships).where(["role_id = ? and project_id = ?", 99, id]).first
   end
 
+
+  # associations
+
+  has_many :project_molecules
+  has_many :molecules,
+    through: :project_molecules
+
 end
