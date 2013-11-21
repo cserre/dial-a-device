@@ -63,7 +63,7 @@ module LsiRailsPrototype
 
     config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"
 
-    config.action_mailer.default_url_options = { :host => 'lsi-rails-prototype.herokuapp.com'}
+    config.action_mailer.default_url_options = { :host => 'localhost:3000'}
 
   end
 end

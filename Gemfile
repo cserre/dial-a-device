@@ -58,7 +58,7 @@ gem 'audited-activerecord', '~> 3.0'
 
 gem 'devise'
 
-gem 'devise_invitable'
+gem 'devise_invitable',  '<=1.3.0'
 
 gem 'cocoon'
 
