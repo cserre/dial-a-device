@@ -28,10 +28,7 @@ class ProjectsController < ApplicationController
 
       if (additionaluser.nil?) then
 
-        puts "---"
-        puts params[:email]
-
-        User.invite!(:email => params[:email], :skip_invitation => false) do |u|
+        User.invite!(:email => params[:email]) do |u|
           additionaluser = u
         end
       end
