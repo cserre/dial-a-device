@@ -127,6 +127,10 @@ class MoleculesController < ApplicationController
   def new
     @molecule = Molecule.new
 
+    authorize @molecule
+
+    @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @molecule }
@@ -162,6 +166,7 @@ class MoleculesController < ApplicationController
     else
       success = @molecule.save
       @molecule.add_to_project(current_user.rootproject_id)
+      @molecule.add_to_project(params[:assign_to_project_id])
     end
     
     respond_to do |format|

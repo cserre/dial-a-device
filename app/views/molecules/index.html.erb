@@ -73,7 +73,7 @@
 <% current_user.projects.each do |project| %>
 
 <h1><% if project.title.nil? then %>My Molecules<% else %>Molecules in <%= project.title %><% end %>&nbsp;
-<%= link_to 'New Molecule', new_molecule_path, :class => "btn btn-sm btn-success" %></h1>
+<%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %></h1>
 
 <% projectmolecules = @molecules.where(["project_memberships.project_id = ?", project.id]) %>
 <% if projectmolecules.length > 0 then %>
@@ -99,7 +99,6 @@
 </td>
 
     <td><%= link_to molecule do %><%= molecule.title %><% end %></td>
-    <td><% molecule.projects.each do |p| %><%= p.id %><% end %></td>
   </tr>
 <% end %>
 </table>
