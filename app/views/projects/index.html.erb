@@ -23,6 +23,7 @@
 
                 <td>
 
+   <p><%= project.molecules.length %> Molecules</p>
 
 </td>
 
@@ -36,7 +37,6 @@
                 </td>
 
                  <td><% if project.id != @current_user.rootproject_id then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, project, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{project.title}.") %><% end %></td>
-
 
 
 </tr>
@@ -77,6 +77,7 @@
 
                 <td>
 
+   <p><%= project.molecules.length %> Molecules</p>
 
 </td>
 
