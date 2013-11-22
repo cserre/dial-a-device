@@ -159,6 +159,7 @@ class MoleculesController < ApplicationController
     if (existingmolecule != nil) then
       if (existingmolecule.id != nil) then
         existingmolecule.add_to_project(current_user.rootproject_id)
+        existingmolecule.add_to_project(params[:assign_to_project_id])
         success = true
         @molecule = existingmolecule
 
