@@ -7,7 +7,7 @@ class MoleculePolicy < Struct.new(:user, :molecule)
 
   def show?
     result = false
-    if !user.nil? && user.moleculeowner_of?(molecule) then result = true end
+    if !user.nil? && user.moleculeviewer_of?(molecule) then result = true end
 
     result
   end

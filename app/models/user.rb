@@ -57,6 +57,10 @@ class User < ActiveRecord::Base
     Molecule.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
   end
 
+  def moleculeviewer_of?(molecule)
+    Project.joins(:project_memberships).joins(:molecules).where(["project_memberships.role_id >= ? and molecule_id = ? and project_memberships.user_id = ?", 88, molecule.id, id]).exists?
+  end
+
   def moleculeowner_of?(molecule)
     Project.joins(:project_memberships).joins(:molecules).where(["project_memberships.role_id >= ? and molecule_id = ? and project_memberships.user_id = ?", 99, molecule.id, id]).exists?
   end
