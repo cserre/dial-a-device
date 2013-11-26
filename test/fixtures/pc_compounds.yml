@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  cid: 1
+  inchikey: MyString
+  logp: 1.5
+  iupacname: MyString
+
+two:
+  cid: 1
+  inchikey: MyString
+  logp: 1.5
+  iupacname: MyString

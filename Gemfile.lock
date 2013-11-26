@@ -143,6 +143,9 @@ GEM
     formatador (0.2.4)
     hike (1.2.3)
     hiredis (0.4.5)
+    httparty (0.12.0)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.6.5)
     journey (1.0.4)
     jquery-hotkeys-rails (0.7.9.1)
@@ -160,6 +163,7 @@ GEM
       subexec (~> 0.2.1)
     mini_portile (0.5.2)
     multi_json (1.8.2)
+    multi_xml (0.5.5)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.7.0)
@@ -256,6 +260,7 @@ DEPENDENCIES
   devise_invitable
   dial_a_device_node!
   fog
+  httparty
   jquery-hotkeys-rails
   jquery-rails
   mini_magick

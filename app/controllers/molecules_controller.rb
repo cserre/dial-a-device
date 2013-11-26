@@ -1,6 +1,27 @@
 class MoleculesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:getdetails, :pick]
+
+  
+  class PubChem
+    include HTTParty
+    debug_output $stderr
+    base_uri 'http://pubchem.ncbi.nlm.nih.gov/rest/pug'
+
+    def initialize(user, password)
+      @auth = {:username => user, :password => password}
+    end
+
+    def get_record(inchikey)
+      # options = { :query => {:doi => doi, :url => url}, 
+      #             :basic_auth => @auth, :headers => {'Content-Type' => 'text/plain'} }
+
+      options = { :headers => {'Content-Type' => 'text/json'}  }
+      self.class.get('http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/'+inchikey+'/record/JSON', options)
+    end
+
+  end
+
   
   def pick
     render :layout => false
@@ -17,7 +38,7 @@ class MoleculesController < ApplicationController
     @mol.formula = virtualmolecule.formula.to_s
     @mol.mass = virtualmolecule.exact_mass.round(2).to_s
     @mol.inchi = virtualmolecule.to_s (:inchi)
-    @mol.inchikey = virtualmolecule.to_s (:inchikey)
+    @mol.inchikey = virtualmolecule.to_s(:inchikey).gsub(/\n/, "")
     @mol.charge = virtualmolecule.charge.round(2).to_s
     @mol.spin = virtualmolecule.spin.round(2).to_s
     @mol.title = "new "+virtualmolecule.smiles.to_s
@@ -26,11 +47,52 @@ class MoleculesController < ApplicationController
     existingmolecule = existingmolecules.first
 
     if (existingmolecule != nil) then
+
       if (existingmolecule.id != nil) then
         @mol = existingmolecule
       end
+
+    else
+
+      pccompound = PcCompound.where(["inchikey = ?", @mol.inchikey]).first
+
+      if pccompound.blank? then
+
+        pc = PubChem.new("", "")
+
+        jsonresult = pc.get_record(@mol.inchikey)
+
+        
+
+        pccompound = PcCompound.new
+
+        pccompound.cid = jsonresult["PC_Compounds"][0]["id"]["id"]["cid"]
+
+        jsonresult["PC_Compounds"][0]["props"].each do |prop|
+
+          if (prop["urn"]["label"] == "IUPAC Name" && prop["urn"]["name"] == "Preferred") then
+            pccompound.iupacname = prop["value"]["sval"].to_s
+
+            @mol.title = pccompound.iupacname
+
+          end
+        end
+
+        pccompound.inchikey = @mol.inchikey
+
+        pccompound.save
+
+      else
+
+        @mol.title = pccompound.iupacname
+
+      end
+    
+
     end
 
+
+    
     respond_to do |format|
       format.json { render json: @mol }
     end

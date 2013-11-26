@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131121112204) do
+ActiveRecord::Schema.define(:version => 20131126103430) do
 
   create_table "molecules", :force => true do |t|
     t.string   "smiles"
@@ -26,6 +26,15 @@ ActiveRecord::Schema.define(:version => 20131121112204) do
     t.datetime "published_at"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+  end
+
+  create_table "pc_compounds", :force => true do |t|
+    t.integer  "cid"
+    t.string   "inchikey"
+    t.float    "logp"
+    t.string   "iupacname"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "project_memberships", :force => true do |t|

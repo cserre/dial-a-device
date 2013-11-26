@@ -87,4 +87,6 @@ gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
 
 gem 'bootstrap-wysiwyg-rails'
 
+gem 'httparty'
+
 # gem 'protected_attributes'
