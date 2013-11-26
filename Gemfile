@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
-ruby '1.9.3'
 
-gem 'rails', '3.2.15'
+gem 'rails'# , github: "rails/rails", branch: '4-0-stable'
+
+gem "arel"# , github: "rails/arel"
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -12,7 +13,7 @@ gem 'pg'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails'
   gem 'coffee-rails'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -54,7 +55,7 @@ gem "jquery-hotkeys-rails"
 
 gem 'noVNC', :git => "git://github.com/davidw/noVNCgem.git"
 
-gem 'audited-activerecord', '~> 3.0'
+gem 'audited-activerecord'
 
 gem 'devise'
 
@@ -85,3 +86,5 @@ gem 'carrierwave_direct'
 gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
 
 gem 'bootstrap-wysiwyg-rails'
+
+# gem 'protected_attributes'

@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: git://github.com/DanKnox/websocket-rails.git
-  revision: 66cfb0023c4cfaf9a7efe2a81dff007457a0c4f6
+  revision: d932f8162837eb6499497ec81ac297b4e5685c6e
   specs:
     websocket-rails (0.6.2)
       em-synchrony
@@ -112,7 +112,7 @@ GEM
       execjs
     coffee-script-source (1.6.3)
     daemons (1.1.9)
-    devise (3.2.1)
+    devise (3.2.2)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
@@ -155,7 +155,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.25)
+    mime-types (1.25.1)
     mini_magick (3.6.0)
       subexec (~> 0.2.1)
     mini_portile (0.5.2)
@@ -243,7 +243,8 @@ PLATFORMS
 
 DEPENDENCIES
   actionmailer
-  audited-activerecord (~> 3.0)
+  arel
+  audited-activerecord
   bootstrap-sass!
   bootstrap-wysiwyg-rails
   carrierwave
@@ -263,9 +264,9 @@ DEPENDENCIES
   openbabel-heroku!
   pg
   pundit
-  rails (= 3.2.15)
+  rails
   rubabel!
-  sass-rails (~> 3.2.3)
+  sass-rails
   simple_form
   therubyracer
   thin
