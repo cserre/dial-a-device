@@ -16,6 +16,8 @@
   <script type="text/javascript">
 
     function updatemolecule(data) {
+
+      if (data.inchikey != document.getElementById("molecule_inchikey").value) {
  
       document.getElementById("molecule_smiles").value = data.smiles;
 
@@ -34,6 +36,7 @@
       document.getElementById("molecule_molfile").value = data.molfile;
 
       document.getElementById("molecule_title").value = data.title;
+      }
  
     }
 

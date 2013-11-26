@@ -63,24 +63,30 @@ class MoleculesController < ApplicationController
         jsonresult = pc.get_record(@mol.inchikey)
 
         
-
+        puts "---"
+        puts jsonresult.to_s
+        puts "---"
         pccompound = PcCompound.new
 
-        pccompound.cid = jsonresult["PC_Compounds"][0]["id"]["id"]["cid"]
+        if !jsonresult["PC_Compounds"].nil? then
 
-        jsonresult["PC_Compounds"][0]["props"].each do |prop|
+          pccompound.cid = jsonresult["PC_Compounds"][0]["id"]["id"]["cid"]
 
-          if (prop["urn"]["label"] == "IUPAC Name" && prop["urn"]["name"] == "Preferred") then
-            pccompound.iupacname = prop["value"]["sval"].to_s
+          jsonresult["PC_Compounds"][0]["props"].each do |prop|
 
-            @mol.title = pccompound.iupacname
+            if (prop["urn"]["label"] == "IUPAC Name" && prop["urn"]["name"] == "Preferred") then
+              pccompound.iupacname = prop["value"]["sval"].to_s
 
+              @mol.title = pccompound.iupacname
+
+            end
           end
+
+          pccompound.inchikey = @mol.inchikey
+
+          pccompound.save
+
         end
-
-        pccompound.inchikey = @mol.inchikey
-
-        pccompound.save
 
       else
 
