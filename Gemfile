@@ -1,8 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails'# , github: "rails/rails", branch: '4-0-stable'
+gem "rails", github: "rails/rails", branch: '4-0-stable'
 
-gem "arel"# , github: "rails/arel"
+gem "arel", "~> 4.0.0" #, github: "rails/arel"
+
+gem 'rake'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -13,16 +15,15 @@ gem 'pg'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'
+  gem 'sass-rails',   '~> 4.0.0'
   gem 'coffee-rails'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', :platforms => :ruby
 
-  gem 'uglifier', '>= 1.0.3'
+  gem 'uglifier'
 end
 
-gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -51,11 +52,15 @@ end
 
 gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
 
+gem 'jquery-rails'
+
 gem "jquery-hotkeys-rails"
 
-gem 'noVNC', :git => "git://github.com/davidw/noVNCgem.git"
+gem 'jquery-ui-rails'
 
-gem 'audited-activerecord'
+gem 'noVNC', :git => "git://github.com/Cominch/noVNCgem.git"
+
+# gem 'audited-activerecord' # rails 4 compatibility
 
 gem 'devise'
 
@@ -65,7 +70,7 @@ gem 'cocoon'
 
 gem 'actionmailer'
 
-gem 'simple_form'
+gem 'simple_form', github: "plataformatec/simple_form"
 
 gem 'websocket-rails', :git => 'git://github.com/DanKnox/websocket-rails.git'
 
@@ -89,4 +94,4 @@ gem 'bootstrap-wysiwyg-rails'
 
 gem 'httparty'
 
-# gem 'protected_attributes'
+gem 'protected_attributes'

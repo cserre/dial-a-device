@@ -1,6 +1,14 @@
 LsiRailsPrototype::Application.routes.draw do
 
 
+  resources :affiliations do
+    get :autocomplete_user_name, :on => :collection
+    get :autocomplete_country_name, :on => :collection
+    get :autocomplete_organization_name, :on => :collection
+    get :autocomplete_department_name, :on => :collection
+    get :autocomplete_group_name, :on => :collection
+  end
+  
   resources :molecules do
     get 'pick', :on => :collection
     get 'getdetails', :on => :collection
@@ -18,7 +26,7 @@ LsiRailsPrototype::Application.routes.draw do
   end
 
 
-  devise_for :users
+  devise_for :users, :controllers => {:registrations => "users/registrations"}
 
   get 'about' => 'pages#about'
 

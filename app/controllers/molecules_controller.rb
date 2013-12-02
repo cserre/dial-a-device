@@ -34,14 +34,14 @@ class MoleculesController < ApplicationController
     virtualmolecule = Rubabel::Molecule.from_molstring (@mol.molfile)
     
     # assign calculated molecule properties from OpenBabel
-    @mol.smiles = virtualmolecule.to_s
-    @mol.formula = virtualmolecule.formula.to_s
-    @mol.mass = virtualmolecule.exact_mass.round(2).to_s
-    @mol.inchi = virtualmolecule.to_s (:inchi)
+    @mol.smiles = virtualmolecule.to_s.gsub(/\n/, "")
+    @mol.formula = virtualmolecule.formula.to_s.gsub(/\n/, "")
+    @mol.mass = virtualmolecule.exact_mass.round(2).to_s.gsub(/\n/, "")
+    @mol.inchi = virtualmolecule.to_s (:inchi).gsub(/\n/, "")
     @mol.inchikey = virtualmolecule.to_s(:inchikey).gsub(/\n/, "")
-    @mol.charge = virtualmolecule.charge.round(2).to_s
-    @mol.spin = virtualmolecule.spin.round(2).to_s
-    @mol.title = "new "+virtualmolecule.smiles.to_s
+    @mol.charge = virtualmolecule.charge.round(2).to_s.gsub(/\n/, "")
+    @mol.spin = virtualmolecule.spin.round(2).to_s.gsub(/\n/, "")
+    @mol.title = "new "+virtualmolecule.smiles.to_s.gsub(/\n/, "")
 
     existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
     existingmolecule = existingmolecules.first

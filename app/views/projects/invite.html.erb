@@ -1,13 +1,105 @@
-<h1>Invite someone to <%= @project.title %></h1>
+<h1>Invite others to <%= @project.title %></h1>
 
 <%= form_for(@project, url: {action: "adduser"}, method: "GET") do |f| %>
 
-  <%= text_field_tag(:email) %>
+
+<div>
+
+    <div>
+
+
+	  	<div class="form-inputs">
+
+		<%= text_field(:user, :username, :autofocus => true, :class => "form-control user_with_autocomplete", "data-autocompleteUrl" => autocomplete_user_name_affiliations_path, "autocomplete" => "off",  :placeholder => "Name or Email") %>
+
+		</div>	
+
+
+      <%= hidden_field_tag(:email) %>
+
+      <br>
+
+  </div>
+
+  <div>
+
+      <div class="alert alert-info" style="display:none;">
+			<%= content_tag :div, "Affiliation", :id => "info" %>
+		</div>
+
+
+      <div class="alert alert-warning " style="display:none;">
+			
+			<%= content_tag :div, "Invitation email will be sent", :id => "warning" %>
+		</div>
+
+		<div class="alert alert-danger " style="display:none;">
+			<%= content_tag :div, "Unknown name or not an email address", :id => "danger" %>
+		</div>
+
+  </div>
+
+ </div>
+
+
   <br/>
 
-  <%= link_to 'Back', projects_path, :class => "btn btn-sm" %>
+
+  <%= link_to 'Back', projects_path, :class => "btn btn-sm btn-default" %>
 <%= submit_tag("Invite", :class => "btn btn-sm btn-success") %>
+
+
 <% end %>
 
 
 
+
+ <script type="text/javascript">
+
+ $(function() {
+  return $('.user_with_autocomplete').typeahead({
+    name: "user",
+    remote: $('.user_with_autocomplete').data('autocompleteurl') + '?name=%QUERY'
+  }).bind({
+    "typeahead:selected": function(obj, datum, name) {
+
+
+      obj.target.parentElement.parentElement.parentElement.children[1].value = datum.email;
+
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[0].style.display = ""
+
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = "none"
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = "none"
+
+    },
+    "typeahead:autocompleted": function(obj, datum, name) {
+      obj.target.parentElement.parentElement.parentElement.children[1].value = datum.email;
+
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[0].style.display = ""
+
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = "none"
+      obj.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = "none"
+
+    }
+  }).on({
+    "input": function(event) {
+
+      event.target.parentElement.parentElement.parentElement.children[1].value = event.target.value;
+
+      event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[0].style.display = "none"
+
+      if (event.target.value.indexOf("@") != -1) {
+
+      	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = ""
+      	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = "none"
+  	  } else {
+  	  	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = "none"
+  	  	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = ""
+  	  }
+
+    }
+  });
+});
+
+
+</script>

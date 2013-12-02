@@ -8,15 +8,13 @@
   <div class="form-inputs">
     <%= f.text_field :email, :required => false, :autofocus => true, :class => "form-control", :placeholder => "Email address" %>
 
-    <br/>
-
   <%= f.text_field :firstname, :required => true, :autofocus => true, :class => "form-control", :placeholder => "First name" %>
 
     <%= f.text_field :lastname, :required => true, :autofocus => true, :class => "form-control", :placeholder => "Last name" %>
 
   <%= f.text_field :sign, :required => true, :autofocus => true, :class => "form-control", :placeholder => "Your sign (initials)" %>
 
-  	<br/>
+  <br/>
 
 
     <%= f.password_field :password, :required => false, :class =>"form-control", :placeholder => "Password" %>
@@ -24,6 +22,27 @@
     
   </div>
 
+  <br/>
+  <h3 class="form-signin-heading">Affiliation</h3>
+
+  <%= f.fields_for :affiliations, f.object.affiliations.build  do |af| %>
+
+
+  <div class="form-inputs">
+    <%= af.text_field :country_title, :required => true, :autofocus => true, :class => "form-control country_with_autocomplete", "data-autocompleteUrl" => autocomplete_country_name_affiliations_path, "autocomplete" => "off",  :placeholder => "Country" %>
+
+  <%= af.text_field :organization_title, :required => true, :autofocus => true, :class => "form-control organization_with_autocomplete", "data-autocompleteUrl" => autocomplete_organization_name_affiliations_path, "autocomplete" => "off", :placeholder => "Organization/Company" %>
+
+    <%= af.text_field :department_title, :required => true, :autofocus => true, :class => "form-control department_with_autocomplete", "data-autocompleteUrl" => autocomplete_department_name_affiliations_path, "autocomplete" => "off", :placeholder => "Department" %>
+
+  <%= af.text_field :group_title, :required => true, :autofocus => true, :class => "form-control group_with_autocomplete", "data-autocompleteUrl" => autocomplete_group_name_affiliations_path, "autocomplete" => "off", :placeholder => "Group" %>
+
+  </div>
+
+  <% end %>
+
+  <br/>
+  <br/>
 
   <div class="form-actions">
     <%= f.submit "Sign up", :class =>"btn btn-lg btn-primary btn-block" %>
