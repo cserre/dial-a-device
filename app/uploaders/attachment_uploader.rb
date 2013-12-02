@@ -18,7 +18,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.localfilesystem? then 
-       DialADevice::Application.config.datasetroot + "datasets/#{model.dataset_id}/#{model.folder}"
+       LsiRailsPrototype::Application.config.datasetroot + "datasets/#{model.dataset_id}/#{model.folder}"
      else
        "datasets/#{model.dataset_id}/#{model.folder}"
      end

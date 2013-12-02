@@ -1,8 +1,15 @@
 LsiRailsPrototype::Application.routes.draw do
 
   resources :datasets do
-    resources :attachments
+    resources :attachments do
+      post 'link', :on => :collection
+    end
     get 'filter', :on => :collection
+
+    get 'find', :on => :collection
+    get 'finalize', :on => :collection
+
+    get ':filename.:extension', :to => 'attachments#serve'
 
   end
 
