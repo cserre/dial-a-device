@@ -95,3 +95,5 @@ gem 'bootstrap-wysiwyg-rails'
 gem 'httparty'
 
 gem 'protected_attributes'
+
+gem 'dav4rack', github: 'timon/dav4rack'

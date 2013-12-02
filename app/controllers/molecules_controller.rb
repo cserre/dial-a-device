@@ -37,7 +37,7 @@ class MoleculesController < ApplicationController
     @mol.smiles = virtualmolecule.to_s.gsub(/\n/, "")
     @mol.formula = virtualmolecule.formula.to_s.gsub(/\n/, "")
     @mol.mass = virtualmolecule.exact_mass.round(2).to_s.gsub(/\n/, "")
-    @mol.inchi = virtualmolecule.to_s (:inchi).gsub(/\n/, "")
+    @mol.inchi = virtualmolecule.to_s(:inchi).gsub(/\n/, "")
     @mol.inchikey = virtualmolecule.to_s(:inchikey).gsub(/\n/, "")
     @mol.charge = virtualmolecule.charge.round(2).to_s.gsub(/\n/, "")
     @mol.spin = virtualmolecule.spin.round(2).to_s.gsub(/\n/, "")
@@ -183,6 +183,9 @@ class MoleculesController < ApplicationController
     @molecule = Molecule.find(params[:id])
 
     authorize @molecule
+
+    if !current_user.nil? then @owndatasets = current_user.datasets.where(["molecule_id = ?", @molecule.id]) end
+
 
     respond_to do |format|
       format.html # show.html.erb

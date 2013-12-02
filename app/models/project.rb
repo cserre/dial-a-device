@@ -18,4 +18,8 @@ class Project < ActiveRecord::Base
   has_many :molecules,
     through: :project_molecules
 
+  has_many :project_datasets
+  has_many :datasets,
+    through: :project_datasets
+
 end

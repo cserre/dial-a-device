@@ -1,5 +1,18 @@
 LsiRailsPrototype::Application.routes.draw do
 
+  resources :datasets do
+    resources :attachments
+    get 'filter', :on => :collection
+
+  end
+
+  mount DAV4Rack::Handler.new(
+
+      :root => Rails.root.to_s,
+      :root_url_path => '/webdav',
+      :resource_class => ::DAV4Rack::FileResource
+
+    ), :at => '/', :constraints => {:subdomain => "webdav"}
 
   resources :affiliations do
     get :autocomplete_user_name, :on => :collection
@@ -8,7 +21,7 @@ LsiRailsPrototype::Application.routes.draw do
     get :autocomplete_department_name, :on => :collection
     get :autocomplete_group_name, :on => :collection
   end
-  
+
   resources :molecules do
     get 'pick', :on => :collection
     get 'getdetails', :on => :collection

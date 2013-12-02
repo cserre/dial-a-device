@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  molecule_id: 1
+  title: MyString
+  description: MyText
+  method: MyString
+  details: MyText
+  version: MyString
+  preview_id: 1
+  uniqueid: MyString
+
+two:
+  molecule_id: 1
+  title: MyString
+  description: MyText
+  method: MyString
+  details: MyText
+  version: MyString
+  preview_id: 1
+  uniqueid: MyString

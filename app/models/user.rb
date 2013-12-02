@@ -102,7 +102,9 @@ class User < ActiveRecord::Base
   end
 
 
-  # elements associated with project
+  ####### # elements associated with project
+
+  # Molecules
 
   has_many :project_molecules
   has_many :molecules,
@@ -118,6 +120,25 @@ class User < ActiveRecord::Base
 
   def moleculeowner_of?(molecule)
     Project.joins(:project_memberships).joins(:molecules).where(["project_memberships.role_id >= ? and molecule_id = ? and project_memberships.user_id = ?", 99, molecule.id, id]).exists?
+  end
+
+
+  # Datasets
+
+  def datasets
+    Dataset.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def datasetowner_of?(dataset)
+    Project.joins(:project_memberships).joins(:datasets).where(["project_memberships.role_id >= ? and dataset_id = ? and project_memberships.user_id = ?", 99, dataset.id, id]).exists?
+  end
+
+  def datasetmanager_of?(dataset)
+    Project.joins(:project_memberships).joins(:datasets).where(["project_memberships.role_id >= ? and dataset_id = ? and project_memberships.user_id = ?", 93, dataset.id, id]).exists?
+  end
+
+  def datasetviewer_of?(dataset)
+    Project.joins(:project_memberships).joins(:datasets).where(["project_memberships.role_id >= ? and dataset_id = ? and project_memberships.user_id = ?", 88, dataset.id, id]).exists?
   end
 
 end

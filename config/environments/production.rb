@@ -8,6 +8,27 @@ ActionMailer::Base.smtp_settings = {
 }
 ActionMailer::Base.delivery_method ||= :smtp
 
+CarrierWave.configure do |config|
+
+    config.storage = :fog
+    config.fog_directory = 'dial-a-device'
+
+    config.fog_public = false
+    config.fog_authenticated_url_expiration = 10.minutes
+
+  
+
+    config.fog_credentials = {
+      provider: "AWS",
+      aws_access_key_id: ENV["AWS_ACCESS_KEY_ID"],
+      aws_secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
+      region: "eu-west-1"
+    }
+
+  config.cache_dir = "#{Rails.root}/tmp/upload"
+
+end
+
 
 LsiRailsPrototype::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
@@ -76,7 +97,8 @@ LsiRailsPrototype::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-    config.action_mailer.default_url_options = { :host => 'lsi-rails-prototype.herokuapp.com'}
+  config.action_mailer.default_url_options = { :host => 'lsi-rails-prototype.herokuapp.com'}
 
+  config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" 
 
 end

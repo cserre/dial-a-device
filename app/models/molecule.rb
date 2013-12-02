@@ -1,6 +1,9 @@
 class Molecule < ActiveRecord::Base
   attr_accessible :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title
 
+
+  has_many :datasets
+
   # project association
 
   has_many :project_molecules

@@ -1,0 +1,77 @@
+<%= simple_form_for(@dataset) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.hidden_field :molecule_id %>
+
+    <p><b>Method:</b>
+    <%= f.select :method, options_for_select([['Rf', "Rf"], 
+
+      ['1H NMR CDCl3 250', 'NMR/1H/CDCl3/250'], ['1H NMR CDCl3 300', 'NMR/1H/CDCl3/300'], ['1H NMR CDCl3 400', 'NMR/1H/CDCl3/400'], ['1H NMR CDCl3 500', 'NMR/1H/CDCl3/500'],
+
+      ['1H NMR C6D6 250', 'NMR/1H/C6D6/250'], ['1H NMR C6D6 300', 'NMR/1H/C6D6/300'], ['1H NMR C6D6 400', 'NMR/1H/C6D6/400'],
+
+      ['1H NMR MeOD 250', 'NMR/1H/MeOD/250'], ['1H NMR MeOD 300', 'NMR/1H/MeOD/300'], ['1H NMR MeOD 400', 'NMR/1H/MeOD/400'],
+
+      ['1H NMR DMSO 250', 'NMR/1H/DMSO/250'], ['1H NMR DMSO 300', 'NMR/1H/DMSO/300'], ['1H NMR DMSO 400', 'NMR/1H/DMSO/400'],  
+
+      ['13C NMR CDCl3 62.5', 'NMR/13C/CDCl3/62.5'], ['13C NMR CDCl3 75', 'NMR/13C/CDCl3/75'], ['13C NMR CDCl3 100', 'NMR/13C/CDCl3/100'], ['13C NMR CDCl3 125', 'NMR/13C/CDCl3/125'],
+
+      ['13C NMR C6D6 62.5', 'NMR/13C/C6D6/62.5'], ['13C NMR C6D6 75', 'NMR/13C/C6D6/75'], ['13C NMR C6D6 100', 'NMR/13C/C6D6/100'], 
+
+      ['13C NMR MeOD 62.5', 'NMR/13C/MeOD/62.5'], ['13C NMR MeOD 75', 'NMR/13C/MeOD/75'], ['13C NMR MeOD 100', 'NMR/13C/MeOD/100'], 
+
+      ['13C NMR DMSO 62.5', 'NMR/13C/DMSO/62.5'], ['13C NMR DMSO 75', 'NMR/13C/DMSO/75'], ['13C NMR DMSO 100', 'NMR/13C/DMSO/100'], 
+
+      ['19F NMR CDCl3 367', 'NMR/19F/CDCl3/367'], ['19F NMR MeOD 367', 'NMR/19F/MeOD/367'], ['19F NMR C6D6 367', 'NMR/19F/C6D6/367'], 
+
+
+      ['DEPT 135', 'DEPT/135'], ['DEPT 90', 'DEPT/90'], ['DEPT 45', 'DEPT/45'],
+
+      ['IR', 'IR'], 
+
+      ['Mass EI', 'Mass/EI'], ['Mass GCMS', 'Mass/GCMS'], ['Raman', 'Raman'], ['UV-VIS', 'UV-VIS'], ['TLC', 'TLC'], ['Xray', 'Xray']], f.object.method) %>
+    </p>
+
+    <%= f.input :title, :value => "Dataset" %>
+
+    <%= f.input(:description, :input_html => {:style => "display:none;"}) %>
+
+    <div id="descwysiwyg" contenteditable="true" style="overflow: scroll; height: 200px; max-height: 200px; border-style: solid; border-color: rgb(204, 204, 204);"></div>
+
+    <%= f.input(:details, :input_html => {:style => "display:none;"}) %>
+
+    <div id="detwysiwyg" contenteditable="true" style="overflow: scroll; height: 200px;  max-height: 200px; border-style: solid;  border-color: rgb(204, 204, 204);"></div>
+  </div>
+
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, :class => "btn btn-sm btn-success" %>
+    <%= link_to 'Back', @molecule, :class => "btn btn-sm btn-default" %>
+
+  </div>
+<% end %>
+
+<script type="text/javascript">
+$('#descwysiwyg').wysiwyg();
+$('#detwysiwyg').wysiwyg();
+
+$('form').submit(function(){
+
+  var desc = $('#descwysiwyg').html();
+  $('#dataset_description').val(desc);
+
+  var det = $('#detwysiwyg').html();
+  $('#dataset_details').val(det);
+
+});
+
+$(document).ready(function(){
+
+  $('#descwysiwyg').html($('#dataset_description').val());
+  $('#detwysiwyg').html($('#dataset_details').val());
+
+
+})
+</script>

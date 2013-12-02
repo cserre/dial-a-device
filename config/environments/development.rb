@@ -34,4 +34,10 @@ LsiRailsPrototype::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.action_mailer.default_url_options = { :host => 'localhost:3000'}
+
+  config.threadsafe!  unless $rails_rake_task
+
+  config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"
 end

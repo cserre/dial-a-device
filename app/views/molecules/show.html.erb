@@ -56,5 +56,38 @@
 </table>
 
 
+<% if !current_user.nil? then %>
+
+<h1>My Datasets <%= link_to 'Add Dataset', new_dataset_path(:molecule_id => @molecule.id), :class => "btn btn-default btn-sm" %></h1>
+
+<% if !@owndatasets.empty? then %>
+
+<table>
+  <% @owndatasets.order("method_rank ASC").each do |dataset| %>
+    <tr>
+      <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+      </td>
+      <td>
+      <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+      <p><%= dataset.description.html_safe %></p>
+      <p>Virtual DOI: <%= dataset.doi_identifier %></p>
+    </td>
+    </tr>
+  <% end %>
+</table>
+
+<% else %>
+  <p>You don't have any datasets for this molecule.</p>
+<% end %>
+
+<br />
+
+<br/>
+
+<% end %>
+
+
+
+
 <%= link_to 'Back', molecules_path, :class => "btn btn-default btn-sm" %>
 

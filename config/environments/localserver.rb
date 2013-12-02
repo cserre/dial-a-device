@@ -1,3 +1,11 @@
+CarrierWave.configure do |config|
+
+  config.storage = :file
+
+  config.cache_dir = "#{Rails.root}/tmp/upload"
+
+end
+
 LsiRailsPrototype::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -64,4 +72,12 @@ LsiRailsPrototype::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  config.action_mailer.default_url_options = { :host => 'localhost:3000'}
+
+  config.threadsafe!  unless $rails_rake_task
+
+  config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"
+
+  config.datasetroot = "/home/cominch/"
 end
