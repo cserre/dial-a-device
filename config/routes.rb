@@ -82,6 +82,8 @@ LsiRailsPrototype::Application.routes.draw do
 
   get 'about' => 'pages#about'
 
+  get 'connectdevice' => 'pages#connectdevice'
+
   post 'connect/:serialnumber', :to => "beaglebones#heartbeat"
   get 'folderwatcher/:serialnumber', :to => "folder_watchers#heartbeat"
 

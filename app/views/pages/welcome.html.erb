@@ -1,12 +1,82 @@
+<% if Rails.env.production? then %>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<% end %>
+
 <div class="jumbotron">
-    <div class="container">
-        <h1>Life Science Informatics</h1>
-        <p>Prototype Rails Application for Bioinformatics, Cheminformatics, Lab Automation and High Throughput Screening</p>
+	<h1>Remote control your devices!</h1>
+	<p>Open source lab automation.</p>
+	<p>Simply control and share any device from your desktop browser or mobile phone.</p>
 
-        <p>Customize and Deploy on Heroku+Amazon S3 or on your local ubuntu server</p>
-        
-        
-        <p><a class="btn btn-default btn-lg" href="/about">About &raquo;</a></p>
+  <% if Rails.env.production? then %>
+	<p><a href="/showcase" class="btn btn-primary btn-large">Showcase &raquo;</a></p>
+	<div class="fb-like" data-href="http://www.facebook.com/dialadevice" data-send="false" data-width="450" data-show-faces="true" data-action="recommend"></div>
+  <% else %>
+  <p><a href="/devices" class="btn btn-primary btn-large">Devices &raquo;</a></p>
+  <% end %>
+</div>
 
-    </div>
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm-6 col-md-4">
+
+        <div class="thumbnail">
+            <%= link_to devices_path do %>
+            <img style="width: 240px; height: 140px;" src="../assets/devices.jpg">
+            <% end %>
+
+            <div class="caption">
+                <h2>Your devices</h2>
+				<p>Show all your registered and available devices. Share devices with other users and give permission to view and control them.</p>
+				<p><a class="btn btn-primary" href="/devices">View devices &raquo;</a></p>
+            </div>
+
+		</div>
+
+	</div>
+
+    <div class="col-sm-6 col-md-4">
+
+        <div class="thumbnail">
+            <%= link_to "/reactions" do %>
+            <img style="width: 240px; height: 140px;" src="../assets/newdevice.jpg">
+            <% end %>
+
+            <div class="caption">
+                <h2>Your reactions</h2>
+				<p>Manage compounds, track samples and design reactions.</p>
+				<p><a class="btn btn-primary" href="/reactions">View reactions &raquo;</a></p>
+            </div>
+
+		</div>
+
+	</div>
+
+    <div class="col-sm-6 col-md-4">
+
+        <div class="thumbnail">
+            <%= link_to "/connectdevice" do %>
+            <img style="width: 240px; height: 140px;" src="../assets/beagleboard.jpg">
+            <% end %>
+
+            <div class="caption">
+                <h2>Connect device</h2>
+				<p>Use the dial-a-device-node client software on any computer or embedded linux pc to connect your physical lab device.</p>
+				<p><a class="btn btn-primary" href="/connectdevice">Learn how to connect &raquo;</a></p>
+            </div>
+
+		</div>
+
+	</div>
+
+  </div>
 </div>

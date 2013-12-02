@@ -18,6 +18,20 @@ GIT
       rails
 
 GIT
+  remote: git://github.com/Cominch/openbabel-heroku-gem.git
+  revision: be46e3cc2dd53bab886c361ebec878ff8570f568
+  specs:
+    openbabel-heroku (2.3.2.0)
+
+GIT
+  remote: git://github.com/Cominch/rubabel.git
+  revision: e67ed8a35393b1c727f16a89c94d9ef330feeddb
+  specs:
+    rubabel (0.4.3)
+      andand (~> 1.3.3)
+      mini_magick (~> 3.6.0)
+
+GIT
   remote: git://github.com/DanKnox/websocket-rails.git
   revision: 7269c88ee87b788b7318894a0ab6ce1ca7831f79
   specs:
@@ -102,6 +116,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     activerecord-deprecated_finders (1.0.3)
+    andand (1.3.3)
     arel (4.0.1)
     atomic (1.1.14)
     bcrypt-ruby (3.1.2)
@@ -270,6 +285,7 @@ DEPENDENCIES
   mini_magick
   noVNC!
   openbabel
+  openbabel-heroku!
   pg
   protected_attributes
   pundit
@@ -277,6 +293,7 @@ DEPENDENCIES
   rails_12factor
   rails_serve_static_assets
   rake
+  rubabel!
   sass-rails (~> 4.0.0)
   simple_form!
   therubyracer
