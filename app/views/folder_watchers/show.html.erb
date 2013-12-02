@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Device:</strong>
+  <%= @folder_watcher.device_id %>
+</p>
+
+<p>
+  <strong>Pattern:</strong>
+  <%= @folder_watcher.pattern %>
+</p>
+
+<p>
+  <strong>Rootfolder:</strong>
+  <%= @folder_watcher.rootfolder %>
+</p>
+
+<p>
+  <strong>Scanfilter:</strong>
+  <%= @folder_watcher.scanfilter %>
+</p>
+
+<p>
+  <strong>Serialnumber:</strong>
+  <%= @folder_watcher.serialnumber %>
+</p>
+
+<%= link_to 'Edit', edit_folder_watcher_path(@folder_watcher) %> |
+<%= link_to 'Back', folder_watchers_path %>

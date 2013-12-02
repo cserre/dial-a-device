@@ -1,0 +1,83 @@
+<h1>Connect <%=  @device.name %> <%= link_to 'Back', devices_path, :class => "btn btn-warning" %></h1>
+
+<%= form_tag ("/devices/"+@device.id.to_s+"/connectit") do %>
+
+<div class="row">
+    
+    <% if !(@device.devicetype.name == "legacy_vnc") then %>
+       
+    <div class="col-sm-6 col-md-4">    
+
+
+        <div class="thumbnail">
+            <%= image_submit_tag "../assets/simulation.jpg", :style => "width: 240px; height: 140px;", :onclick => "document.getElementById('beaglebone_serialnumber').value('');" %>
+            <div class="caption">
+                <h3>Simulation Mode</h3>
+
+                <p>Do not connect to a physical device.</p>
+                <p>
+                  <button class = "btn btn-primary" onclick="document.getElementById('beaglebone_serialnumber').value = ''; ">Simulation mode</button>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+        
+    <div class="col-sm-6 col-md-4">    
+
+
+        <div class="thumbnail">
+            <%= image_submit_tag "../assets/beagleboard.jpg", :style => "width: 240px; height: 140px;", :onclick => "" %>
+            <div class="caption">
+                <h3>Connect to BeagleBone</h3>                
+                <p>Serial number:</p>
+                <p>
+                <input id="beaglebone_serialnumber" type="text" name="beaglebone_serialnumber"/>
+                 <button class = "btn btn-primary">Connect</button>                
+                </p>
+                <div id="connect-status"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <% else %>
+
+        
+    <div class="col-sm-6 col-md-4">    
+
+
+        <div class="thumbnail">
+            <%= image_submit_tag "../assets/legacy_vnc.jpg", :style => "width: 240px; height: 140px;", :onclick => "" %>
+            <div class="caption">
+                <h3>Connect via VNC</h3>                
+                <p>websockify gateway:<input id="websockifygateway" type="text" name="websockifygateway"/></p>
+                <p>websockify port:<input id="websockifygatewayport" type="text" name="websockifygatewayport"/></p>
+                <p>websockify token:<input id="token" type="text" name="token"/></p>
+
+                <p>vnc host:<input id="vnchost" type="text" name="vnchost"/></p>
+                <p>vnc port:<input id="vncport" type="text" name="vncport"/></p>
+                <p>vnc password:<input id="vncpassword" type="text" name="vncpassword"/></p>
+
+                <p>
+                 <button class = "btn btn-primary">Connect</button>                
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <% end %>
+
+</div>
+
+
+<% end %>
+
+

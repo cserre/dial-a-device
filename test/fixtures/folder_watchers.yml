@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  device_id: 1
+  pattern: MyString
+  rootfolder: MyString
+  scanfilter: MyString
+  serialnumber: MyString
+
+two:
+  device_id: 1
+  pattern: MyString
+  rootfolder: MyString
+  scanfilter: MyString
+  serialnumber: MyString

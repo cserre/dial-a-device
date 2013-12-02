@@ -22,4 +22,17 @@ class Project < ActiveRecord::Base
   has_many :datasets,
     through: :project_datasets
 
+  has_many :project_beaglebones
+  has_many :beaglebones,
+    through: :project_beaglebones
+
+  has_many :project_folder_watchers
+  has_many :folder_watchers,
+    through: :project_folder_watchers
+
+
+  has_many :project_devices
+  has_many :devices,
+    through: :project_devices
+
 end

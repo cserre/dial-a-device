@@ -1,0 +1,66 @@
+<h1>Check in sample</h1>
+
+<script type="text/javascript" src="/jsqrcode/grid.js"></script>
+<script type="text/javascript" src="/jsqrcode/version.js"></script>
+<script type="text/javascript" src="/jsqrcode/detector.js"></script>
+<script type="text/javascript" src="/jsqrcode/formatinf.js"></script>
+<script type="text/javascript" src="/jsqrcode/errorlevel.js"></script>
+<script type="text/javascript" src="/jsqrcode/bitmat.js"></script>
+<script type="text/javascript" src="/jsqrcode/datablock.js"></script>
+<script type="text/javascript" src="/jsqrcode/bmparser.js"></script>
+<script type="text/javascript" src="/jsqrcode/datamask.js"></script>
+<script type="text/javascript" src="/jsqrcode/rsdecoder.js"></script>
+<script type="text/javascript" src="/jsqrcode/gf256poly.js"></script>
+<script type="text/javascript" src="/jsqrcode/gf256.js"></script>
+<script type="text/javascript" src="/jsqrcode/decoder.js"></script>
+<script type="text/javascript" src="/jsqrcode/qrcode.js"></script>
+<script type="text/javascript" src="/jsqrcode/findpat.js"></script>
+<script type="text/javascript" src="/jsqrcode/alignpat.js"></script>
+<script type="text/javascript" src="/jsqrcode/databr.js"></script>
+
+<script type="text/javascript" src="/jsqrcode/webqr.js"></script>
+
+<style type="text/css">
+	#v {
+		width: 320px;
+		height: 240px;
+	}
+</style>
+
+
+<div id="outdiv" style="width: 320px; height: 240px; display:none;">
+</div>
+
+<canvas id="qr-canvas" width="800" height="600" style="display:none;"></canvas>
+
+<div id="manualselect">
+<ul>
+
+<% @samples.each do |sample| %>
+  <li><%= link_to "Check in #{sample.id} to #{@device.name}", checkin_sample_to_device_path(@device, sample_id: sample.id), method: :get %></li>
+<% end %>
+</ul>
+
+</div>
+
+<script type="text/javascript">
+
+function IncomingQRCode(c) {
+
+	var url = "<%= checkin_sample_to_device_path(@device, sample_id: 'replaceme') %>";
+
+	url = url.replace ('replaceme', c.substring((c.lastIndexOf("/"))+1));
+
+	location.href = url;
+}
+
+</script>
+
+
+<script type="text/javascript">
+load();
+setwebcam();
+</script>
+
+
+<%= link_to 'Back', devices_path %>

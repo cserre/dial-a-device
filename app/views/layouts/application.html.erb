@@ -103,6 +103,9 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
           	<li><a href="/projects">Projects</a></li>
+            <li><a href="/devices">Devices</a></li>
+            <li><a href="/beaglebones">BeagleBones</a></li>
+            <li><a href="/folder_watchers">Folder Watchers</a></li>
             <li><a href="/molecules">Molecules</a></li>
             <li><a href="/about">About</a></li>
             
@@ -198,6 +201,13 @@
 
 
     <!-- footer -->
+
+    <!-- footer -->
+    <% if (@showfooter != nil) then %>
+
+      <%= if (@device.id != nil && @device.id != 9999) then render 'devices/simplefooter' else render 'devices/simplefooter' end %>
+
+    <% end %>
   
 
   </body>

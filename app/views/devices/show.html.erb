@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @device.name %> <small>(<%= @device.devicetype.name %>)</small></h1>
+
+   <!-- <div class="tabbable">
+
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Control</a></li>
+    <li><a href="#tab2" data-toggle="tab">Details</a></li>
+    </ul>
+
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab1">-->
+    
+
+<%= render 'layouts/' + @device.devicetype.name %>
+
+<br/>
+<br/>
+<div id="actionpane" class="well" style="display: none;">
+</div>
+
+<%  @showfooter = true %>
+
+<% if (current_user != nil) then @showtasks = true end %>

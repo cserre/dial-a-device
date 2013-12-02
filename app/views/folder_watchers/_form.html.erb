@@ -1,0 +1,15 @@
+<%= simple_form_for(@folder_watcher) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :device_id %>
+    <%= f.input :pattern %>
+    <%= f.input :rootfolder %>
+    <%= f.input :scanfilter %>
+    <%= f.input :serialnumber %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

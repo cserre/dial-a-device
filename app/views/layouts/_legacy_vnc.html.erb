@@ -1,0 +1,108 @@
+
+<%= include_novnc_javascript_all %>
+
+<div id="devicestatus" class="col-md-6">
+
+    <h2>Recently measured:</h2>
+
+    <% @measurements.uniq.each do |m| %>
+
+    <h4><%= link_to m.dataset do %><%= m.dataset.method %><% if !m.dataset.title.empty? then %> - <%= m.dataset.title %><% end %><% end %></h4>
+
+    <% end %>
+
+</div>
+
+<div id="rightbox"class="col-md-6 well">
+
+    <a class="btn btn-success btn-xs pull-right" href="<%= showvnc_device_path (@device) %>" target="_blank">Switch to fullscreen</a>
+
+        <div id="noVNC_screen" style="padding-top: 5px;">
+                    
+            <canvas id="noVNC_canvas" style="width: 100%; height: 250px;">
+                    Canvas not supported.
+            </canvas>
+
+            
+        </div>
+
+        
+
+</div>
+        <script>
+        /*jslint white: false */
+        /*global window, $, Util, RFB, */
+        "use strict";
+
+        // Load supporting scripts
+
+        var rfb;
+
+        function passwordRequired(rfb) {
+            var msg;
+            msg = '<form onsubmit="return setPassword();"';
+            msg += '  style="margin-bottom: 0px">';
+            msg += 'Password Required: ';
+            msg += '<input type=password size=10 id="password_input" class="noVNC_status">';
+            msg += '<\/form>';
+            $D('noVNC_status_bar').setAttribute("class", "noVNC_status_warn");
+            $D('noVNC_status').innerHTML = msg;
+        }
+        function setPassword() {
+            rfb.sendPassword($('#password_input').value);
+            return false;
+        }
+        function sendCtrlAltDel() {
+            rfb.sendCtrlAltDel();
+            return false;
+        }
+        function updateState(rfb, state, oldstate, msg) {
+            var s, sb, cad, level;
+            // s = $D('noVNC_status');
+            // sb = $D('noVNC_status_bar');
+            // cad = $D('sendCtrlAltDelButton');
+            switch (state) {
+                case 'failed':       level = "warning";  break;
+                case 'fatal':        level = "danger";  break;
+                case 'normal':       level = "success"; break;
+                case 'disconnected': level = "danger"; break;
+                case 'loaded':       level = "success"; break;
+                default:             level = "success";   break;
+            }
+
+            
+            $("#connstatus").removeClass ("label-*");
+            
+            $("#connstatus").addClass ("label-"+level);
+            
+
+            if (typeof(msg) !== 'undefined') {
+                $("#connstatus").text (msg);
+            }
+        }
+
+        $(document).ready (function () {
+            var host, port, password, path, token;
+
+            // $('#sendCtrlAltDelButton').style.display = "inline";
+            // $('#sendCtrlAltDelButton').onclick = sendCtrlAltDel;
+
+
+            rfb = new RFB({'target':       $D('noVNC_canvas'),
+                           'encrypt':      false,
+                           'repeaterID':   '',
+                           'true_color':   true,
+                           'local_cursor': true,
+                           'shared':       true,
+                           'view_only':    true,
+                           'focusContainer': $D('noVNC_canvas'),
+                           'updateState':  updateState,
+                           'onPasswordRequired':  passwordRequired});
+
+            rfb.connect("<%= @device.websockifygateway %>", <%= @device.websockifygatewayport %>, "<%= @device.vncpassword %>", "?token=<%= @device.token %>");
+
+            $("#noVNC_canvas").css ("display", "");
+
+        });
+
+        </script>

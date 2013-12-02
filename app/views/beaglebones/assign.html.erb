@@ -1,0 +1,58 @@
+<h1>Assign to Project</h1>
+
+<table class="table table-hover table-striped">
+    
+    <thead>
+        <th></th>
+        <th>Title</th>
+        <th>Assignment</th>
+        <th>Sharing</th>
+        <th colspan="1"></th>
+    </thead>
+    <tbody>
+<% @projects.each do |project| %>
+
+<tr>
+                <td><% if project.members.length > 0 then %>
+                  <span class="glyphicon glyphicon-eye-open" />
+   <% else %><span class="glyphicon glyphicon-eye-close" />
+   <% end %></td>
+    
+                <td><h4><% if project.id == @current_user.rootproject_id then %><%= @current_user.firstname %>'s Private Project<% else %><%= project.title %><% end %></h4></td>
+
+                <td>
+
+   <% if project.beaglebones.exists?(["beaglebone_id = ?", @beaglebone.id]) %>
+
+	<p>Already assigned.</p>
+	
+	<% else %>
+  <%= link_to "Add #{@beaglebone.serialnumber}", assign_to_project_do_beaglebone_path(@beaglebone, project_id: project.id), method: :post, :class => "btn btn-success" %>
+
+  <% end %>
+
+</td>
+
+                <td>
+                  
+                  <% if project.members.length > 0 then %>Shared with:<% project.members.each do |m| %><br/><%= m.email %><% end %>
+   <% else %>This project is private.
+   <% end %>
+
+</td>
+
+
+
+</tr>
+
+<% end %>
+
+
+
+    </tbody>
+</table>
+
+
+<br>
+
+<%= link_to('Back', @beaglebone, :class => "btn btn-default") %>

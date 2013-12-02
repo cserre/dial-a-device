@@ -1,0 +1,25 @@
+<h1>Showcase</h1>
+
+
+<div class="row">
+
+<% @devicetypes.each_with_index do |dt, index| %>
+
+    <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+
+            <%= link_to "../showcase/#{dt.name}" do %>
+            <img style="width: 240px; height: 140px;" src="../assets/<%= dt.name %>.jpg">
+            <% end %>
+
+            <div class="caption">
+                <h3><%= dt.displayname %></h3>
+                <p><a href="/showcase/<%= dt.name %>" class="btn btn-primary btn-large">Demonstration &raquo;</a></p>
+            </div>
+
+        </div>
+    </div>
+
+<% end %>
+
+</div>

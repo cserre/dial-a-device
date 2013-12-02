@@ -1,0 +1,192 @@
+<script type="text/javascript">
+
+function checkinSample (sampleid) {
+
+	console.log ("check in "+sampleid);
+
+	var el = document.getElementsByClassName('samplerow');
+
+	for (var i= 0; i<el.length; i++) {
+		$("#"+el[i].id).removeClass("success");
+	}
+
+	$('#sample_row_'+sampleid).addClass("success");
+
+}
+
+function loadTask (taskid, sampleid) {
+
+	$('#actionpane').load('/tasks/'+taskid+'?device_id=<%= @device.id unless @device == nil %>', function() {
+
+		checkinSample (sampleid);
+
+	});
+	document.getElementById('actionpane').style.display = '';
+
+}
+
+function detectedTask (taskid, sampleid, checkin) {
+	console.log ("Lab Lens: Task "+taskid + " with Sample " + sampleid);
+	loadTask (taskid, sampleid);
+
+	if ((checkin != null) && (checkin == true)) {
+
+	$('#checkedinsamples').load('/devices/<%= @device.id unless @device == nil %>/checkin?sample_id='+sampleid);
+
+	}
+
+
+}
+
+var tasks = [];
+
+function detectedSample (sampleid, checkin) {
+
+	console.log ("Lab Lens: Sample "+sampleid);
+
+	for (i=0; i < tasks.length; i++) {
+		t = tasks[i];
+
+		for (n=0; n < t["samples"].length; n++) {
+			if (t["samples"][n] == sampleid) {
+				detectedTask (t["id"], sampleid, checkin);
+				
+			}
+		}
+	}
+}
+
+</script>
+
+<% if (@showtasks != nil && @showtasks) then %>
+
+<h4>My Tasks</h4>
+
+
+	<% tasks = current_user.tasks.where(["deviceclass_id = ?", @device.devicetype.deviceclass_id]) %>
+
+	<% if (tasks != nil && tasks.size == 0) then %>No tasks<% end %>
+
+	<% tasks.each do |task| %>
+
+	<script type ="text/javascript">
+
+	t = {};
+	t["id"] = <%= task.id %>;
+
+	s = new Array();
+
+	<% task.samples.each do |s| %>
+
+	s.push ("<%= s.id %>");
+	<% end %>
+
+	t["samples"] = s;
+	tasks.push(t);
+
+	</script>
+
+	<button class="btn" id="btn_<%= task.id %>" onclick="loadTask('<%= task.id %>'); return false;" ><% if (task.reaction != nil) then %><i class="icon icon-fire"></i>&nbsp;<% else %><i class="icon icon-tint"></i>&nbsp;<% end %><%= task.description %></button>
+
+
+	<% end %>
+
+
+	<br/>
+	<br/>
+
+<% end %>
+
+<h4>Lab Lens</h4>
+
+<script type="text/javascript" src="/jsqrcode/grid.js"></script>
+<script type="text/javascript" src="/jsqrcode/version.js"></script>
+<script type="text/javascript" src="/jsqrcode/detector.js"></script>
+<script type="text/javascript" src="/jsqrcode/formatinf.js"></script>
+<script type="text/javascript" src="/jsqrcode/errorlevel.js"></script>
+<script type="text/javascript" src="/jsqrcode/bitmat.js"></script>
+<script type="text/javascript" src="/jsqrcode/datablock.js"></script>
+<script type="text/javascript" src="/jsqrcode/bmparser.js"></script>
+<script type="text/javascript" src="/jsqrcode/datamask.js"></script>
+<script type="text/javascript" src="/jsqrcode/rsdecoder.js"></script>
+<script type="text/javascript" src="/jsqrcode/gf256poly.js"></script>
+<script type="text/javascript" src="/jsqrcode/gf256.js"></script>
+<script type="text/javascript" src="/jsqrcode/decoder.js"></script>
+<script type="text/javascript" src="/jsqrcode/qrcode.js"></script>
+<script type="text/javascript" src="/jsqrcode/findpat.js"></script>
+<script type="text/javascript" src="/jsqrcode/alignpat.js"></script>
+<script type="text/javascript" src="/jsqrcode/databr.js"></script>
+
+<script type="text/javascript" src="/jsqrcode/webqr.js"></script>
+
+<style type="text/css">
+	#v {
+		width: 80px;
+		height: 60px;
+	}
+</style>
+
+
+<div id="outdiv" style="width: 200px; height: 140px; "><button onclick="setwebcam()" value="on" class="btn btn-warning"><i class="icon icon-white icon-qrcode"></i>&nbsp;Turn on camera</button></div>
+
+<div id="manualselect" style="width: 200px; height: 140px; display: none;"></div>
+
+<canvas id="qr-canvas" width="800" height="600" style="display:none;"></canvas>
+
+<script type="text/javascript">
+
+function IncomingQRCode(c) {
+
+	var action = c.substring(1, c.lastIndexOf("/"));
+
+	var action_id = parseInt(c.substring((c.lastIndexOf("/"))+1));
+
+	console.log ("action: " + action + " - "+ action_id);
+
+	if (action == "samples") {
+
+		if (typeof detectedSample == 'function') {
+			detectedSample (action_id, true);
+		}
+		
+	}
+
+	if (action == "pinlogin") {
+
+		if (typeof detectedLogin == 'function') {
+			detectedLogin (action_id);
+		}
+		
+	} 
+	
+	setwebcam();
+	
+}
+
+</script>
+
+
+<script type="text/javascript">
+load();
+</script>
+
+
+<script type="text/javascript">
+	function detectedLogin (userid) {
+
+		console.log ("Lab Lens: User "+userid);
+
+		$('#pinmodal').load ('/pinlogin/'+userid+'/partial', function() {
+
+			$('#pinredir').val(document.location);
+
+		});
+	
+		$('#pinmodal').modal('show');
+	}
+</script>
+
+<div id="pinmodal" class="modal fade" data-backdrop="static" >
+  
+
+</div>

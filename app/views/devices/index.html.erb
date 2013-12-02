@@ -1,0 +1,34 @@
+<h1>Devices <%= link_to 'New', new_device_path, :class => "btn btn-primary" %></h1>
+
+
+<div class="row">
+
+<% @devices.each do |device| %>
+
+    
+    <div class="col-sm-6 col-md-4">    
+
+        <div class="thumbnail">
+            <%= link_to device do %>
+            <img style="width: 240px; height: 140px;" src="../assets/<%= device.devicetype.name %>.jpg">
+            <% end %>
+
+            <div class="caption">
+                <h3><%= device.name %></h3>
+                <p>Type: <%= device.devicetype.name %></p>
+                <p><%= link_to 'Open', device, :class => "btn btn-success" %>        <%= link_to 'Edit', edit_device_path(device), :class => "btn" %><%= link_to 'Connect', connect_device_path(device), :class => "btn btn-warning" %>            
+                </p>
+                <p>              
+                    <%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger" %>      
+                    <%= link_to 'Share', assign_device_path(device), :class => "btn btn-info" %>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+<% end %>
+
+</div>
+

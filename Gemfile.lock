@@ -33,7 +33,7 @@ GIT
 
 GIT
   remote: git://github.com/DanKnox/websocket-rails.git
-  revision: d932f8162837eb6499497ec81ac297b4e5685c6e
+  revision: 7269c88ee87b788b7318894a0ab6ce1ca7831f79
   specs:
     websocket-rails (0.6.2)
       em-synchrony
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: ad29f6cb1c4a939851e509d6c5fca19f65a4d0a6
+  revision: 5f24b78e6d907910ced6bf18012bf6656efaf74b
   branch: 4-0-stable
   specs:
     actionmailer (4.0.1)
@@ -211,6 +211,11 @@ GEM
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
+    rails_12factor (0.0.2)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.1)
+    rails_stdout_logging (0.0.2)
     rake (10.1.0)
     redis (3.0.6)
     redis-objects (0.8.0)
@@ -247,7 +252,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.38)
-    uglifier (2.3.1)
+    uglifier (2.3.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     uuidtools (2.1.4)
@@ -285,6 +290,8 @@ DEPENDENCIES
   protected_attributes
   pundit
   rails!
+  rails_12factor
+  rails_serve_static_assets
   rake
   rubabel!
   sass-rails (~> 4.0.0)

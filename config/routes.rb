@@ -1,6 +1,38 @@
 LsiRailsPrototype::Application.routes.draw do
 
+  resources :locations
+
+  resources :devices do
+    get 'showvnc', on: :member
+    get 'connect', on: :member
+    post 'connectit', on: :member, as: :connect_do
+
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'devices#assign_do'
+
+    get 'checkinselect', on: :member, as: :checkinselect_sample_to
+    get 'checkin', on: :member, as: :checkin_sample_to
+    post 'startrun', on: :member, as: :startrun_at
+    post 'stoprun', on: :member, as: :stoprun_at
+    get 'samplelocations', on: :member, as: :samplelocations_at
+  end
+
+  resources :folder_watchers do
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'folder_watchers#assign_do'
+  end
+
+  resources :beaglebones do
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'beaglebones#assign_do'
+  end
+
   resources :datasets do
+
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
+  
+
     resources :attachments do
       post 'link', :on => :collection
     end
@@ -49,6 +81,12 @@ LsiRailsPrototype::Application.routes.draw do
   devise_for :users, :controllers => {:registrations => "users/registrations"}
 
   get 'about' => 'pages#about'
+
+  post 'connect/:serialnumber', :to => "beaglebones#heartbeat"
+  get 'folderwatcher/:serialnumber', :to => "folder_watchers#heartbeat"
+
+  get 'showcase/:device_type', :to => "devices#showcase"
+  get 'showcase', :to => "devices#showcaseindex"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  serialnumber: MyString
+  internal_ip: MyString
+  last_seen: 2013-12-02 14:48:41
+  external_ip: MyString
+  version: MyString
+
+two:
+  serialnumber: MyString
+  internal_ip: MyString
+  last_seen: 2013-12-02 14:48:41
+  external_ip: MyString
+  version: MyString

@@ -1,0 +1,44 @@
+<div class = "navbar navbar-fixed-bottom navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container" style="height: 40px;">
+    <ul class ="nav">
+      <li>
+          
+          <%= link_to (checkinselect_sample_to_device_path) do %><button class="btn-mini btn btn-info">Check in sample</button><%end%>
+                    
+      </li>
+
+      <% if (@locations != nil) then %>
+    <% @locations.each do |location| %>
+      <li><a href="#">
+        <i class="icon-barcode icon-white"></i>&nbsp;Sample <%= location.sample_id %> (<%= location.user_id %>)</a>
+      </li>
+      <li>
+          <%= link_to startrun_at_device_path(location_id: location.id), method: :post do %><button class="btn-mini btn btn-warning">Start run</button><%end%>
+                    
+      </li>
+      <li>
+          <%= link_to stoprun_at_device_path(location_id: location.id), method: :post do %><button class="btn-mini btn btn-error">Stop run</button><%end%>
+                    
+      </li>
+        <li>
+          <%= link_to location, method: :delete, data: { confirm: 'Do you want to remove the sample from the device?' } do %><button class="btn-mini btn btn-warning">Check out</button><%end%>
+                    
+      </li>
+    <% end %>
+
+    <% end %>
+
+    </ul>
+
+    <ul class="nav pull-right">
+
+
+      <li>
+        <a href="<%= connect_device_path(@device) %>">
+        <span id="connstatus" class="label">Connection Status</span></a>
+      </li>
+      </ul>
+    </div>
+  </div>
+</div>

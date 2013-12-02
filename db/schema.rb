@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131202113952) do
+ActiveRecord::Schema.define(version: 20131202144130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,16 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.string   "file"
     t.string   "folder"
     t.integer  "dataset_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "beaglebones", force: true do |t|
+    t.string   "serialnumber"
+    t.string   "internal_ip"
+    t.datetime "last_seen"
+    t.string   "external_ip"
+    t.string   "version"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -74,8 +84,72 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.datetime "updated_at"
   end
 
+  create_table "device_locations", force: true do |t|
+    t.integer  "device_id"
+    t.integer  "location_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "devices", force: true do |t|
+    t.string   "name"
+    t.string   "connectiontype"
+    t.string   "portbaud"
+    t.string   "portdetails"
+    t.string   "portname"
+    t.string   "porttype"
+    t.integer  "devicetype_id"
+    t.integer  "beaglebone_id"
+    t.datetime "lastseen"
+    t.string   "websockifygateway"
+    t.string   "websockifygatewayport"
+    t.string   "vnchost"
+    t.string   "vncport"
+    t.string   "token"
+    t.string   "vncpassword"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "devicetypes", force: true do |t|
+    t.string   "name"
+    t.string   "displayname"
+    t.string   "porttype"
+    t.string   "portname"
+    t.string   "portbaud"
+    t.string   "portdetails"
+    t.boolean  "showcase",       default: false
+    t.integer  "deviceclass_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "folder_watchers", force: true do |t|
+    t.integer  "device_id"
+    t.string   "pattern"
+    t.string   "rootfolder"
+    t.string   "scanfilter"
+    t.string   "serialnumber"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "groups", force: true do |t|
     t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "locations", force: true do |t|
+    t.integer  "sample_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "measurements", force: true do |t|
+    t.integer  "dataset_id"
+    t.integer  "device_id"
+    t.datetime "recorded_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -91,8 +165,8 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.float    "spin"
     t.string   "title"
     t.datetime "published_at"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "organization_departments", force: true do |t|
@@ -113,8 +187,15 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.string   "inchikey"
     t.float    "logp"
     t.string   "iupacname"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_beaglebones", force: true do |t|
+    t.integer  "beaglebone_id"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "project_datasets", force: true do |t|
@@ -124,26 +205,40 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.datetime "updated_at"
   end
 
+  create_table "project_devices", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "device_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_folder_watchers", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "folder_watcher_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "project_memberships", force: true do |t|
     t.integer  "project_id"
     t.integer  "user_id"
     t.integer  "role_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "project_molecules", force: true do |t|
     t.integer  "project_id"
     t.integer  "molecule_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "projects", force: true do |t|
     t.string   "title"
     t.integer  "parent_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_affiliations", force: true do |t|
@@ -164,8 +259,8 @@ ActiveRecord::Schema.define(version: 20131202113952) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"

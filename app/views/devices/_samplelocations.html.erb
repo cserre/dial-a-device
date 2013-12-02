@@ -1,0 +1,24 @@
+<% if (@locations != nil) then %>
+    <% @locations.each do |location| %>
+      <li>
+
+        <% if ((location != nil) && (location.sample_id != nil)) then %>
+
+        <a href="#">
+        <i class="icon-map-marker icon-white"></i>&nbsp;Sample <%= location.sample_id %></a>
+
+        <script>
+          // alert ("<%= location.sample_id %>");
+            if (typeof detectedSample == 'function') {
+              detectedSample ('<%= location.sample_id %>', false);
+            }
+        </script>
+
+        <% end %>
+
+
+      </li>
+
+    <% end %>
+
+<% end %>

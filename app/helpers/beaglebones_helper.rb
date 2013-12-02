@@ -1,0 +1,2 @@
+module BeaglebonesHelper
+end

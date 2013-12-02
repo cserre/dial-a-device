@@ -141,4 +141,51 @@ class User < ActiveRecord::Base
     Project.joins(:project_memberships).joins(:datasets).where(["project_memberships.role_id >= ? and dataset_id = ? and project_memberships.user_id = ?", 88, dataset.id, id]).exists?
   end
 
+  # FolderWatchers
+
+  def folder_watchers
+    FolderWatcher.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def folder_watcher_owner_of?(folderwatcher)
+    Project.joins(:project_memberships).joins(:folder_watchers).where(["project_memberships.role_id >= ? and folder_watcher_id = ? and project_memberships.user_id = ?", 99, folderwatcher.id, id]).exists?
+  end
+
+  def folder_watcher_viewer_of?(folderwatcher)
+    Project.joins(:project_memberships).joins(:folder_watchers).where(["project_memberships.role_id >= ? and folder_watcher_id = ? and project_memberships.user_id = ?", 88, folderwatcher.id, id]).exists?
+  end
+
+  # BeagleBones
+
+  def beaglebones
+    Beaglebone.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+    def beagleboneowner_of?(beaglebone)
+    Project.joins(:project_memberships).joins(:beaglebones).where(["project_memberships.role_id >= ? and beaglebone_id = ? and project_memberships.user_id = ?", 99, beaglebone.id, id]).exists?
+  end
+
+  def beagleboneviewer_of?(beaglebone)
+    Project.joins(:project_memberships).joins(:beaglebones).where(["project_memberships.role_id >= ? and beaglebone_id = ? and project_memberships.user_id = ?", 88, beaglebone.id, id]).exists?
+  end
+
+  # Devices
+
+  def devices
+    Device.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def deviceowner_of?(device)
+    Project.joins(:project_memberships).joins(:devices).where(["project_memberships.role_id >= ? and device_id = ? and project_memberships.user_id = ?", 99, device.id, id]).exists?
+  end
+
+  def deviceviewer_of?(device)
+    Project.joins(:project_memberships).joins(:devices).where(["project_memberships.role_id >= ? and device_id = ? and project_memberships.user_id = ?", 88, device.id, id]).exists?
+  end
+
+  def deviceconroller_of?(device)
+    Project.joins(:project_memberships).joins(:devices).where(["project_memberships.role_id >= ? and device_id = ? and project_memberships.user_id = ?", 88, device.id, id]).exists?
+  end
+
+
 end

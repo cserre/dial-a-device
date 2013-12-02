@@ -14,15 +14,15 @@ gem 'pg'
 
 # Gems used only for assets and not required
 # in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 4.0.0'
-  gem 'coffee-rails'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platforms => :ruby
+gem 'sass-rails',   '~> 4.0.0'
+gem 'coffee-rails'
 
-  gem 'uglifier'
-end
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer', :platforms => :ruby
+
+gem 'uglifier'
+
 
 
 # To use ActiveModel has_secure_password
@@ -42,6 +42,8 @@ end
 
 group :production do 
 	gem 'openbabel-heroku', :git => 'git://github.com/Cominch/openbabel-heroku-gem.git'
+
+	gem 'rails_12factor'
 
 	gem 'thin'
 end
@@ -97,3 +99,5 @@ gem 'httparty'
 gem 'protected_attributes'
 
 gem 'dav4rack', github: 'timon/dav4rack'
+
+gem 'rails_serve_static_assets'

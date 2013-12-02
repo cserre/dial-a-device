@@ -1,0 +1,78 @@
+<%= form_for(@device) do |f| %>
+  <% if @device.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@device.errors.count, "error") %> prohibited this device from being saved:</h2>
+
+      <ul>
+      <% @device.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<span id="details" <% if (@simpleselect != nil) then %>style="display: none;"<% end%>>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :connectiontype %><br />
+    <%= f.select :connectiontype, options_for_select([['simulation', "simulation"], ['serial port', 'beaglebone']], @device.connectiontype ) %>
+  </div>
+
+  <div class="field">
+    <%= f.label :portname %><br />
+    <%= f.text_field :portname %>
+  </div>
+
+  <div class="field">
+    <%= f.label :portbaud %><br />
+    <%= f.text_field :portbaud %>
+  </div>
+
+  <div class="field">
+    <%= f.label :devicetype_id %><br />
+    <%= f.select :devicetype_id, options_from_collection_for_select(@devicetypes, "id", "displayname", @device.devicetype_id ) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+</span>
+
+
+<% if (@simpleselect != nil) then %>
+
+<div class="row">
+
+<% @devicetypes.each_with_index do |dt, index| %>
+    
+    
+    <div class="col-sm-6 col-md-4">    
+
+
+        <div class="thumbnail">
+            <%= image_submit_tag "../assets/#{dt.name}.jpg", :style => "width: 240px; height: 140px;", :onclick => "document.getElementById('device_devicetype_id').selectedIndex = #{index};" %>
+            <div class="caption">
+                <h3><%= dt.displayname %></h3>
+
+                <p>Type: <%= dt.name %></p>
+                <p>
+                  <button class = "btn btn-success" onclick="document.getElementById('device_devicetype_id').selectedIndex = <%= index %>; ">Create</button>
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+<% end %>
+
+</div>
+
+<% end %>
+
+
+
+<% end %>

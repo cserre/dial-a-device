@@ -1,0 +1,30 @@
+<h1>Folder Watchers <%= link_to 'New', new_folder_watcher_path, :class => "btn btn-success" %>
+</h1>
+
+<% if @folder_watchers.length > 0 then %>
+
+<table class="table">
+  <tr>
+    <th>Serialnumber</th>
+    <th>last seen</th>
+    <th>Pattern</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @folder_watchers.each do |folder_watcher| %>
+  <tr>
+    <td><%= folder_watcher.serialnumber %></td>
+ 
+
+    <td><%= if (folder_watcher.updated_at) then distance_of_time_in_words_to_now(folder_watcher.updated_at)+" ago" else "never" end %></td>
+
+    <td><%= link_to 'Edit', edit_folder_watcher_path(folder_watcher) %></td>
+    <td><%= link_to 'Destroy', folder_watcher, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<% else %>
+<p>You don't have any Folder Watcher yet.</p>
+<% end %> 
