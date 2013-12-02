@@ -1,12 +1,12 @@
 LsiRailsPrototype::Application.configure do
 
-  config.application_name = "LSI"
+  config.application_name = "dial-a-device"
 
 end
 
 module LsiRailsPrototype
   class Application < Rails::Application
-  	    config.action_mailer.default_url_options = { :host => 'lsi-rails-prototype.herokuapp.com'}
+  	    config.action_mailer.default_url_options = { :host => 'www.dial-a-device.net'}
 
   end
 end
@@ -14,6 +14,6 @@ end
 
 Devise.setup do |config|
 
-  config.mailer_sender = 'mail@lsi-rails-prototype.herokuapp.com'
+  config.mailer_sender = 'mail@dial-a-device.net'
 
 end
