@@ -1,12 +1,12 @@
-<%= javascript_include_tag ("./dial_a_device_node/devices/"+ @device.devicetype.name) %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/devices/"+ @device.devicetype.name) %>
 
-<%= javascript_include_tag ("./dial_a_device_node/devices/"+ @device.devicetype.name + "_UI") %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/devices/"+ @device.devicetype.name + "_UI") %>
 
-<%= javascript_include_tag ("./dial_a_device_node/devices/"+ @device.devicetype.name + "_SIM") %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/devices/"+ @device.devicetype.name + "_SIM") %>
 
-<%= javascript_include_tag ("./dial_a_device_node/webconnection.js") %>
-<%= javascript_include_tag ("./dial_a_device_node/consolelogger.js") %>
-<%= javascript_include_tag ("./dial_a_device_node/systemstatus.js") %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/webconnection.js") %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/consolelogger.js") %>
+<%= javascript_include_tag ("/assets/dial_a_device_node/systemstatus.js") %>
 
 <script type="text/javascript">
 	var devicetype = "<%= @device.devicetype.name %>"
