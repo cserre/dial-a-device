@@ -1,6 +1,6 @@
 
 <h1>
-  <%= @molecule.title %><% if !current_user.nil? then %><% if current_user.moleculeowner_of?(@molecule) then %>&nbsp;<%= link_to("Remove from My Molecules", @molecule, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{@molecule.title}.", :class => "btn btn-sm btn-warning") %><% end %><% end %>
+  <%= @molecule.title %><% if !current_user.nil? then %><% if current_user.moleculeowner_of?(@molecule) then %>&nbsp;<%= link_to("Remove from My Molecules", @molecule, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{@molecule.title}.", :class => "btn btn-sm btn-warning") %>&nbsp;<%= link_to("Assign to Project",assign_molecule_path(@molecule), :method => :get, :title => "Assign #{@molecule.title}.", :class => "btn btn-sm btn-info") %><% end %><% end %>
 </h1>
 
 <textarea id="molfile_<%= @molecule.id %>" name="sample.compound[molfile]" rows="50" cols="300" style="display:none;"><%= @molecule.molfile %></textarea>

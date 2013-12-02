@@ -8,11 +8,11 @@
     <div>
 
 
-	  	<div class="form-inputs">
+      <div class="form-inputs">
 
-		<%= text_field(:user, :username, :autofocus => true, :class => "form-control user_with_autocomplete", "data-autocompleteUrl" => autocomplete_user_name_affiliations_path, "autocomplete" => "off",  :placeholder => "Name or Email") %>
+    <%= text_field(:user, :username, :autofocus => true, :class => "form-control user_with_autocomplete", "data-autocompleteUrl" => autocomplete_user_name_affiliations_path, "autocomplete" => "off",  :placeholder => "Name or Email") %>
 
-		</div>	
+    </div>  
 
 
       <%= hidden_field_tag(:email) %>
@@ -24,18 +24,18 @@
   <div>
 
       <div class="alert alert-info" style="display:none;">
-			<%= content_tag :div, "Affiliation", :id => "info" %>
-		</div>
+      <%= content_tag :div, "Affiliation", :id => "info" %>
+    </div>
 
 
       <div class="alert alert-warning " style="display:none;">
-			
-			<%= content_tag :div, "Invitation email will be sent", :id => "warning" %>
-		</div>
+      
+      <%= content_tag :div, "Invitation email will be sent", :id => "warning" %>
+    </div>
 
-		<div class="alert alert-danger " style="display:none;">
-			<%= content_tag :div, "Unknown name or not an email address", :id => "danger" %>
-		</div>
+    <div class="alert alert-danger " style="display:none;">
+      <%= content_tag :div, "Unknown name or not an email address", :id => "danger" %>
+    </div>
 
   </div>
 
@@ -90,12 +90,12 @@
 
       if (event.target.value.indexOf("@") != -1) {
 
-      	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = ""
-      	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = "none"
-  	  } else {
-  	  	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = "none"
-  	  	event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = ""
-  	  }
+        event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = ""
+        event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = "none"
+      } else {
+        event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[1].style.display = "none"
+        event.target.parentElement.parentElement.parentElement.parentElement.children[1].children[2].style.display = ""
+      }
 
     }
   });
