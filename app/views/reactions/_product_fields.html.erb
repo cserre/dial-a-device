@@ -9,6 +9,11 @@
 
           <%= molecule.hidden_field(:id) %>
           <%= molecule.hidden_field(:smiles) %>
+            <%= molecule.hidden_field(:inchi) %>
+            <%= molecule.hidden_field(:inchikey) %>
+            <%= molecule.hidden_field(:mass) %>
+            <%= molecule.hidden_field(:spin) %>
+            <%= molecule.hidden_field(:charge) %>
 
           <td>
 
@@ -17,6 +22,9 @@
             <canvas id="viewACS_[new_products]" style="width: 100px; height: 100px;" onclick='if (allowcompoundedit) {pick_molecule(this.id);}'>
                            
             </canvas>
+
+            <br>
+            <%= molecule.text_field(:title, :readonly => :true) %>
 
           </td>
 

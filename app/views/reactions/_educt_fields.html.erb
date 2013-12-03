@@ -9,7 +9,11 @@
 
             <%= molecule.hidden_field(:id) %>
             <%= molecule.hidden_field(:smiles) %>
-
+            <%= molecule.hidden_field(:inchi) %>
+            <%= molecule.hidden_field(:inchikey) %>
+            <%= molecule.hidden_field(:mass) %>
+            <%= molecule.hidden_field(:spin) %>
+            <%= molecule.hidden_field(:charge) %>
             
             <td>
               <%= molecule.text_area(:molfile, :class => "input-xlarge molfile_[new_educts]", :style => "display:none;") %>
@@ -18,6 +22,9 @@
                            
               </canvas>
             </td>
+
+            <br>
+            <%= molecule.text_field(:title, :readonly => :true) %>
 
             <td><%= molecule.text_field(:formula, :readonly => :true) %></td>
             <td><%= molecule.text_field(:mass, :readonly => :true) %></td>
