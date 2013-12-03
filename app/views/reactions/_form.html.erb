@@ -118,9 +118,15 @@ function done(cid) {
   } else {target = "products"}
 
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_id").value = resultmolecule.id;
-  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_formula").value = resultmolecule.sumformula;
+
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_formula").value = resultmolecule.formula;
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_smiles").value = resultmolecule.smiles;
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_mass").value = resultmolecule.mass;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_title").value = resultmolecule.title;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_inchi").value = resultmolecule.inchi;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_inchikey").value = resultmolecule.inchikey;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_spin").value = resultmolecule.spin;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_charge").value = resultmolecule.charge;
 
 
   mol.scaleToAverageBondLength(14.4);
