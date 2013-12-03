@@ -132,7 +132,10 @@ function done(cid) {
   mol.scaleToAverageBondLength(14.4);
 
   window["viewACS_"+cid].loadMolecule(mol);
-  
+
+  $('#sketcher').html("");
+
+  sketcher = new ChemDoodle.SketcherCanvas('sketcher', 400, 200, {useServices: false, oneMolecule: true});
 
   $('#moleculemodal').modal('hide');
 
@@ -168,7 +171,9 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
         <table id="educts-table" class="table table-condensed">
           <thead>
+            
             <th>Molecule</th>
+            <th>Title</th>
             <th>Sum formula</th>
             <th>Molecular weight</th>
             <th>Equivalent</th>
@@ -198,6 +203,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
       <table id="products-table" class="table table-condensed">
           <thead>
             <th>Molecule</th>
+            <th>Title</th>
             <th>Sum formula</th>
             <th>Molecular weight</th>            
             <th>mmol</th>

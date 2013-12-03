@@ -1,6 +1,7 @@
 <table id="educts-display-table" class="table table-hover table-striped">
   <thead>
       <th>Molecule</th>
+      <th>Title</th>
       <th>Sum formula</th>
       <th>Molecular weight</th>
       <th>Equivalent</th>
@@ -38,9 +39,9 @@
                 </script>
 
                 <br>
-                <%= sample.molecule.title %>
 
             </td>
+            <td><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %></td>
             <td><%= sample.molecule.formula %></td>
             <td><%= sample.molecule.mass %></td>
             <td><%= sample.equivalent %></td>
