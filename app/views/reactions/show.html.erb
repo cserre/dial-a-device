@@ -1,0 +1,23 @@
+
+<script src="/assets/canvasmol/canvasmol.js" type="text/javascript"></script>
+
+<h1>Viewing <%= @reaction.name %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %></h1>
+<div class="form-horizontal">
+
+
+<br/>
+
+
+<fieldset>
+  <h3>Starting materials</h3>
+  <%= render('educts_display') %>
+</fieldset>
+
+<br/>
+
+<fieldset>
+  <h3>Products</h3>
+  <%= render('products_display') %>
+</fieldset>
+
+</div>

@@ -187,5 +187,18 @@ class User < ActiveRecord::Base
     Project.joins(:project_memberships).joins(:devices).where(["project_memberships.role_id >= ? and device_id = ? and project_memberships.user_id = ?", 88, device.id, id]).exists?
   end
 
+  # Reactions
+
+  def reactions
+    Reaction.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def reactionowner_of?(reaction)
+    Project.joins(:project_memberships).joins(:reactions).where(["project_memberships.role_id >= ? and reaction_id = ? and project_memberships.user_id = ?", 99, reaction.id, id]).exists?
+  end
+
+  def reactionviewer_of?(reaction)
+    Project.joins(:project_memberships).joins(:reactions).where(["project_memberships.role_id >= ? and reaction_id = ? and project_memberships.user_id = ?", 88, reaction.id, id]).exists?
+  end
 
 end

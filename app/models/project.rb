@@ -35,4 +35,8 @@ class Project < ActiveRecord::Base
   has_many :devices,
     through: :project_devices
 
+  has_many :project_reactions
+  has_many :reactions,
+    through: :project_reactions
+
 end

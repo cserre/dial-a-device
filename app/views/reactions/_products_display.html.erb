@@ -1,0 +1,49 @@
+<table id="products-display-table" class="table table-hover table-striped">
+  <thead>
+      <th>Molecule</th>
+      <th>Sum formula</th>
+      <th>Molecular weight</th>
+      <th>mmol</th>
+      <th>Amount</th>
+      <th>Yield</th>
+  </thead>
+  <tbody>
+      <% @reaction.products.each do |sample| %>
+
+          <% uid = Random.new.rand(1..1000000)  %>
+
+          <tr class="fields">
+            <td>
+
+
+                <textarea id="molfile_<%= uid %>" name="sample.molecule[molfile]" rows="50" cols="300" style="display:none;"><%= if (!sample.molecule.nil? && !sample.molecule.molfile.nil?) then sample.molecule.molfile end %>dd</textarea>
+
+                <canvas id="viewACS_<%= uid %>">
+                            
+                </canvas>
+
+                <script type="text/javascript">
+
+                  viewACS_<%= uid %>  = new ChemDoodle.ViewerCanvas('viewACS_<%= uid %>', 100, 100);
+                          molfile = document.getElementById("molfile_<%= uid %>").value;
+
+                          molecule = ChemDoodle.readMOL (molfile);
+                          molecule.scaleToAverageBondLength(14.4);
+                          viewACS_<%= uid %>.emptyMessage = "empty";
+                          viewACS_<%= uid %>.specs.atoms_displayTerminalCarbonLabels_2D = true;
+                          viewACS_<%= uid %>.loadMolecule(molecule);
+                
+
+               </script>
+
+            </td>
+            <td><%= sample.molecule.formula %></td>
+            <td><%= sample.molecule.mass %></td>
+            <td><%= sample.mol %></td>
+            <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
+            <td><%= sample.yield %></td>
+          </tr>
+      <% end %>
+  </tbody>
+</table>
+

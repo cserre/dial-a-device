@@ -1,0 +1,54 @@
+<h1>Reactions <%= link_to 'New', new_reaction_path, :class => 'btn btn-primary', :title => "Add a new Reaction." %></h1>
+
+
+<table class="table table-hover table-striped">
+    
+    <thead>
+        <th>Status</th>
+        <th>Name</th>
+        <th>Products</th>
+        <th colspan="3"></th>
+    </thead>
+    <tbody>
+        <% @reactions.each do |reaction| %>
+
+            <tr>
+                <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
+    
+                <td><%= reaction.name %></td>
+
+                <td>
+
+                    <% reaction.products.each do |product| %>
+      
+
+                        <textarea id="molfile_<%= product.id %>" name="sample.molecule[molfile]" rows="50" cols="300" style="display:none;"><%= product.molecule.molfile %></textarea>
+
+                        <span id="molecule_<%= product.id %>">
+                            <script type="text/javascript">
+
+                          viewACS  = new ChemDoodle.ViewerCanvas('viewACS_<%= product.id %>', 100, 100);
+                          molfile = document.getElementById("molfile_<%= product.id %>").value;
+                          molecule = ChemDoodle.readMOL (molfile);
+                          molecule.scaleToAverageBondLength(14.4);
+                          viewACS.specs.atoms_displayTerminalCarbonLabels_2D = true;
+                          viewACS.loadMolecule(molecule);
+
+                            </script>
+                          </span>
+
+                    <% end %>
+
+                </td>
+
+                <td><%= link_to('<span class="glyphicon glyphicon-eye-open"/>'.html_safe, reaction, :title => "View #{reaction.name}.") %></td>
+
+                <td><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %></td>
+
+                <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction, :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %></td>
+
+            </tr>
+        <% end %>
+
+    </tbody>
+</table>

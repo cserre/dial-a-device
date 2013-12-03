@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131202144130) do
+ActiveRecord::Schema.define(version: 20131203095408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,13 @@ ActiveRecord::Schema.define(version: 20131202144130) do
     t.datetime "updated_at"
   end
 
+  create_table "molecule_samples", force: true do |t|
+    t.integer  "molecule_id"
+    t.integer  "sample_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "molecules", force: true do |t|
     t.string   "smiles"
     t.string   "inchi"
@@ -234,9 +241,43 @@ ActiveRecord::Schema.define(version: 20131202144130) do
     t.datetime "updated_at"
   end
 
+  create_table "project_reactions", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "reaction_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "projects", force: true do |t|
     t.string   "title"
     t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "reactions", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sample_reactions", force: true do |t|
+    t.integer  "reaction_id"
+    t.integer  "sample_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "samples", force: true do |t|
+    t.integer  "molecule_id"
+    t.string   "guid"
+    t.float    "target_amount", default: 0.0
+    t.float    "actual_amount", default: 0.0
+    t.string   "unit"
+    t.boolean  "is_virtual",    default: false
+    t.float    "equivalent",    default: 1.0
+    t.float    "mol"
+    t.float    "yield"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,0 +1,62 @@
+
+
+  <tr class="nested-fields educt-entry">
+        
+
+          <%= f.hidden_field(:is_virtual, :value => true) %>
+      
+          <%= f.fields_for :molecule, (if (f.object.molecule.nil?) then Molecule.new else f.object.molecule end ) do |molecule| %>
+
+            <%= molecule.hidden_field(:id) %>
+            <%= molecule.hidden_field(:smiles) %>
+
+            
+            <td>
+              <%= molecule.text_area(:molfile, :class => "input-xlarge molfile_[new_educts]", :style => "display:none;") %>
+
+              <canvas id="viewACS_[new_educts]" style="width: 100px; height: 100px;" onclick="if (allowcompoundedit) {pick_molecule(this.id);}">
+                           
+              </canvas>
+            </td>
+
+            <td><%= molecule.text_field(:formula, :readonly => :true) %></td>
+            <td><%= molecule.text_field(:mass, :readonly => :true) %></td>
+
+          <% end %>
+
+        <td><%= f.text_field(:equivalent) %></td>
+        <td><%= f.text_field(:mol, :onChange => "javascript: recalculate(this.id);") %></td>
+        <td><div class="form-group form-inline"><%= f.text_field(:target_amount, :style => "width:80px", :onChange => "javascript: recalculate(this.id);") %> <%= f.select :unit, options_for_select([['mg', "mg"]], "mg" ), {}, :style => "width:60px" %></div></td>
+
+        <%# if current_page?(new_reaction_path) || current_page?(edit_reaction_path) %>
+            <td>
+              <%= link_to_remove_association('<span class="glyphicon glyphicon-remove" />'.html_safe, f, :title => "Delete this Molecule.") %>
+            </td>
+        <%# end %>
+      </tr>
+
+ <script type="text/javascript">
+ 
+var uid = "[new_educts]".substr(1, "[new_educts]".length-2);
+
+if (uid == "new_educts") {
+
+  uid = Date.now();
+
+  document.getElementsByClassName("molfile_[new_educts]")[0].className = 'molfile_['+uid+ ']';
+
+  document.getElementById ('viewACS_[new_educts]').id = 'viewACS_['+uid + ']';
+
+}
+
+window["viewACS_"+uid]  = new ChemDoodle.ViewerCanvas('viewACS_['+uid+']', 100, 100);
+molfile = document.getElementsByClassName('molfile_['+uid+']')[0].value;
+molecule = ChemDoodle.readMOL (molfile);
+molecule.scaleToAverageBondLength(14.4);
+window["viewACS_"+uid].emptyMessage = "empty";
+window["viewACS_"+uid].specs.atoms_displayTerminalCarbonLabels_2D = true;
+window["viewACS_"+uid].loadMolecule(molecule);
+
+
+pick_molecule ("viewACS_[" + uid+"]");
+</script>

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  molecule_id: 1
+  sample_id: 1
+
+two:
+  molecule_id: 1
+  sample_id: 1

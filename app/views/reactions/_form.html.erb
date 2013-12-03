@@ -1,0 +1,236 @@
+
+<script type="text/javascript">
+
+var globalcid = "0";
+
+var resultmolecule;
+
+function recalculate (dom_id) {
+
+  var pieces = dom_id.split("_");
+
+  var uid = pieces[3];
+
+  prefix = pieces[0] + pieces[1] + pieces[2];
+
+  suffix = pieces[4];
+
+  if (pieces.length > 5) { suffix += "_"+pieces[5]}
+
+  if (suffix == "mol") {
+
+    // calculate amount
+
+    weight = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_molecule_attributes_mass").value);
+
+    mol = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value);
+
+    newvalue = weight * mol;
+
+    document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_target_amount").value = newvalue.toFixed(2);
+
+  } else {
+
+    // calculate mol
+
+    weight = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_molecule_attributes_mass").value);
+
+    amount = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_target_amount").value);
+
+    newvalue = amount / weight;
+
+    document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value = newvalue.toFixed(2);
+  }
+
+  if (pieces[1] == "educts") {
+  // is this the line with equivalent 1?
+
+  equiv = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value);
+
+}
+
+  updatemol = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value);
+
+  if (equiv == 1 && pieces[1] == "educts") {
+
+      // find all other lines
+
+      ed = document.getElementsByClassName ("educt-entry");
+
+      for (var i = 0; i< ed.length; i++) {
+
+        p = ed[i].getElementsByTagName("input")[0].id.split("_");
+
+        if (p[3] != uid) {
+          // update this row!
+
+          targetequivalent = document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_equivalent").value;
+
+          newmol = targetequivalent * updatemol;
+
+          document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_mol").value = newmol.toFixed(2);
+
+          weight = parseFloat(document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_molecule_attributes_mass").value);
+
+          newamount = weight * newmol;
+
+          document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_target_amount").value = newamount.toFixed(2);
+          
+          // alert (document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_compound_attributes_sumformula").value);
+        }
+
+      }
+
+  }
+
+}
+
+function pick_molecule (cid) {
+
+  globalcid = cid.substr (9, cid.length-1-9);
+
+  $('#moleculemodal').modal({
+    remote: '/molecules/pick',
+    show: true
+  });
+
+  // sketcher.clear();
+
+  // sketcher.loadMolecule(document.getElementsByClassName("molfile_["+globalcid+"]")[0].value);
+
+
+}
+
+function done(cid) {
+
+
+  
+  mol = sketcher.getMolecule();
+
+
+  console.log (resultmolecule);
+
+
+  document.getElementsByClassName("molfile_["+cid+"]")[0].value = ChemDoodle.writeMOL(mol);
+
+  if (document.getElementById("reaction_educts_attributes_"+cid+"_molecule_attributes_id") != null) {
+    target = "educts"
+  } else {target = "products"}
+
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_id").value = resultmolecule.id;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_formula").value = resultmolecule.sumformula;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_smiles").value = resultmolecule.smiles;
+  document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_mass").value = resultmolecule.mass;
+
+
+  mol.scaleToAverageBondLength(14.4);
+
+  window["viewACS_"+cid].loadMolecule(mol);
+  
+
+  $('#moleculemodal').modal('hide');
+
+  
+}
+
+$(document).bind('cocoon:after-insert', function (e, inserted_item) {
+  console.log (inserted_item);
+});
+
+</script>
+
+
+
+<%= form_for(@reaction, :html => {:onkeypress => "return event.keyCode != 13;", :class => "form form-horizontal" }) do |f| %>
+    <fieldset>
+
+      <div class="control-group">
+        <%= f.label(:name, :class => "control-label") %>
+        <div class="controls">
+          <%= f.text_field(:name, :class => "input-xlarge") %>
+        </div>
+      </div>
+
+    </fieldset>
+
+<br/>
+
+
+    <fieldset>
+
+      <h3>Starting materials&nbsp;<%= link_to_add_association("Add", f, :educts, :partial => 'educt_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#educts', :class => "btn btn-primary educts", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
+
+        <table id="educts-table" class="table table-condensed">
+          <thead>
+            <th>Molecule</th>
+            <th>Sum formula</th>
+            <th>Molecular weight</th>
+            <th>Equivalent</th>
+            <th>mmol</th>
+            <th>Amount</th>
+            <th></th>
+          </thead>
+          <tbody id="educts">
+
+              <%= f.fields_for :educts do |educt| %>
+
+                <%= render 'educt_fields', :f => educt %>
+
+              <% end %>
+
+          </tbody>
+        </table>
+
+    </fieldset>
+
+  
+  <br/>
+
+    <fieldset>
+      <h3>Products&nbsp;<%= link_to_add_association("Add", f, :products, :partial => 'product_fields', :force_non_association_create => true,:class => "btn btn-primary products", 'data-association-insertion-node' => '#products', 'data-association-insertion-method' => 'append', :title => "Add a new Molecule to the Reaction.") %></h3>
+
+      <table id="products-table" class="table table-condensed">
+          <thead>
+            <th>Molecule</th>
+            <th>Sum formula</th>
+            <th>Molecular weight</th>            
+            <th>mmol</th>
+            <th>Amount</th>
+            <th>Yield (%)</th>
+            <th></th>
+          </thead>
+          <tbody id="products">
+
+              <%= f.fields_for :products do |product| %>
+
+                <%= render 'product_fields', :f => product %>
+
+              <% end %>
+
+          </tbody>
+        </table>
+    </fieldset>
+
+          <%= f.submit("Save", :class => "btn btn-primary", :title => "Save the changes to this Reaction.") %>
+      <%= link_to("Cancel", reactions_path, :confirm => "Are you sure you want to cancel?  Any changes will be lost.", :class => "btn btn-inverse", :title => "Cancel the changes and return to the Home page.") %>
+   
+<% end %>
+
+
+
+<div id="moleculemodal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h3>Select Molecule</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+      <a href="#" class="btn btn-primary" onclick="done(globalcid); ">Select</a>
+    </div>
+  </div>
+  </div>
+</div>
