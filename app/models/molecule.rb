@@ -4,6 +4,11 @@ class Molecule < ActiveRecord::Base
 
   has_many :datasets
 
+
+  has_many :molecule_samples
+  has_many :samples, :through => :molecule_samples, :dependent => :destroy, inverse_of: :compound
+
+
   # project association
 
   has_many :project_molecules

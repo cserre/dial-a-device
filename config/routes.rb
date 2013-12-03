@@ -1,5 +1,7 @@
 LsiRailsPrototype::Application.routes.draw do
 
+  resources :reactions
+
   resources :locations
 
   resources :devices do
