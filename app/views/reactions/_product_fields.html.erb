@@ -11,7 +11,6 @@
           <%= molecule.hidden_field(:smiles) %>
             <%= molecule.hidden_field(:inchi) %>
             <%= molecule.hidden_field(:inchikey) %>
-            <%= molecule.hidden_field(:mass) %>
             <%= molecule.hidden_field(:spin) %>
             <%= molecule.hidden_field(:charge) %>
 
@@ -23,10 +22,9 @@
                            
             </canvas>
 
-            <br>
-            <%= molecule.text_field(:title, :readonly => :true) %>
-
           </td>
+
+          <td><%= molecule.text_field(:title, :readonly => :true) %></td>
 
             <td><%= molecule.text_field(:formula, :readonly => :true) %></td>
             <td><%= molecule.text_field(:mass, :readonly => :true) %></td>
