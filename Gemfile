@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby "1.9.3" # openbabel ruby bindings are not yet ruby-2-compatible
 
 gem "rails", github: "rails/rails", branch: '4-0-stable'
 
