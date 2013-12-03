@@ -41,7 +41,7 @@ gem 'uglifier'
 # gem 'debugger'
 
 group :production do 
-	# gem 'openbabel-heroku', :git => 'git://github.com/Cominch/openbabel-heroku-gem.git'
+	gem 'openbabel-heroku', :git => 'git://github.com/Cominch/openbabel-heroku-gem.git'
 
 	gem 'rails_12factor'
 
@@ -52,7 +52,7 @@ group :development, :localserver do
 	gem 'openbabel'
 end
 
-# gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
+gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
 
 gem 'jquery-rails'
 
