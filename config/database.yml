@@ -15,7 +15,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: lsi-rails-prototype_development
+  database: dial-a-device_development
   pool: 5
   username: lsirailsprototype
   password: lsirailsprototype
@@ -24,7 +24,7 @@ development:
 localserver:
   adapter: postgresql
   encoding: unicode
-  database: lsi-rails-prototype_development
+  database: dial-a-device_development
   pool: 5
   username: lsirailsprototype
   password: lsirailsprototype
@@ -51,7 +51,7 @@ localserver:
 test:
   adapter: postgresql
   encoding: unicode
-  database: lsi-rails-prototype_test
+  database: dial-a-device_test
   pool: 5
   username: lsirailsprototype
   password: lsirailsprototype
@@ -60,7 +60,7 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  database: lsi-rails-prototype_production
+  database: dial-a-device_production
   pool: 5
   username: lsirailsprototype
   password: lsirailsprototype
