@@ -361,7 +361,7 @@ class MoleculesController < ApplicationController
 
               newcompound = Molecule.new
 
-              newcompound.name = molecule["ROOT:SUBSTANZ"];
+              newcompound.title = molecule["ROOT:SUBSTANZ"];
               newcompound.molfile = molecule["molfile"];
 
               moldetails = ChemRails.getmoldetails(newcompound.molfile)
