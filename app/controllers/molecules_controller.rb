@@ -359,7 +359,7 @@ class MoleculesController < ApplicationController
             if (moleculecounter > 0) then 
               molecules.push (molecule)
 
-              newcompound = Compound.new
+              newcompound = Molecule.new
 
               newcompound.name = molecule["ROOT:SUBSTANZ"];
               newcompound.molfile = molecule["molfile"];
@@ -370,7 +370,7 @@ class MoleculesController < ApplicationController
                 h[k.downcase] = v
               end
 
-              newcompound.assign_attributes(lowercasemoldetails, :without_protection => true)
+              # newcompound.assign_attributes(lowercasemoldetails, :without_protection => true)
 
               newcompound.save
               
