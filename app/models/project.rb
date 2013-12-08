@@ -39,4 +39,8 @@ class Project < ActiveRecord::Base
   has_many :reactions,
     through: :project_reactions
 
+  has_many :project_samples
+  has_many :samples,
+    through: :project_samples
+
 end

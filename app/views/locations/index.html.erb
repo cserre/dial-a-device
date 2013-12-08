@@ -14,7 +14,7 @@
   <tbody>
     <% @locations.each do |location| %>
       <tr>
-        <td><%= location.device_id %></td>
+        <td><%= location.devices.first.name %></td>
         <td><%= location.sample_id %></td>
         <td><%= link_to 'Show', location %></td>
         <td><%= link_to 'Edit', edit_location_path(location) %></td>

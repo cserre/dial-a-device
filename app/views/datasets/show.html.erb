@@ -16,8 +16,6 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<p id="notice"><%= notice %></p>
-
 <h1><%= @dataset.method %><% if !@dataset.title.empty? then %> - <%= @dataset.title %><% end %><% if @changerights then %>&nbsp;<%= link_to 'Edit', edit_dataset_path(@dataset), :class => "btn btn-sm btn-success" %><% end %></h1>
 
 <% if !@dataset.molecule.nil? then %>

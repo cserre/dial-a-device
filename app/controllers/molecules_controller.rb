@@ -34,14 +34,14 @@ class MoleculesController < ApplicationController
     virtualmolecule = Rubabel::Molecule.from_molstring (@mol.molfile)
     
     # assign calculated molecule properties from OpenBabel
-    @mol.smiles = virtualmolecule.to_s.gsub(/\n/, "")
-    @mol.formula = virtualmolecule.formula.to_s.gsub(/\n/, "")
-    @mol.mass = virtualmolecule.exact_mass.round(2).to_s.gsub(/\n/, "")
-    @mol.inchi = virtualmolecule.to_s(:inchi).gsub(/\n/, "")
-    @mol.inchikey = virtualmolecule.to_s(:inchikey).gsub(/\n/, "")
-    @mol.charge = virtualmolecule.charge.round(2).to_s.gsub(/\n/, "")
-    @mol.spin = virtualmolecule.spin.round(2).to_s.gsub(/\n/, "")
-    @mol.title = "new "+virtualmolecule.smiles.to_s.gsub(/\n/, "")
+    @mol.smiles = virtualmolecule.to_s.gsub(/\n/, "").strip
+    @mol.formula = virtualmolecule.formula.to_s.gsub(/\n/, "").strip
+    @mol.mass = virtualmolecule.exact_mass.round(2).to_s.gsub(/\n/, "").strip
+    @mol.inchi = virtualmolecule.to_s(:inchi).gsub(/\n/, "").strip
+    @mol.inchikey = virtualmolecule.to_s(:inchikey).gsub(/\n/, "").strip
+    @mol.charge = virtualmolecule.charge.round(2).to_s.gsub(/\n/, "").strip
+    @mol.spin = virtualmolecule.spin.round(2).to_s.gsub(/\n/, "").strip
+    @mol.title = "new "+virtualmolecule.smiles.to_s.gsub(/\n/, "").strip
 
     existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
     existingmolecule = existingmolecules.first
@@ -126,6 +126,27 @@ class MoleculesController < ApplicationController
     @project = Project.find(params[:project_id])
 
     @molecule.add_to_project(@project.id)
+
+    
+    @molecule.projects.each do |p|
+
+      if current_user.projects.exists?(p) then
+              
+
+          @owndatasets = current_user.datasets.includes(:projects => :project_memberships).where(["molecule_id = ?", @molecule.id])
+
+          @owndatasets.each do |ds|
+
+                ds.add_to_project(p.id)
+          end
+
+          @ownsamples = current_user.samples.includes(:projects => :project_memberships).where(["molecule_id = ?", @molecule.id])
+          @ownsamples.each do |s|
+
+                s.add_to_project(p.id)
+          end
+      end
+    end
 
     redirect_to molecule_path(@molecule), notice: "Molecule was assigned to project."
   end   

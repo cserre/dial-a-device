@@ -28,15 +28,15 @@ class ProjectPolicy < Struct.new(:user, :project)
   end
 
   def edit?
-    user.projectowner_of?(molecule)
+    user.projectowner_of?(project)
   end
 
   def update?
-    user.projectowner_of?(molecule)
+    user.projectowner_of?(project)
   end
 
   def destroy?
-    user.projectowner_of?(molecule)
+    user.projectowner_of?(project)
   end
 
 end
