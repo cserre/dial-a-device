@@ -70,6 +70,9 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'molecules#assign_do'
+
+    get 'import', :on => :collection
+    post 'import', :on => :collection
   end
 
 

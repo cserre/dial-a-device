@@ -307,4 +307,126 @@ class MoleculesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def import  
+    require 'fileutils'
+    @output = "please upload a database"
+
+    if (params[:file_upload]) then
+
+      tmp = params[:file_upload][:my_file].tempfile
+      file = File.join("public", params[:file_upload][:my_file].original_filename)
+
+
+
+      currentdatatype = ""
+      currentdatum = "" 
+
+      molecules = []
+
+      molecule = {}
+
+      moleculecounter = 0;
+
+      molfile = ""
+
+      molfilemode = false
+
+
+      content = File.read(tmp)
+      File.open(tmp).readlines.each do |line|
+
+ 
+        line.encode!(Encoding::UTF_8, "windows-1252", :universal_newline => true)
+  
+
+        skipfirstline = false
+
+
+        if (line.index(" ")) then
+
+          keyword = line[0..line.index(" ")-1]
+          value = line[line.index(" ")+1..-2]
+
+          if (keyword == "$RIREG") then
+
+            if (molfilemode) then
+              molfilemode = false;
+              molecule["molfile"] = molfile;
+            end
+
+            currentmolecule = value
+            if (moleculecounter > 0) then 
+              molecules.push (molecule)
+
+              newcompound = Compound.new
+
+              newcompound.name = molecule["ROOT:SUBSTANZ"];
+              newcompound.molfile = molecule["molfile"];
+
+              moldetails = ChemRails.getmoldetails(newcompound.molfile)
+
+              lowercasemoldetails = moldetails.each_with_object({}) do |(k,v), h|
+                h[k.downcase] = v
+              end
+
+              newcompound.assign_attributes(lowercasemoldetails, :without_protection => true)
+
+              newcompound.save
+              
+              molecule = {}
+            end
+            moleculecounter += 1;
+          end
+
+          if (keyword == "$DTYPE") then
+
+            if (value.start_with?  "ROOT:") then
+              currentdatatype = value[5..value.length]
+            else 
+              currentdatatype = value
+            end
+
+            if (currentdatatype == "CAS_NR") then currentdatatype = "casnr" end
+
+
+            if (molfilemode) then
+              molfilemode = false;
+              molecule["molfile"] = molfile;
+            end
+
+          end
+
+          if (keyword == "$DATUM") then
+            if (molfilemode) then
+              molfilemode = false;
+              molecule["molfile"] = molfile;
+            end
+
+            currentdatum = value
+            if (value == "$MFMT") then
+
+              molfilemode = true
+              molfile = ""
+              line = "\n"
+            else
+              molecule[currentdatatype] = currentdatum;
+            end
+                  
+          end
+
+        end #if line has space
+
+        if (molfilemode && !skipfirstline) then 
+
+          molfile += line
+
+        end
+
+      end # readline
+        @output = molecules;
+
+    end
+  end
+
 end
