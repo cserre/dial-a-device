@@ -15,7 +15,7 @@ class Dataset < ActiveRecord::Base
   	if !molecule.nil? then 
 
       v = ""
-      if (!version.nil? && !version.empty?  && !version == "0") then v = "."+version end
+      if (!version.blank? && !(version == "0")) then v = "."+version end
 
   		if !ENV['DOI_PREFIX'].nil? then
   			ENV['DOI_PREFIX']+"/"+molecule.inchikey+"/"+method+v
@@ -56,6 +56,29 @@ def preview_url
     pm.dataset_id = self.id
     pm.project_id = project_id
     pm.save
+
+  end
+
+  def assign_method_rank
+
+    m = self.method
+
+    r = 0
+
+    if !m.nil? then
+      if m.start_with?('Rf') then r = 10 end
+      if m.start_with?('NMR/1H') then r = 20 end
+      if m.start_with?('NMR/13C') then r = 30 end
+      if m.start_with?('IR') then r = 40 end
+      if m.start_with?('Mass') then r = 50 end
+      if m.start_with?('GCMS') then r = 60 end
+      if m.start_with?('Raman') then r = 65 end
+      if m.start_with?('UV') then r = 70 end
+      if m.start_with?('TLC') then r = 75 end
+      if m.start_with?('Xray') then r = 80 end
+    end
+
+    self.method_rank = r
 
   end
 

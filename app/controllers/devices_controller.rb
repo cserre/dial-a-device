@@ -130,18 +130,10 @@ def assign
 
     authorize @device, :show?
 
-    @locations = Location.where (["device_id = ?", params[:id]])
+    @locations = @device.locations
 
     @locations.each do |location|
-        @runs = Run.where (["location_id = ?", location.id])
-
-        @runs.each do |therun|
-
-          if therun.active
-            @run = therun
-          end
-
-        end
+        
     end
 
     render 'devices/samplelocations', :layout => false

@@ -31,5 +31,20 @@ class Sample < ActiveRecord::Base
     self.molecule = Molecule.new (molecule_attr)
 
   end
+
+   # project association
+
+  has_many :project_samples
+  has_many :projects,
+  through: :project_samples
+
+  def add_to_project (project_id)
+
+    pm = ProjectSample.new
+    pm.sample_id = self.id
+    pm.project_id = project_id
+    pm.save
+
+  end
  
 end

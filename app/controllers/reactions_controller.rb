@@ -66,6 +66,7 @@ class ReactionsController < ApplicationController
         @reaction.samples.each do |s|          
 
           s.molecule.add_to_project(current_user.rootproject_id) 
+          s.add_to_project(current_user.rootproject_id)
         end
 
         @reaction.add_to_project(current_user.rootproject_id)

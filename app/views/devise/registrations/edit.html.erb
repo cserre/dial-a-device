@@ -3,6 +3,8 @@
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: {:class => "form-signin", :style => "max-width:400px; margin-left:auto; margin-right: auto;", :method => :put}) do |f| %>
 
+  <%= devise_error_messages! %>
+
   <h2 class="form-signin-heading">Edit <%= resource_name.to_s.humanize %></h2>
 
   <div class="form-inputs">

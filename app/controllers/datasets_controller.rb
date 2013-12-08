@@ -137,6 +137,18 @@ class DatasetsController < ApplicationController
 
         @dataset.add_to_project(current_user.rootproject_id)
 
+        if !@dataset.molecule.nil? then 
+
+
+          @dataset.molecule.projects.each do |p|
+
+            if current_user.projects.exists?(p) then
+              @dataset.add_to_project(p.id)
+            end
+          end
+
+        end
+
         format.html { redirect_to @dataset, notice: 'Dataset was successfully created.' }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else

@@ -122,6 +122,23 @@ class User < ActiveRecord::Base
     Project.joins(:project_memberships).joins(:molecules).where(["project_memberships.role_id >= ? and molecule_id = ? and project_memberships.user_id = ?", 99, molecule.id, id]).exists?
   end
 
+ # Samples
+
+  has_many :project_samples
+  has_many :samples,
+    through: :project_samples
+
+  def samples
+    Sample.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def sampleviewer_of?(sample)
+    Project.joins(:project_memberships).joins(:samples).where(["project_memberships.role_id >= ? and sample_id = ? and project_memberships.user_id = ?", 88, sample.id, id]).exists?
+  end
+
+  def sampleowner_of?(sample)
+    Project.joins(:project_memberships).joins(:samples).where(["project_memberships.role_id >= ? and sample_id = ? and project_memberships.user_id = ?", 99, sample.id, id]).exists?
+  end
 
   # Datasets
 
