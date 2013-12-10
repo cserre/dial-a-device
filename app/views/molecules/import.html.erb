@@ -1,0 +1,11 @@
+<h1>Import molecules</h1>
+
+<p>ISIS/Base RDF file</p>
+
+<%= form_for :file_upload, :html => {:multipart => true} do |f| %>
+  <%= f.file_field :my_file %>
+  <%= f.submit "Upload" %>
+<% end %>
+
+<%= link_to 'Back', molecules_path %>
+

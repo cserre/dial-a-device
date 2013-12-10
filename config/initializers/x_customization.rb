@@ -2,6 +2,8 @@ LsiRailsPrototype::Application.configure do
 
   config.application_name = "dial-a-device"
 
+  config.datasetroot = "#{Rails.root}/tmp/storage/"
+
 end
 
 module LsiRailsPrototype

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131208182124) do
+ActiveRecord::Schema.define(version: 20131210193518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,13 @@ ActiveRecord::Schema.define(version: 20131208182124) do
     t.datetime "updated_at"
   end
 
+  create_table "commits", force: true do |t|
+    t.integer  "dataset_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "countries", force: true do |t|
     t.string   "title"
     t.datetime "created_at"
@@ -53,6 +60,18 @@ ActiveRecord::Schema.define(version: 20131208182124) do
   create_table "country_organizations", force: true do |t|
     t.integer  "country_id"
     t.integer  "organization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "datasetgroup_datasets", force: true do |t|
+    t.integer  "datasetgroup_id"
+    t.integer  "dataset_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "datasetgroups", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -69,6 +88,7 @@ ActiveRecord::Schema.define(version: 20131208182124) do
     t.integer  "method_rank"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "position"
   end
 
   create_table "department_groups", force: true do |t|
@@ -136,6 +156,20 @@ ActiveRecord::Schema.define(version: 20131208182124) do
 
   create_table "groups", force: true do |t|
     t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "libraries", force: true do |t|
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "library_entries", force: true do |t|
+    t.integer  "library_id"
+    t.integer  "position"
+    t.integer  "molecule_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -222,6 +256,13 @@ ActiveRecord::Schema.define(version: 20131208182124) do
   create_table "project_folder_watchers", force: true do |t|
     t.integer  "project_id"
     t.integer  "folder_watcher_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "project_libraries", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "library_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

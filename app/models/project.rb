@@ -43,4 +43,8 @@ class Project < ActiveRecord::Base
   has_many :samples,
     through: :project_samples
 
+  has_many :project_libraries
+  has_many :libraries,
+    through: :project_libraries
+
 end

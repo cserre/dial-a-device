@@ -218,4 +218,18 @@ class User < ActiveRecord::Base
     Project.joins(:project_memberships).joins(:reactions).where(["project_memberships.role_id >= ? and reaction_id = ? and project_memberships.user_id = ?", 88, reaction.id, id]).exists?
   end
 
+  # Libraries
+
+  def libraries
+    Library.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+  def libraryowner_of?(library)
+    Project.joins(:project_memberships).joins(:libraries).where(["project_memberships.role_id >= ? and library_id = ? and project_memberships.user_id = ?", 99, library.id, id]).exists?
+  end
+
+  def libraryviewer_of?(library)
+    Project.joins(:project_memberships).joins(:libraries).where(["project_memberships.role_id >= ? and library_id = ? and project_memberships.user_id = ?", 88, library.id, id]).exists?
+  end
+
 end

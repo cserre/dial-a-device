@@ -1,3 +1,12 @@
+CarrierWave.configure do |config|
+
+  config.storage = :file
+
+  config.cache_dir = "#{Rails.root}/tmp/upload"
+
+end
+
+
 LsiRailsPrototype::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 

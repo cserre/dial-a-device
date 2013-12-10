@@ -1,0 +1,31 @@
+<h1>Listing library_entries</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Position</th>
+      <th>Molecule</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @library_entries.each do |library_entry| %>
+      <tr>
+        <td><%= library_entry.library_id %></td>
+        <td><%= library_entry.position %></td>
+        <td><%= library_entry.molecule_id %></td>
+        <td><%= link_to 'Show', library_entry %></td>
+        <td><%= link_to 'Edit', edit_library_entry_path(library_entry) %></td>
+        <td><%= link_to 'Destroy', library_entry, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Library entry', new_library_entry_path %>

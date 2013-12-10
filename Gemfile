@@ -101,3 +101,5 @@ gem 'protected_attributes'
 gem 'dav4rack', github: 'timon/dav4rack'
 
 gem 'rails_serve_static_assets'
+
+gem 'acts_as_list'

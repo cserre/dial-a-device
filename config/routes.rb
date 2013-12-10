@@ -1,5 +1,21 @@
 LsiRailsPrototype::Application.routes.draw do
 
+
+  mount DAV4Rack::Handler.new(
+
+      :root => Rails.root.to_s,
+      :root_uri_path => '/',
+      :resource_class => VirtualDataset
+
+    ), :at => '/', :constraints => {:subdomain => "webdav"}
+
+
+  resources :libraries do
+    resources :library_entries do
+      post 'sort', on: :collection
+    end
+  end
+
   resources :reactions
 
   resources :locations
@@ -31,6 +47,8 @@ LsiRailsPrototype::Application.routes.draw do
 
   resources :datasets do
 
+    get 'fork', on: :member
+    post 'commit', on: :member
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
   
@@ -47,13 +65,6 @@ LsiRailsPrototype::Application.routes.draw do
 
   end
 
-  mount DAV4Rack::Handler.new(
-
-      :root => Rails.root.to_s,
-      :root_url_path => '/webdav',
-      :resource_class => ::DAV4Rack::FileResource
-
-    ), :at => '/', :constraints => {:subdomain => "webdav"}
 
   resources :affiliations do
     get :autocomplete_user_name, :on => :collection
@@ -70,6 +81,9 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'molecules#assign_do'
+
+    get 'import', :on => :collection
+    post 'import', :on => :collection
   end
 
 

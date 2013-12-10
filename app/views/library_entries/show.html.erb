@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Library:</strong>
+  <%= @library_entry.library_id %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @library_entry.position %>
+</p>
+
+<p>
+  <strong>Molecule:</strong>
+  <%= @library_entry.molecule_id %>
+</p>
+
+<%= link_to 'Edit', edit_library_entry_path(@library_entry) %> |
+<%= link_to 'Back', library_entries_path %>
