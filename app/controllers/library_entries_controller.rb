@@ -6,6 +6,7 @@ class LibraryEntriesController < ApplicationController
     params[:library_entry].each_with_index do |id, index|
       LibraryEntry.update_all({position: index+1}, {id: id})
     end
+    
     render nothing: true
   end
 

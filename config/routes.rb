@@ -1,5 +1,15 @@
 LsiRailsPrototype::Application.routes.draw do
 
+
+  mount DAV4Rack::Handler.new(
+
+      :root => Rails.root.to_s,
+      :root_uri_path => '/',
+      :resource_class => VirtualDataset
+
+    ), :at => '/', :constraints => {:subdomain => "webdav"}
+
+
   resources :libraries do
     resources :library_entries do
       post 'sort', on: :collection
@@ -55,13 +65,6 @@ LsiRailsPrototype::Application.routes.draw do
 
   end
 
-  mount DAV4Rack::Handler.new(
-
-      :root => Rails.root.to_s,
-      :root_url_path => '/webdav',
-      :resource_class => ::DAV4Rack::FileResource
-
-    ), :at => '/', :constraints => {:subdomain => "webdav"}
 
   resources :affiliations do
     get :autocomplete_user_name, :on => :collection

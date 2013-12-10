@@ -11,6 +11,8 @@ class Dataset < ActiveRecord::Base
   has_many :datasetgroups,
     through: :datasetgroup_datasets
 
+  has_many :commits
+
   # acts_as_list scope: :datasetgroup_dataset
 
   def oai_dc_identifier
