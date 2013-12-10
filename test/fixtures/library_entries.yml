@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  library_id: 1
+  position: 1
+  molecule_id: 1
+
+two:
+  library_id: 1
+  position: 1
+  molecule_id: 1

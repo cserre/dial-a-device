@@ -1,3 +1,28 @@
+<% if @dataset.datasetgroups.first.datasets.length > 1 then %>
+
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+ <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          <div class="well">
+            <h4>Version History</h4>
+                <% @dataset.datasetgroups.first.datasets.each do |ds| %>
+                    <% if ds.id == @dataset.id then %><b><% end %>
+                    <%= link_to ds.created_at, ds %><br>
+                    <% if ds.id == @dataset.id then %></b><% end %>
+                <% end %>
+          </div>
+        </div>
+  
+<% end %>
+
+
+
+<% end %>
+
+
 <link rel="stylesheet" href="/css/jquery.fileupload.css">
 <link rel="stylesheet" href="/css/jquery.fileupload-ui.css">
 
@@ -16,7 +41,21 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<h1><%= @dataset.method %><% if !@dataset.title.empty? then %> - <%= @dataset.title %><% end %><% if @changerights then %>&nbsp;<%= link_to 'Edit', edit_dataset_path(@dataset), :class => "btn btn-sm btn-success" %><% end %></h1>
+<h1><%= @dataset.method %><% if !@dataset.title.empty? then %> - <%= @dataset.title %><% end %><% if @changerights then %>&nbsp;
+
+    <%= link_to 'Edit metadata', edit_dataset_path(@dataset), :class => "btn btn-sm btn-success" %>
+
+    <% end %>
+
+    <% if Commit.exists?(["dataset_id = ?", @dataset.id]) then %>
+
+    <%= link_to "Fork", fork_dataset_url(@dataset), :class => "btn btn-sm btn-warning" %>
+    <% else %>
+    <%= link_to "Commit", commit_dataset_url(@dataset), :method => :post,  :class => "btn btn-sm btn-warning" %>
+    <% end %>
+
+    </h1>
+
 
 <% if !@dataset.molecule.nil? then %>
 <h4><b>Associated Molecule:</b>&nbsp;<%= link_to @dataset.molecule do %><%= @dataset.molecule.title %><% end %></h2>

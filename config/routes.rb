@@ -1,5 +1,11 @@
 LsiRailsPrototype::Application.routes.draw do
 
+  resources :libraries do
+    resources :library_entries do
+      post 'sort', on: :collection
+    end
+  end
+
   resources :reactions
 
   resources :locations
@@ -31,6 +37,8 @@ LsiRailsPrototype::Application.routes.draw do
 
   resources :datasets do
 
+    get 'fork', on: :member
+    post 'commit', on: :member
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
   

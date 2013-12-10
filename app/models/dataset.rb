@@ -7,6 +7,12 @@ class Dataset < ActiveRecord::Base
 
   has_one :measurement, :dependent => :destroy
 
+  has_many :datasetgroup_datasets
+  has_many :datasetgroups,
+    through: :datasetgroup_datasets
+
+  # acts_as_list scope: :datasetgroup_dataset
+
   def oai_dc_identifier
   	"http://dx.doi.org/"+doi_identifier
   end

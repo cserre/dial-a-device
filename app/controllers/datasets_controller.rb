@@ -89,10 +89,12 @@ class DatasetsController < ApplicationController
 
     if !current_user.nil? && current_user.datasetowner_of?(@dataset) then @changerights = true end
 
+    if Commit.exists?(["dataset_id = ?", @dataset.id]) then @changerights = false end
+
     @attachment = Attachment.new(:dataset => @dataset)
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render action: "show", notice: 'Dataset is in change mode. Commit your changes after you\'re done.' unless !Commit.exists?(["dataset_id = ?", @dataset.id]) }
       format.json { render json: @dataset }
     end
   end
@@ -115,6 +117,27 @@ class DatasetsController < ApplicationController
     @dataset = Dataset.find(params[:id])
 
     authorize @dataset
+  end
+
+  def commit
+    @dataset = Dataset.find(params[:id])
+
+    authorize @dataset, :edit?
+
+    c = Commit.new
+    c.dataset_id = @dataset.id
+    c.user_id = current_user.id
+
+    respond_to do |format|
+      if c.save
+        format.html { redirect_to @dataset, notice: 'Dataset was successfully committed.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "show" }
+        format.json { render json: @dataset.errors, status: :unprocessable_entity }
+      end
+    end
+
   end
 
   # POST /datasets
@@ -149,10 +172,105 @@ class DatasetsController < ApplicationController
 
         end
 
+        dsg = Datasetgroup.new
+        dsg.save
+        dsg.datasets << @dataset
+
         format.html { redirect_to @dataset, notice: 'Dataset was successfully created.' }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }
+        format.json { render json: @dataset.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def copy_between_clouds(obj, src, dest)
+    tmp = File.new("/tmp/tmp", "wb")
+    begin
+      filename = src.file.url
+      File.open(tmp, "wb") do |file|
+        file << open(filename).read
+      end
+      t = File.new(tmp)
+      sf = CarrierWave::SanitizedFile.new(t)
+      dest.file.store(sf)
+    ensure
+      File.delete(tmp)
+    end
+  end
+
+  # POST /datasets
+  # POST /datasets.json
+  def fork
+
+    @olddataset = Dataset.find(params[:id])
+
+    authorize @olddataset, :show?
+
+    @dataset = @olddataset.dup
+
+    
+
+#    if !@dataset.molecule.nil? then 
+
+ #     assign_version_to_dataset @dataset, @dataset.molecule
+
+  #  end
+
+    respond_to do |format|
+
+      if @dataset.save
+
+        @dataset.add_to_project(current_user.rootproject_id)
+
+        if !@dataset.molecule.nil? then 
+
+
+          @dataset.molecule.projects.each do |p|
+
+            if current_user.projects.exists?(p) then
+              @dataset.add_to_project(p.id)
+            end
+          end
+
+        end
+
+        @olddataset.attachments.each do |a|
+
+          newattachment = Attachment.new(:dataset => @dataset)
+
+          if Rails.env.localserver? then 
+
+            old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
+            puts old_path
+
+
+            newattachment.file = File.new(old_path)
+
+            new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
+            puts new_path
+
+            FileUtils.mkdir_p(File.dirname(new_path))
+            FileUtils.cp(old_path, new_path)
+
+          else
+            newattachment.remote_file_url = a.file_url
+          end
+
+          newattachment.save
+
+          @dataset.attachments << newattachment
+
+        end
+
+        dsg = @olddataset.datasetgroups.first
+        dsg.datasets << @dataset
+
+        format.html { redirect_to @dataset, notice: 'Dataset was successfully forked.' }
+        format.json { render json: @dataset, status: :created, location: @dataset }
+      else
+        format.html { redirect_to @olddataset, notice: 'Dataset could not be forked.' }
         format.json { render json: @dataset.errors, status: :unprocessable_entity }
       end
     end

@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @library.title %>
+</p>
+
+
+<ul id="library_entries" data-update-url="<%= sort_library_library_entries_url(:library_id => @library.id) %>">
+<% @library_entries.each do |le| %>
+  <%= content_tag_for :li, le do %>
+    <span class="handle">[drag]</span>
+    <%= library_library_entry_url(@library, le) %>
+  <% end %>
+<% end %>
+</ul>
+
+
+<%= link_to 'Edit', edit_library_path(@library) %> |
+<%= link_to 'Back', libraries_path %>
