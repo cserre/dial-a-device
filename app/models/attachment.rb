@@ -29,4 +29,11 @@ class Attachment < ActiveRecord::Base
     "deleteType" => "DELETE" 
    }
   end
+
+  after_save :trigger_detect
+  def trigger_detect
+    dataset.detect_parameters
+  end
+
+
 end

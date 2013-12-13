@@ -1,6 +1,6 @@
 class DatasetsController < ApplicationController
 
-  before_filter :authenticate_user!, except: [:show, :filter]
+  before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
 
   # GET /datasets
   # GET /datasets.json
@@ -49,11 +49,20 @@ class DatasetsController < ApplicationController
 
     if (!@dataset.nil? && !fw.nil?) then 
 
-      measurement = Measurement.new
-      measurement.device_id = fw.device_id
-      measurement.recorded_at = @dataset.created_at
-      measurement.dataset_id = @dataset.id
-      measurement.save
+      if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then 
+
+        c = Commit.new
+        c.dataset_id = @dataset.id
+        #c.user_id = current_user.id
+        c.save
+
+        measurement = Measurement.new
+        measurement.device_id = fw.device_id
+        measurement.recorded_at = @dataset.created_at
+        measurement.dataset_id = @dataset.id
+        measurement.save
+
+      end
 
     end
 
@@ -134,6 +143,56 @@ class DatasetsController < ApplicationController
         format.json { head :no_content }
       else
         format.html { render action: "show" }
+        format.json { render json: @dataset.errors, status: :unprocessable_entity }
+      end
+    end
+
+  end
+
+  def create_direct
+    @dataset = Dataset.new
+
+    authorize @dataset, :create?
+
+    @dataset.molecule_id = params[:molecule_id]
+    @dataset.title = "no title"
+    @dataset.method = "no method"
+    @dataset.description = ""
+    @dataset.details = ""
+
+    if !@dataset.molecule.nil? then 
+
+      assign_version_to_dataset @dataset, @dataset.molecule
+
+    end
+
+    assign_method_rank @dataset
+
+    respond_to do |format|
+      if @dataset.save
+
+        @dataset.add_to_project(current_user.rootproject_id)
+
+        if !@dataset.molecule.nil? then 
+
+
+          @dataset.molecule.projects.each do |p|
+
+            if current_user.projects.exists?(p) then
+              @dataset.add_to_project(p.id)
+            end
+          end
+
+        end
+
+        dsg = Datasetgroup.new
+        dsg.save
+        dsg.datasets << @dataset
+
+        format.html { redirect_to @dataset, notice: 'Dataset was successfully created.' }
+        format.json { render json: @dataset, status: :created, location: @dataset }
+      else
+        format.html { render action: "new" }
         format.json { render json: @dataset.errors, status: :unprocessable_entity }
       end
     end
