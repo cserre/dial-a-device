@@ -61,6 +61,8 @@ LsiRailsPrototype::Application.routes.draw do
     get 'find', :on => :collection
     get 'finalize', :on => :collection
 
+    get 'createdirect', :on => :collection, as: :create_direct, :to => "datasets#create_direct"
+
     get ':filename.:extension', :to => 'attachments#serve'
 
   end

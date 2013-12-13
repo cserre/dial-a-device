@@ -34,7 +34,7 @@ class AttachmentsController < ApplicationController
   def serve
     @dataset = Dataset.find(params[:dataset_id])
 
-    if params[:extension].empty? then
+    if params[:extension].blank? then
       fn = params[:filename]
     else
       fn = params[:filename]+"."+params[:extension]

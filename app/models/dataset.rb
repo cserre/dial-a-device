@@ -1,4 +1,7 @@
 class Dataset < ActiveRecord::Base
+
+  include ActionView::Helpers::NumberHelper
+
   attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id
 
   has_many :attachments, :dependent => :destroy
@@ -87,6 +90,60 @@ def preview_url
     end
 
     self.method_rank = r
+
+  end
+
+  # analysis methods
+
+  def detect_parameters
+
+    attachments.each do |a|
+      if a.folder == "pdata/1/" && a.read_attribute(:file) == "proc" then
+
+        scanfreq = "0"
+        a.file.read.each_line do |line|
+          key, value = line.split("=")
+
+          if !(key.nil?) && !(value.nil?) then
+
+            if "\#\#\$TI".start_with?(key.to_s) then
+              t = value.to_s.strip.delete("<>")
+              if !(t.blank?) then 
+                self.update_attribute(:title, t)
+              end
+            end
+
+            if "\#\#\$SF".start_with?(key.to_s) then
+              scanfreq = number_with_precision(value.to_s.strip.delete("<>").to_f, :precision => 0)
+            end
+
+            if "\#\#\$SREGLST".start_with?(key.to_s) then
+              t = value.to_s.strip.delete("<>")
+
+              nucleus, solvent = t.split(".")
+
+              m = "NMR/" + nucleus + "/" + solvent + "/" + scanfreq
+              self.update_attribute(:method, m)
+            end
+
+          end
+        end
+      end
+
+      if a.folder == "pdata/1/" && a.read_attribute(:file) == "title" then
+
+        puts "title file"
+
+        content = a.file.read
+          t = content.squish
+          puts t
+          if !(t.blank?) then 
+            self.update_attribute(:title, t)
+          end
+    
+      end
+
+    end
 
   end
 

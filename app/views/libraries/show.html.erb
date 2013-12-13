@@ -10,7 +10,8 @@
 <% @library_entries.each do |le| %>
   <%= content_tag_for :li, le do %>
     <span class="handle">[drag]</span>
-    <%= library_library_entry_url(@library, le) %>
+    <% if le.molecule_id.nil? then link = "#" else link = Molecule.find(le.molecule_id) end %>
+    <%= library_library_entry_url(@library,link) %>
   <% end %>
 <% end %>
 </ul>
