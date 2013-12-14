@@ -63,7 +63,10 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 <% end %>
 
+<% if !@dataset.description.blank? then %>
 <p><b>Description:</b>&nbsp;<%= @dataset.description.html_safe %></p>
+<% end %>
+
 <% if !@dataset.details.blank? then %>
 <p><b>Details:</b>&nbsp;<%= @dataset.details.html_safe %></p>
 <% end %>
