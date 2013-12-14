@@ -8,7 +8,7 @@
     <% @measurements.order("recorded_at DESC").each do |m| %>
 
     <h4><%= link_to m.dataset do %><%= m.dataset.method %><% if !m.dataset.title.empty? then %> - <%= m.dataset.title %><% end %><% end %></h4>
-    <p>Created at: <%= m.dataset.recorded_at %></p>
+    <p>Created at: <%= m.recorded_at %></p>
 
     <% end %>
 
