@@ -58,6 +58,17 @@ dial-a-device
 
 		. ~/.bash_profile
 		
+## deploy on your local server
+
+* Customize parameters
+	
+	in config/initializers/x-customization.rb --> host name etc.
+	in config/environments/localserver.rb --> mail server
+
+* Create the background service
+
+	rvmsudo foreman export upstart /etc/init -f Procfile.localserver -a dial-a-devie -u yourusername
+		
 ## deploy on heroku
 
 * create an account on heroku and install toolbelt
