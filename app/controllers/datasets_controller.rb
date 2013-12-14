@@ -26,6 +26,10 @@ class DatasetsController < ApplicationController
 
       @dataset.save
 
+      dsg = Datasetgroup.new
+      dsg.save
+      dsg.datasets << @dataset
+
       fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
 
       fw.projects.each do |p|
