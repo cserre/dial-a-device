@@ -298,8 +298,14 @@ class MoleculesController < ApplicationController
     @molecule = Molecule.find(params[:id])
     authorize @molecule
 
-    @molecule.projects.delete (Project.find(current_user.rootproject_id))
+    current_user.projects.each do |p|
 
+      @molecule.projects.delete (p)
+    end
+
+    if @molecule.projects.length == 0 then
+      @molecule.destroy
+    end
     
 
     respond_to do |format|

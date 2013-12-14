@@ -44,6 +44,7 @@ $(document).ajaxSend(function(e, xhr, options) {
 <h1><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %><% if @changerights then %>&nbsp;
 
     <%= link_to 'Edit metadata', edit_dataset_path(@dataset), :class => "btn btn-sm btn-success" %>
+    &nbsp;<%= link_to("Delete", @dataset, :method => :delete, :confirm => "Are you sure?", :title => "Delete Dataset.", :class => "btn btn-sm btn-warning") %>
 
     <% end %>
 
