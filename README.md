@@ -62,12 +62,17 @@ dial-a-device
 
 * Customize parameters
 	
-	in config/initializers/x-customization.rb --> host name etc.
-	in config/environments/localserver.rb --> mail server
+	host name etc. in
+		
+		config/initializers/x-customization.rb
+
+	mail server in
+		
+		config/environments/localserver.rb
 
 * Create the background service
 
-	rvmsudo foreman export upstart /etc/init -f Procfile.localserver -a dial-a-devie -u yourusername
+		rvmsudo foreman export upstart /etc/init -f Procfile.localserver -a dial-a-devie -u yourusername
 		
 ## deploy on heroku
 
@@ -77,47 +82,47 @@ dial-a-device
 
 * create your app on heroku
 
-	heroku create yourappname
+		heroku create yourappname
 
-	heroku labs:enable user-env-compile
+		heroku labs:enable user-env-compile
 
-	heroku config:set BUNDLE_WITHOUT="development:test:localserver"
+		heroku config:set BUNDLE_WITHOUT="development:test:localserver"
 
-	heroku labs:enable websockets 
+		heroku labs:enable websockets 
 
-	heroku addons:add sendgrid
+		heroku addons:add sendgrid
 
-	heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
+		heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi
 
-	heroku config:add LD_LIBRARY_PATH=/app/vendor/openbabel/lib
+		heroku config:add LD_LIBRARY_PATH=/app/vendor/openbabel/lib
 
-	git push heroku master
+		git push heroku master
 
-	heroku run rake db:migrate
+		heroku run rake db:migrate
 
-	heroku run rake db:seed
+		heroku run rake db:seed
 
 ## access legacy devices via vnc
 
 * set up websockify gateway
 	
-	git clone https://github.com/hsanjuan/websockify
+		git clone https://github.com/hsanjuan/websockify
 
 * fill up target list
 
-	cd websockify
+		cd websockify
 
-	nano targets
+		nano targets
 
-	ipadress:port:token
+		ipadress:port:token
 
 * add to crontab
 	
-	crontab -e
+		crontab -e
 
-	append this line:
+		append this line:
 	
-	@reboot cd /home/username/websockify && ./websockify :8091 --target-list ./targets
+		@reboot cd /home/username/websockify && ./websockify :8091 --target-list ./targets
 
 ## License
 
