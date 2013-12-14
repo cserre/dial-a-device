@@ -5,9 +5,10 @@
 
     <h2>Recently measured:</h2>
 
-    <% @measurements.uniq.each do |m| %>
+    <% @measurements.sort("recorded_at DESC").each do |m| %>
 
     <h4><%= link_to m.dataset do %><%= m.dataset.method %><% if !m.dataset.title.empty? then %> - <%= m.dataset.title %><% end %><% end %></h4>
+    <p>Created at: <%= m.dataset.recorded_at %></p>
 
     <% end %>
 
