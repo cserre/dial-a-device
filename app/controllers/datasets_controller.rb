@@ -21,8 +21,8 @@ class DatasetsController < ApplicationController
       @dataset = Dataset.new
       @dataset.uniqueid = params[:uniqueid]
 
-      @dataset.title = params[:title]
-      @dataset.method = params[:method]
+      @dataset.title = URI.unescape(params[:title])
+      @dataset.method = URI.unescape(params[:method])
 
       @dataset.save
 
