@@ -143,6 +143,36 @@ def preview_url
     
       end
 
+      ## detect Agilent GCMS
+
+      if a.folder == "" && a.read_attribute(:file) == "DATA.MS" then
+
+        # self.update_attribute(:title, t)
+    
+      end
+
+
+      ## detect Agilent HPLC
+
+      if a.folder == "" && (a.read_attribute(:file).downcase == "report.txt") then
+
+        a.file.read.each_line do |line|
+
+          if (line.start_with?("Sample Name")) then
+            k, v = line.split(":")
+            
+            t = v.squish
+
+            if !(t.blank?) then 
+              if !(t.start_with?("Blank")) then
+                self.update_attribute(:title, t)
+              end
+            end
+          end
+    
+        end
+      end
+
     end
 
   end
