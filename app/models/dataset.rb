@@ -147,7 +147,34 @@ def preview_url
 
       if a.folder == "" && a.read_attribute(:file) == "runstart.txt" then
 
-        # self.update_attribute(:title, t)
+        a.file.read.each_line do |line|
+
+          if (line.start_with?("Sample Name")) then
+            k, v = line.split("=")
+            
+            t = v.squish
+
+            if !(t.blank?) then 
+              if !(t.start_with?("Blank")) then
+                self.update_attribute(:title, t)
+              end
+            end
+          end
+
+          if (line.start_with?("Methfile")) then
+            k, v = line.split("=")
+            
+            t = v.squish
+            t = t[0..-3]
+
+            if !(t.blank?) then 
+              if !(t.start_with?("Blank")) then
+                self.update_attribute(:method, "GCMS/"+t)
+              end
+            end
+          end
+    
+        end
     
       end
 
