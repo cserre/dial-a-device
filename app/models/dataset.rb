@@ -149,7 +149,7 @@ def preview_url
 
         a.file.read.each_line do |line|
 
-          if (line.start_with?("Sample Name")) then
+          if (line.squish.start_with?("Sample Name")) then
             k, v = line.split("=")
             
             t = v.squish
@@ -161,7 +161,7 @@ def preview_url
             end
           end
 
-          if (line.start_with?("Methfile")) then
+          if (line.squish.start_with?("Methfile")) then
             k, v = line.split("=")
             
             t = v.squish
@@ -185,7 +185,7 @@ def preview_url
 
         a.file.read.each_line do |line|
 
-          if (line.start_with?("Sample Name")) then
+          if (line.squish.start_with?("Sample Name")) then
             k, v = line.split(":")
             
             t = v.squish
