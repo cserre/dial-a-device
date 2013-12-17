@@ -145,7 +145,7 @@ def preview_url
 
       ## detect Agilent GCMS
 
-      if a.folder == "" && a.read_attribute(:file) == "DATA.MS" then
+      if a.folder == "" && a.read_attribute(:file) == "runstart.txt" then
 
         # self.update_attribute(:title, t)
     
