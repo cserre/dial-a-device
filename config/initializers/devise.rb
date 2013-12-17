@@ -1,6 +1,19 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
+  # ==> LDAP Configuration 
+  # config.ldap_logger = true
+  config.ldap_create_user = true
+  config.ldap_update_password = false
+  # config.ldap_config = "#{Rails.root}/config/ldap.yml"
+  # config.ldap_check_group_membership = false
+  # config.ldap_check_attributes = false
+  # config.ldap_use_admin_to_bind = false
+  # config.ldap_ad_group_check = false
+
+  config.ldap_auth_username_builder = Proc.new() { |attribute, login, ldap| "#{attribute}=#{login.split("@").first},#{ldap.base}"}
+
+  
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
@@ -162,7 +175,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :validatable
   # Range for password length. Default is 8..128.
-  config.password_length = 8..128
+  config.password_length = 1..128
 
   # Email regex used to validate email formats. It simply asserts that
   # one (and only one) @ exists in the given string. This is mainly

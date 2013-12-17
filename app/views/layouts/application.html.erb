@@ -117,7 +117,7 @@
 			<span class="navbar-form navbar-right">
 
             <% if user_signed_in? %>
-              <div class="form-group"> <%= link_to edit_user_registration_path  do %><button class="btn btn-success btn-sm"><%= current_user.firstname %> <%= current_user.lastname %></button><% end %>
+              <div class="form-group"> <%= link_to edit_user_registration_path  do %><button class="btn btn-success btn-sm"><% if current_user.firstname.blank? then %><%= current_user.email %><% else %><%= current_user.firstname %> <%= current_user.lastname %><% end %></button><% end %>
 
               <%= link_to(destroy_user_session_path, :method => :delete ) do %>
                       <button class="btn btn-danger btn-sm">Sign out</button><%end%>
@@ -127,7 +127,9 @@
               <div class="form-group">
                       <%= link_to(new_user_session_path, :id => "login") do %><button class="btn-sm btn btn-info">Sign in</button><%end%>
               
+                <% if !(LsiRailsPrototype::Application.config.useldap == true) then %>
                       <%= link_to(new_user_registration_path, :id => "create") do %><button class="btn btn-warning btn-sm">Create account</button><%end%>
+                <% end %>
               </div>
             <% end %>
 

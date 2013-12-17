@@ -17,6 +17,7 @@ CarrierWave.configure do |config|
 end
 
 LsiRailsPrototype::Application.configure do
+  config.useldap = false
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests

@@ -68,6 +68,8 @@ gem 'devise'
 
 gem 'devise_invitable'
 
+gem 'devise_ldap_authenticatable'
+
 gem 'cocoon'
 
 gem 'actionmailer'
