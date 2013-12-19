@@ -2,7 +2,7 @@ class Dataset < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id
+  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at
 
   has_many :attachments, :dependent => :destroy
 
@@ -100,6 +100,8 @@ def preview_url
     attachments.each do |a|
       if a.folder == "pdata/1/" && a.read_attribute(:file) == "proc" then
 
+        self.update_attribute(:recorded_at, a.filecreation)
+
         scanfreq = "0"
         a.file.read.each_line do |line|
           key, value = line.split("=")
@@ -132,7 +134,7 @@ def preview_url
 
       if a.folder == "pdata/1/" && a.read_attribute(:file) == "title" then
 
-        puts "title file"
+        self.update_attribute(:recorded_at, a.filecreation)
 
         content = a.file.read
           t = content.squish
@@ -146,6 +148,8 @@ def preview_url
       ## detect Agilent GCMS
 
       if a.folder == "" && a.read_attribute(:file) == "runstart.txt" then
+
+        self.update_attribute(:recorded_at, a.filecreation)
 
         a.file.read.each_line do |line|
 
@@ -181,7 +185,15 @@ def preview_url
 
       ## detect Agilent HPLC
 
+      if a.folder == "" && (a.read_attribute(:file).downcase == "data.ms") then
+
+        self.update_attribute(:recorded_at, a.filecreation)
+
+      end
+
       if a.folder == "" && (a.read_attribute(:file).downcase == "report.txt") then
+
+        self.update_attribute(:recorded_at, a.filecreation)
 
         a.file.read.each_line do |line|
 
