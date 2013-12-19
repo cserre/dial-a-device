@@ -2,7 +2,7 @@ class Attachment < ActiveRecord::Base
 
   include Rails.application.routes.url_helpers
 
-  attr_accessible :dataset_id, :file, :folder, :dataset_attributes, :dataset, :attachment_url, :file_attributes, :filecreation
+  attr_accessible :dataset_id, :file, :folder, :dataset_attributes, :dataset, :attachment_url, :file_attributes, :filecreation, :filechange
   
   mount_uploader :file, AttachmentUploader
 
