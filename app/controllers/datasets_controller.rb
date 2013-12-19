@@ -63,7 +63,17 @@ class DatasetsController < ApplicationController
         measurement = Measurement.new
         measurement.device_id = fw.device_id
 
-        measurement.recorded_at = @dataset.attachments.last.filecreation unless @dataset.attachments.last.nil?
+        if !(@dataset.attachments.last.nil?) then
+
+          cd = @dataset.attachments.last.filecreation
+
+          if @dataset.attachments.last.filechange < cd then 
+            cd = @dataset.attachments.last.filechange
+          end
+
+          measurement.recorded_at = cd
+
+        end
         
         measurement.dataset_id = @dataset.id
         measurement.save
