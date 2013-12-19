@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20131214163104) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "filecreation"
+    t.datetime "filechange"
   end
 
   create_table "beaglebones", force: true do |t|

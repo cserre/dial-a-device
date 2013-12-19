@@ -50,8 +50,11 @@
 
   <div class="form-actions">
     <%= f.button :submit, :class => "btn btn-sm btn-success" %>
-    <%= link_to 'Back', @molecule, :class => "btn btn-sm btn-default" %>
-
+    <% if params[:molecule_id].nil? then %>
+    <%= link_to 'Back', datasets_path, :class => "btn btn-sm btn-default" %>
+    <% else %>
+    <%= link_to 'Back', Molecule.find(params[:molecule_id]), :class => "btn btn-sm btn-default" %>
+    <% end %>
   </div>
 <% end %>
 
