@@ -100,7 +100,7 @@ def preview_url
     attachments.each do |a|
       if a.folder == "pdata/1/" && a.read_attribute(:file) == "proc" then
 
-        self.update_attribute(:recorded_at, a.filecreation)
+        self.update_attribute(:recorded_at, a.filechange)
 
         scanfreq = "0"
         a.file.read.each_line do |line|
@@ -134,7 +134,7 @@ def preview_url
 
       if a.folder == "pdata/1/" && a.read_attribute(:file) == "title" then
 
-        self.update_attribute(:recorded_at, a.filecreation)
+        self.update_attribute(:recorded_at, a.filechange)
 
         content = a.file.read
           t = content.squish
@@ -149,7 +149,7 @@ def preview_url
 
       if a.folder == "" && a.read_attribute(:file) == "runstart.txt" then
 
-        self.update_attribute(:recorded_at, a.filecreation)
+        self.update_attribute(:recorded_at, a.filechange)
 
         a.file.read.each_line do |line|
 
@@ -187,13 +187,13 @@ def preview_url
 
       if a.folder == "" && (a.read_attribute(:file).downcase == "data.ms") then
 
-        self.update_attribute(:recorded_at, a.filecreation)
+        self.update_attribute(:recorded_at, a.filechange)
 
       end
 
       if a.folder == "" && (a.read_attribute(:file).downcase == "report.txt") then
 
-        self.update_attribute(:recorded_at, a.filecreation)
+        self.update_attribute(:recorded_at, a.filechange)
 
         a.file.read.each_line do |line|
 
