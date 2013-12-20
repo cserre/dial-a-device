@@ -7,9 +7,9 @@ class Measurement < ActiveRecord::Base
   def update_creationdate
   	cd = DateTime.new(1982, 11, 10)
 
-        if @dataset.recorded_at.nil? then        
+        if dataset.recorded_at.nil? then        
 
-          @dataset.attachments.each do |a|
+          dataset.attachments.each do |a|
 
             if a.filechange > cd then
 
@@ -19,7 +19,7 @@ class Measurement < ActiveRecord::Base
           end
 
         else
-          cd = @dataset.recorded_at
+          cd = dataset.recorded_at
         end
 
         self.update_attribute(:recorded_at, cd)
