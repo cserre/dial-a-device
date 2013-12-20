@@ -69,9 +69,9 @@ class DatasetsController < ApplicationController
 
           @dataset.attachments.each do |a|
 
-            if a.filecreation > cd then
+            if a.filechange > cd then
 
-              cd = a.filecreation
+              cd = a.filechange
 
             end
           end
