@@ -137,11 +137,10 @@ function done(cid) {
 
   window["viewACS_"+cid].loadMolecule(mol);
 
-  $('#sketcher').html("");
-
-  sketcher = new ChemDoodle.SketcherCanvas('sketcher', 400, 200, {useServices: false, oneMolecule: true});
+  window.clearInterval(tim);
 
   $('#moleculemodal').modal('hide');
+  $('#moleculemodal').removeData('bs.modal');
 
   
 }
