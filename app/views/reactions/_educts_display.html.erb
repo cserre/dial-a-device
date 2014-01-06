@@ -1,9 +1,7 @@
-<table id="educts-display-table" class="table table-hover table-striped">
+<table id="educts-display-table" class="table">
   <thead>
       <th>Molecule</th>
-      <th>Title</th>
-      <th>Sum formula</th>
-      <th>Molecular weight</th>
+      <th>Details</th>
       <th>Equivalent</th>
       <th>mmol</th>
       <th>Amount</th>
@@ -41,9 +39,9 @@
                 <br>
 
             </td>
-            <td><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %></td>
-            <td><%= sample.molecule.formula %></td>
-            <td><%= sample.molecule.mass %></td>
+            <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %><br>
+            <%= sample.molecule.formula %>
+            </td>
             <td><%= sample.equivalent %></td>
             <td><%= sample.mol %></td>
             <td><%= sample.target_amount.to_s + " " + sample.unit %></td>

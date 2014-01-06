@@ -2,35 +2,49 @@
 
   <tr class="nested-fields">
 
+    <td>
+
           <%= f.hidden_field(:is_virtual, :value => false) %>
 
       
           <%= f.fields_for :molecule, (if (f.object.molecule.nil?) then Molecule.new else f.object.molecule end ) do |molecule| %>
 
-          <%= molecule.hidden_field(:id) %>
-          <%= molecule.hidden_field(:smiles) %>
+            <%= molecule.hidden_field(:id) %>
+            <%= molecule.hidden_field(:smiles) %>
             <%= molecule.hidden_field(:inchi) %>
             <%= molecule.hidden_field(:inchikey) %>
             <%= molecule.hidden_field(:spin) %>
             <%= molecule.hidden_field(:charge) %>
 
-          <td>
 
             <%= molecule.text_area(:molfile, :class => "input-xlarge molfile_[new_products]", :style => "display:none;") %>
 
-            <canvas id="viewACS_[new_products]" style="width: 100px; height: 100px;" onclick='if (allowcompoundedit) {pick_molecule(this.id);}'>
+            <span style="display:none;">
+                <%= molecule.text_field(:title) %>
+                <%= molecule.text_field(:formula) %>
+                <%= molecule.text_field(:mass, :readonly => :true) %>
+              </span>
+
+            <% end %>
+
+            <canvas id="viewACS_[new_products]" width="100px" height="100px" style="width: 100px; height: 100px;" onclick='if (allowcompoundedit) {pick_molecule(this.id);}'>
                            
             </canvas>
 
-          </td>
+            
 
-          <td><%= molecule.text_field(:title, :readonly => :true) %></td>
+        </td>
 
-            <td><%= molecule.text_field(:formula, :readonly => :true) %></td>
-            <td><%= molecule.text_field(:mass, :readonly => :true) %></td>
+        <td class="moldetails_[new_products]">
+                <% if !(f.object.molecule.nil?) then %>
+          <strong><%= f.object.molecule.mass %></strong><br><%= link_to f.object.molecule do %><%= f.object.molecule.title %><% end %><br>
+            <%= f.object.molecule.formula %>
 
-
+            <% else %>
+              <p>No molecule</p>
             <% end %>
+
+        </td>
 
         
         <td><%= f.text_field(:mol, :onChange => "javascript: recalculate(this.id);") %></td>
@@ -54,6 +68,7 @@ if (uid == "new_products") {
   document.getElementsByClassName("molfile_[new_products]")[0].className = 'molfile_['+uid+ ']';
 
   document.getElementById ('viewACS_[new_products]').id = 'viewACS_['+uid + ']';
+  document.getElementsByClassName('moldetails_[new_products]')[0].className = 'moldetails_['+uid + ']';
 
 }
 
