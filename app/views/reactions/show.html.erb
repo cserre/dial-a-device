@@ -21,3 +21,15 @@
 </fieldset>
 
 </div>
+
+<br>
+
+<fieldset>
+  <h3>Description</h3>
+
+  <% if !@reaction.description.blank? then %>
+<p><b>Description:</b>&nbsp;<%= @reaction.description.html_safe %></p>
+<% end %>
+  
+</fieldset>
+

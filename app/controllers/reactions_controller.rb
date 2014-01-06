@@ -111,6 +111,6 @@ class ReactionsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def reaction_params
-      params.require(:reaction).permit(:name, :products_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id], :educts_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id])
+      params.require(:reaction).permit(:name, :description, :products_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id], :educts_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id])
     end
 end
