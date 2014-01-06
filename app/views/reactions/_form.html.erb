@@ -113,6 +113,10 @@ function done(cid) {
 
   document.getElementsByClassName("molfile_["+cid+"]")[0].value = ChemDoodle.writeMOL(mol);
 
+  var content = "<strong>"+ resultmolecule.mass +"</strong><br>"+resultmolecule.title+"<br>"+ resultmolecule.formula;
+
+  document.getElementsByClassName("moldetails_["+cid+"]")[0].innerHTML = content;
+
   if (document.getElementById("reaction_educts_attributes_"+cid+"_molecule_attributes_id") != null) {
     target = "educts"
   } else {target = "products"}
@@ -173,9 +177,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
           <thead>
             
             <th>Molecule</th>
-            <th>Title</th>
-            <th>Sum formula</th>
-            <th>Molecular weight</th>
+            <th>Details</th>
             <th>Equivalent</th>
             <th>mmol</th>
             <th>Amount</th>
@@ -203,9 +205,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
       <table id="products-table" class="table table-condensed">
           <thead>
             <th>Molecule</th>
-            <th>Title</th>
-            <th>Sum formula</th>
-            <th>Molecular weight</th>            
+            <th>Details</th>            
             <th>mmol</th>
             <th>Amount</th>
             <th>Yield (%)</th>

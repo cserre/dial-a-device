@@ -1,9 +1,7 @@
-<table id="products-display-table" class="table table-hover table-striped">
+<table id="products-display-table" class="table">
   <thead>
       <th>Molecule</th>
-      <th>Title</th>
-      <th>Sum formula</th>
-      <th>Molecular weight</th>
+      <th>Details</th>
       <th>mmol</th>
       <th>Amount</th>
       <th>Yield</th>
@@ -38,9 +36,9 @@
                </script>
 
             </td>
-             <td><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %></td>
-            <td><%= sample.molecule.formula %></td>
-            <td><%= sample.molecule.mass %></td>
+             <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %><br>
+            <%= sample.molecule.formula %>
+            </td>
             <td><%= sample.mol %></td>
             <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
             <td><%= sample.yield %></td>
