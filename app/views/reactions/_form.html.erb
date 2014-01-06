@@ -154,6 +154,14 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
 
 <%= form_for(@reaction, :html => {:onkeypress => "return event.keyCode != 13;", :class => "form form-horizontal" }) do |f| %>
+
+<h1>Editing reaction&nbsp;
+
+<%= f.submit("Save", :class => "btn btn-primary", :title => "Save the changes to this Reaction.") %>
+      <%= link_to("Cancel", reactions_path, :confirm => "Are you sure you want to cancel?  Any changes will be lost.", :class => "btn btn-inverse", :title => "Cancel the changes and return to the Home page.") %>
+   
+   </h1>
+
     <fieldset>
 
       <div class="control-group">
@@ -222,10 +230,41 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
         </table>
     </fieldset>
 
-          <%= f.submit("Save", :class => "btn btn-primary", :title => "Save the changes to this Reaction.") %>
-      <%= link_to("Cancel", reactions_path, :confirm => "Are you sure you want to cancel?  Any changes will be lost.", :class => "btn btn-inverse", :title => "Cancel the changes and return to the Home page.") %>
-   
+          
+
+
+
+<br>
+
+<fieldset>
+  <h3>Description</h3>
+
+  <%= f.text_field(:description, :style => "display:none;") %>
+
+    <div id="descwysiwyg" contenteditable="true" style="overflow: scroll; height: 200px; max-height: 200px; border-style: solid; border-color: rgb(204, 204, 204);"></div>
+  
+</fieldset>
+
 <% end %>
+    
+
+<script type="text/javascript">
+$('#descwysiwyg').wysiwyg();
+
+$('form').submit(function(){
+
+  var desc = $('#descwysiwyg').html();
+  $('#reaction_description').val(desc);
+
+});
+
+$(document).ready(function(){
+
+  $('#descwysiwyg').html($('#reaction_description').val());
+
+
+})
+</script>
 
 
 

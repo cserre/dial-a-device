@@ -1,6 +1,6 @@
 class Reaction < ActiveRecord::Base
 
-  attr_accessible :name, :samples_attributes, :educts_attributes, :products_attributes
+  attr_accessible :name, :description, :samples_attributes, :educts_attributes, :products_attributes
   
 
   # belongs_to :task, :dependent => :destroy
