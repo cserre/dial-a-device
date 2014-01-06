@@ -86,6 +86,8 @@ gem 'pundit'
 
 gem 'carrierwave'
 
+gem 'unf'
+
 gem 'fog'
 
 gem 'mini_magick'
