@@ -45,7 +45,7 @@
 <% if !@owndatasets.empty? then %>
 
 <table>
-  <% @owndatasets.order("method_rank ASC").each do |dataset| %>
+  <% @owndatasets.where(["molecule_id = ?", sample.molecule.id]).order("method_rank ASC").each do |dataset| %>
     <tr>
       <td><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
       </td>
