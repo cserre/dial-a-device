@@ -149,6 +149,8 @@ class DatasetsController < ApplicationController
     @dataset = Dataset.find(params[:id])
 
     authorize @dataset
+
+    @reaction_id = params[:reaction_id]
   end
 
   def commit
@@ -220,7 +222,7 @@ class DatasetsController < ApplicationController
         dsg.save
         dsg.datasets << @dataset
 
-        format.html { redirect_to @dataset, :reaction_id => params[:reaction_id], notice: 'Dataset was successfully created.' }
+        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id] , notice: 'Dataset was successfully created.') }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }
@@ -375,9 +377,11 @@ class DatasetsController < ApplicationController
 
     assign_method_rank @dataset
 
+
+
     respond_to do |format|
       if @dataset.update_attributes(params[:dataset])
-        format.html { redirect_to @dataset, notice: 'Dataset was successfully updated.' }
+        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id], notice: 'Dataset was successfully updated.') }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
