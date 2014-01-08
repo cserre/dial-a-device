@@ -15,6 +15,10 @@ class Reaction < ActiveRecord::Base
   accepts_nested_attributes_for :educts, :allow_destroy => true
   accepts_nested_attributes_for :products, :allow_destroy => true
 
+  has_many :reaction_datasets
+  has_many :datasets,
+    through: :reaction_datasets
+
 
   has_many :project_reactions
   has_many :projects,

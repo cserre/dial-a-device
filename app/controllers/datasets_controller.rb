@@ -194,6 +194,14 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       if @dataset.save
 
+          if !(params[:reaction_id].nil?) then 
+
+          dm = ReactionDataset.new
+          dm.reaction_id = params[:reaction_id]
+          dm.dataset_id = @dataset.id
+          dm.save
+        end
+
         @dataset.add_to_project(current_user.rootproject_id)
 
         if !@dataset.molecule.nil? then 
@@ -212,7 +220,7 @@ class DatasetsController < ApplicationController
         dsg.save
         dsg.datasets << @dataset
 
-        format.html { redirect_to @dataset, notice: 'Dataset was successfully created.' }
+        format.html { redirect_to @dataset, :reaction_id => params[:reaction_id], notice: 'Dataset was successfully created.' }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }

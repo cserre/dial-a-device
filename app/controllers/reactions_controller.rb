@@ -12,6 +12,8 @@ class ReactionsController < ApplicationController
   # GET /reactions/1
   def show
     authorize @reaction
+
+    if !current_user.nil? then @owndatasets = @reaction.datasets end
   end
 
   # GET /reactions/new

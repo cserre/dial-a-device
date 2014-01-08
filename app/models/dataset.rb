@@ -14,6 +14,10 @@ class Dataset < ActiveRecord::Base
   has_many :datasetgroups,
     through: :datasetgroup_datasets
 
+  has_many :reaction_datasets
+  has_many :reactions,
+    through: :reaction_datasets
+
   has_many :commits
 
   # acts_as_list scope: :datasetgroup_dataset

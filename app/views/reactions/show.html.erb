@@ -29,7 +29,41 @@
 
   <% if !@reaction.description.blank? then %>
 <p><b>Description:</b>&nbsp;<%= @reaction.description.html_safe %></p>
+<% else %>
+
+<p>No description.</p>
 <% end %>
   
 </fieldset>
 
+
+<% @reaction.products.each do |sample| %>
+
+<h1>Analytics for <%= sample.molecule.title %>&nbsp;<%= link_to 'Add Dataset', create_direct_datasets_path(:molecule_id => sample.molecule.id, :reaction_id => @reaction.id), :class => "btn btn-default btn-sm" %></h1>
+
+
+<% if !@owndatasets.empty? then %>
+
+<table>
+  <% @owndatasets.order("method_rank ASC").each do |dataset| %>
+    <tr>
+      <td><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+      </td>
+      <td>
+      <h4><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><b><%= dataset.method %></b><% if !dataset.title.blank? then %> - <%= dataset.title %><% end %><% end %></h4>
+      <p><%= dataset.description.html_safe %></p>
+      <p>Virtual DOI: <%= dataset.doi_identifier %></p>
+    </td>
+    </tr>
+  <% end %>
+</table>
+
+<% else %>
+  <p>You don't have any datasets for this molecule.</p>
+<% end %>
+
+<br />
+
+ 
+
+<% end %>
