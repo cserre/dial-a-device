@@ -1,11 +1,11 @@
 
 
-  <tr class="nested-fields educt-entry">
+  <tr class="nested-fields reactant-entry">
 
     <td>
         
           <%= f.hidden_field(:is_virtual, :value => true) %>
-          <%= f.hidden_field(:is_startingmaterial, :value => true) %>
+          <%= f.hidden_field(:is_startingmaterial, :value => false) %>
       
           <%= f.fields_for :molecule, (if (f.object.molecule.nil?) then Molecule.new else f.object.molecule end ) do |molecule| %>
 
@@ -16,7 +16,7 @@
             <%= molecule.hidden_field(:spin) %>
             <%= molecule.hidden_field(:charge) %>
             
-              <%= molecule.text_area(:molfile, :class => "input-xlarge molfile_[new_educts]", :style => "display:none;") %>
+              <%= molecule.text_area(:molfile, :class => "input-xlarge molfile_[new_reactants]", :style => "display:none;") %>
 
               <span style="display:none;">
                 <%= molecule.text_field(:title) %>
@@ -27,7 +27,7 @@
           <% end %>
 
 
-                <canvas id="viewACS_[new_educts]" width="100px" height="100px" style="width: 100px; height: 100px;" onclick="if (allowcompoundedit) {pick_molecule(this.id);}">
+                <canvas id="viewACS_[new_reactants]" width="100px" height="100px" style="width: 100px; height: 100px;" onclick="if (allowcompoundedit) {pick_molecule(this.id);}">
                              
                 </canvas>
 
@@ -36,7 +36,7 @@
         </td>
 
 
-        <td class="moldetails_[new_educts]">
+        <td class="moldetails_[new_reactants]">
                 <% if !(f.object.molecule.nil?) then %>
           <strong><%= f.object.molecule.mass %></strong><br><%= link_to f.object.molecule do %><%= f.object.molecule.title %><% end %><br>
             <%= f.object.molecule.formula %>
@@ -51,7 +51,7 @@
 
 
 
-        <td><%= f.text_field(:equivalent, :readonly => :true) %></td>
+        <td><%= f.text_field(:equivalent, :onChange => "javascript: recalculate(this.id);") %></td>
         <td><%= f.text_field(:mol, :onChange => "javascript: recalculate(this.id);") %></td>
         <td><div class="form-group form-inline"><%= f.text_field(:target_amount, :style => "width:80px", :onChange => "javascript: recalculate(this.id);") %> <%= f.select :unit, options_for_select([['mg', "mg"]], "mg" ), {}, :style => "width:60px" %></div></td>
 
@@ -64,16 +64,16 @@
 
  <script type="text/javascript">
  
-var uid = "[new_educts]".substr(1, "[new_educts]".length-2);
+var uid = "[new_reactants]".substr(1, "[new_reactants]".length-2);
 
-if (uid == "new_educts") {
+if (uid == "new_reactants") {
 
   uid = Date.now();
 
-  document.getElementsByClassName("molfile_[new_educts]")[0].className = 'molfile_['+uid+ ']';
+  document.getElementsByClassName("molfile_[new_reactants]")[0].className = 'molfile_['+uid+ ']';
 
-  document.getElementById ('viewACS_[new_educts]').id = 'viewACS_['+uid + ']';
-  document.getElementsByClassName('moldetails_[new_educts]')[0].className = 'moldetails_['+uid + ']';
+  document.getElementById ('viewACS_[new_reactants]').id = 'viewACS_['+uid + ']';
+  document.getElementsByClassName('moldetails_[new_reactants]')[0].className = 'moldetails_['+uid + ']';
 
 }
 

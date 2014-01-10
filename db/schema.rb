@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140108151958) do
+ActiveRecord::Schema.define(version: 20140110151841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -330,15 +330,16 @@ ActiveRecord::Schema.define(version: 20140108151958) do
   create_table "samples", force: true do |t|
     t.integer  "molecule_id"
     t.string   "guid"
-    t.float    "target_amount", default: 0.0
-    t.float    "actual_amount", default: 0.0
+    t.float    "target_amount",       default: 0.0
+    t.float    "actual_amount",       default: 0.0
     t.string   "unit"
-    t.boolean  "is_virtual",    default: false
-    t.float    "equivalent",    default: 1.0
-    t.float    "mol"
+    t.boolean  "is_virtual",          default: false
+    t.float    "equivalent",          default: 1.0
+    t.float    "mol",                 default: 0.0
     t.float    "yield"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_startingmaterial", default: false
   end
 
   create_table "user_affiliations", force: true do |t|

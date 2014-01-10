@@ -17,6 +17,35 @@ function recalculate (dom_id) {
 
   if (pieces.length > 5) { suffix += "_"+pieces[5]}
 
+  // get information about mol from starting material
+
+  ultraratio = 1.0;
+  ultraweight = 0.0;
+
+
+      ed = document.getElementsByClassName ("educt-entry");
+
+      for (var i = 0; i< ed.length; i++) {
+
+        p = ed[i].getElementsByTagName("input")[0].id.split("_");
+
+        ultraequiv = parseFloat(document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_equivalent").value);
+        ultramol = parseFloat(document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_mol").value);
+        ultraratio = ultraequiv / ultramol;
+
+        ultraweight = ultraweight + parseFloat(document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_target_amount").value);
+
+      }
+
+
+  if (pieces[1] == "educts") {
+    
+    // is this the line with equivalent 1?
+    equiv = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value);
+
+  }
+
+
   if (suffix == "mol") {
 
     // calculate amount
@@ -29,7 +58,16 @@ function recalculate (dom_id) {
 
     document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_target_amount").value = newvalue.toFixed(2);
 
-  } else {
+    if (pieces[1] == "reactants") {
+
+      newvalue = ultraratio * mol;
+
+      document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value = newvalue.toFixed(2);
+
+    }
+
+
+  } else if (suffix == "target_amount") {
 
     // calculate mol
 
@@ -40,22 +78,39 @@ function recalculate (dom_id) {
     newvalue = amount / weight;
 
     document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value = newvalue.toFixed(2);
+
+    if (pieces[1] == "reactants") {
+
+      newvalue = ultraratio * newvalue;
+
+      document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value = newvalue.toFixed(2);
+
+    }
+
+  } else if (suffix == "equivalent") {
+
+    weight = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_molecule_attributes_mass").value);
+
+    equivalent = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value);
+
+    mol = equivalent / ultraratio;
+
+    amount = weight * mol;
+
+    document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value = mol.toFixed(2);
+
+    document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_target_amount").value = amount.toFixed(2);
+
   }
 
-  if (pieces[1] == "educts") {
-  // is this the line with equivalent 1?
-
-  equiv = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_equivalent").value);
-
-}
 
   updatemol = parseFloat(document.getElementById (pieces[0] + "_" + pieces[1]+ "_" + pieces[2] + "_" + uid + "_mol").value);
 
-  if (equiv == 1 && pieces[1] == "educts") {
+  if (pieces[1] == "educts" && equiv == 1) {
 
       // find all other lines
 
-      ed = document.getElementsByClassName ("educt-entry");
+      ed = document.getElementsByClassName ("reactant-entry");
 
       for (var i = 0; i< ed.length; i++) {
 
@@ -80,6 +135,25 @@ function recalculate (dom_id) {
         }
 
       }
+
+  }
+
+
+  // update yields
+
+  ed = document.getElementsByClassName ("product-entry");
+
+  console.log (ed);
+
+  for (var i = 0; i< ed.length; i++) {
+
+    p = ed[i].getElementsByTagName("input")[0].id.split("_");
+
+    weight = document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_target_amount").value;
+    
+    yield = weight / ultraweight * 100;  
+
+    document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_yield").value = yield.toFixed(1);
 
   }
 
@@ -119,7 +193,11 @@ function done(cid) {
 
   if (document.getElementById("reaction_educts_attributes_"+cid+"_molecule_attributes_id") != null) {
     target = "educts"
-  } else {target = "products"}
+  } else if (document.getElementById("reaction_reactants_attributes_"+cid+"_molecule_attributes_id") != null) {
+    target = "reactants"
+  } else if (document.getElementById("reaction_products_attributes_"+cid+"_molecule_attributes_id") != null) {
+    target = "products"
+  }
 
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_id").value = resultmolecule.id;
 
@@ -195,6 +273,36 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
               <%= f.fields_for :educts do |educt| %>
 
                 <%= render 'educt_fields', :f => educt %>
+
+              <% end %>
+
+          </tbody>
+        </table>
+
+    </fieldset>
+
+  
+  <br/>
+
+      <fieldset>
+
+      <h3>Reactants&nbsp;<%= link_to_add_association("Add", f, :reactants, :partial => 'reactant_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#reactants', :class => "btn btn-primary reactants", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
+
+        <table id="reactants-table" class="table table-condensed">
+          <thead>
+            
+            <th>Molecule</th>
+            <th>Details</th>
+            <th>Equivalent</th>
+            <th>mmol</th>
+            <th>Amount</th>
+            <th></th>
+          </thead>
+          <tbody id="reactants">
+
+              <%= f.fields_for :reactants do |reactant| %>
+
+                <%= render 'reactant_fields', :f => reactant %>
 
               <% end %>
 
