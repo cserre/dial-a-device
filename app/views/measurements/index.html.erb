@@ -1,0 +1,64 @@
+<h1>Listing measurements</h1>
+
+<table class="table table-condensed" style="table-layout:fixed;">
+<thead>
+
+	<th>Dataset</th>
+	<th>Molecule</th>
+	<th>Reaction</th>
+	<th>Action</th>
+
+
+</thead>
+
+<tbody>
+
+  <% @measurements.each do |m| %>
+    <tr>
+      <td>
+      	test
+      	<b><%= m.dataset.method %></b>&nbsp;-&nbsp;<%= m.dataset.title %>
+      </td>
+
+      <td>
+      	<% if !(m.molecule_id.nil?) then %>
+      	<%= Molecule.find(m.molecule_id).first.title %>
+      	<% else %>
+      	No molecule.
+      	<% end %>
+      </td>
+
+      <td>
+      	<% if !(m.reaction_id.nil?) then %>
+      	<%= Reaction.find(m.reaction_id).first.name %>
+      	<% else %>
+      	No reaction.
+      	<% end %>
+      </td>
+
+      <td>
+      	<%= link_to discard_measurement_path(m), :class => "btn btn-danger" do %>Discard<% end %>
+      </td>
+
+      <td>
+
+      	<% if !(m.reaction_id.nil?) && !(m.molecule_id.nil?) then %>
+
+      	<%= link_to confirm_measurement_path(m), :class => "btn btn-success" do %>Confirm<% end %>
+
+      	<% else %>
+
+	      <%= link_to import_measurement_path(m), :class => "btn btn-warning" do %>Import<% end %>
+
+	      <% end %>
+  		</td>
+
+      
+    </tr>
+
+  <% end %>
+
+</tbody>
+</table>
+
+

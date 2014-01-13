@@ -1,10 +1,10 @@
-<table id="products-display-table" class="table">
+<table id="products-display-table" class="table" style="table-layout:fixed;">
   <thead>
-      <th>Molecule</th>
-      <th>Details</th>
-      <th>mmol</th>
-      <th>Amount</th>
-      <th>Yield</th>
+      <th style="width:100px;">Molecule</th>
+      <th style="width:200px;">Details</th>
+      <th style="width:100px;">mmol</th>
+      <th style="width:100px;">Amount</th>
+      <th style="width:100px;">Yield</th>
   </thead>
   <tbody>
       <% @reaction.products.each do |sample| %>

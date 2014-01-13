@@ -196,7 +196,8 @@ def assign
         # end
     end
 
-    @measurements = Measurement.where(["device_id = ?", @device.id]).limit(100).order ("recorded_at DESC")
+    @measurements = Measurement.where(["device_id = ?", @device.id]).paginate(:page => params[:page], :per_page => 10).order ("recorded_at DESC")
+
 
     respond_to do |format|
       format.html { render action: "show", notice: "" }

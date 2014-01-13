@@ -47,9 +47,9 @@
         </td>
 
         
-        <td><%= f.text_field(:mol, :onChange => "javascript: recalculate(this.id);") %></td>
+        <td><%= f.text_field(:mol, :onChange => "javascript: recalculate(this.id);", :style => "width:80px") %></td>
         <td><div class="form-group form-inline"><%= f.text_field(:target_amount, :style => "width:80px", :onChange => "javascript: recalculate(this.id);") %> <%= f.select :unit, options_for_select([['mg', "mg"]], "mg" ), {}, :style => "width:60px" %></div></td>
-        <td><%= f.text_field(:yield) %></td>
+        <td><%= f.text_field(:yield, :style => "width:80px") %></td>
         <%# if current_page?(new_reaction_path) || current_page?(edit_reaction_path) %>
             <td>
               <%= link_to_remove_association('<span class="glyphicon glyphicon-remove"/>'.html_safe, f, :title => "Delete this Molecule.") %>

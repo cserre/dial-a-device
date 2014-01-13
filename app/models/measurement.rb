@@ -1,8 +1,13 @@
 class Measurement < ActiveRecord::Base
   attr_accessible :dataset_id, :device_id, :recorded_at
 
+  attr_accessible :user_id, :reaction_id, :molecule_id, :confirmed
+
   belongs_to :dataset
   belongs_to :device
+
+
+  
 
   def update_creationdate
   	cd = DateTime.new(1982, 11, 10)

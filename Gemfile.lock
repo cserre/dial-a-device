@@ -272,6 +272,7 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     websocket-driver (0.3.1)
+    will_paginate (3.0.5)
 
 PLATFORMS
   ruby
@@ -317,3 +318,4 @@ DEPENDENCIES
   uglifier
   unf
   websocket-rails!
+  will_paginate (~> 3.0.5)
