@@ -15,7 +15,9 @@
   
 <% end %>
 
-<h1>Listing measurements</h1>
+<h1>Measurements</h1>
+
+<% if @measurements.length > 0 then %>
 
 <table class="table table-condensed" style="table-layout:fixed;">
 <thead>
@@ -33,7 +35,6 @@
   <% @measurements.each do |m| %>
     <tr>
       <td>
-      	test
       	<b><%= m.dataset.method %></b>&nbsp;-&nbsp;<%= m.dataset.title %>
       </td>
 
@@ -79,3 +80,6 @@
 </table>
 
 
+<% else %>
+<p>You don't have any Measurements yet.</p>
+<% end %> 

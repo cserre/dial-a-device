@@ -17,6 +17,7 @@
 
 <h1>Reactions <%= link_to 'New', new_reaction_path, :class => 'btn btn-primary', :title => "Add a new Reaction." %></h1>
 
+<% if @reactions.length > 0 then %>
 
 <table class="table">
     
@@ -70,4 +71,8 @@
     </tbody>
 </table>
 
-<%= will_paginate @reactions %>
+<%= will_paginate @reactions, renderer: BootstrapPagination::Rails %>
+
+<% else %>
+<p>You don't have any Reactions yet.</p>
+<% end %> 
