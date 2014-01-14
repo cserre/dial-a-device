@@ -2,7 +2,7 @@ class Attachment < ActiveRecord::Base
 
   include Rails.application.routes.url_helpers
 
-  attr_accessible :dataset_id, :file, :folder, :dataset_attributes, :dataset, :attachment_url, :file_attributes, :filecreation, :filechange
+  attr_accessible :dataset_id, :file, :folder, :dataset_attributes, :dataset, :attachment_url, :file_attributes, :filecreation, :filechange, :fullfilename
   
   mount_uploader :file, AttachmentUploader
 
@@ -17,6 +17,7 @@ class Attachment < ActiveRecord::Base
 
   def as_mini_json(options= {})
     h = Hash.new
+    h[:fullfilename] = read_attribute(:fullfilename)
     h[:filename] = read_attribute(:file)
     h[:filesize] = file.size
     h[:folder] = read_attribute(:folder)
