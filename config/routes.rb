@@ -38,6 +38,8 @@ LsiRailsPrototype::Application.routes.draw do
   resources :folder_watchers do
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'folder_watchers#assign_do'
+
+    get 'export', :on => :collection
   end
 
   resources :beaglebones do

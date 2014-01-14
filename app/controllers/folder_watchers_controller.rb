@@ -1,7 +1,7 @@
 class FolderWatchersController < ApplicationController
   before_action :set_folder_watcher, only: [:assign, :assign_do, :show, :edit, :update, :destroy]
 
-  before_filter :authenticate_user!, except: [:heartbeat]
+  before_filter :authenticate_user!, except: [:heartbeat, :export]
 
   protect_from_forgery :except => [:heartbeat]
   
@@ -18,6 +18,15 @@ class FolderWatchersController < ApplicationController
     end
 
     render json: @bb
+  end
+
+  def export
+    fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
+    @datasets = Dataset.joins(:measurement).where(["device_id = ?", fw.device_id]).paginate(:page => params[:page])
+
+    respond_to do |format|
+      format.json { render json: @datasets.to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}}) }
+    end
   end
 
   def assign
