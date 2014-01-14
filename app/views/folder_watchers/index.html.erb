@@ -21,13 +21,15 @@
 <% if @folder_watchers.length > 0 then %>
 
 <table class="table">
-  <tr>
+  <thead>
     <th>Serialnumber</th>
     <th>last seen</th>
     <th>Pattern</th>
     <th></th>
     <th></th>
-  </tr>
+  </thead>
+
+  <tbody>
 
 <% @folder_watchers.each do |folder_watcher| %>
   <tr>
@@ -42,6 +44,8 @@
     <td><%= link_to 'Destroy', folder_watcher, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
+
+</tbody>
 </table>
 
 <% else %>

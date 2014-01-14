@@ -21,13 +21,15 @@
 <% if @beaglebones.length > 0 then %>
 
 <table class="table">
-  <tr>
+  <thead>
     <th>Serial number</th>
     <th>last seen</th>
     <th>IP address</th>
     <th></th>
     <th></th>
-  </tr>
+  </thead>
+
+  <tbody>
 
 <% @beaglebones.each do |beaglebone| %>
   <tr>
@@ -39,6 +41,9 @@
     <td><%= link_to 'Destroy', beaglebone, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
+
+</tbody>
+
 </table>
 
 <% else %>
