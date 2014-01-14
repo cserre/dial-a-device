@@ -15,7 +15,11 @@
 
     <% if m.user_id.nil? then %>
 
+    <!--
+
           <%= link_to import_measurement_path(m), :class => "btn btn-xs btn-warning" do %>Import<% end %>
+
+      -->
 
     <% else %>
     <p>Assigned to <%= User.find(m.user_id).email %><% if (m.confirmed == false) then %> (unconfirmed)<% end %></p>
