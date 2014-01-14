@@ -22,10 +22,35 @@ class FolderWatchersController < ApplicationController
 
   def export
     fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
-    @datasets = Dataset.joins(:measurement).where(["device_id = ?", fw.device_id]).paginate(:page => params[:page])
 
-    respond_to do |format|
-      format.json { render json: @datasets.to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}}) }
+    pagefile = Rails.root.join('tmp').join(params[:serialnumber]+"_"+params[:page])
+
+    if File.exists?(pagefile) then 
+
+      puts "from cache "
+      puts pagefile
+
+      respond_to do |format|
+        format.json { render json: File.read(pagefile) }
+      end
+
+    else
+
+      puts "create cache "
+      puts pagefile
+
+      @datasets = Dataset.joins(:measurement).where(["device_id = ?", fw.device_id]).order("created_at ASC").paginate(:page => params[:page])
+
+      pagecontent = @datasets.to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}})
+
+      File.open(pagefile, "w") do |f|
+        f.write (pagecontent)
+      end
+
+      respond_to do |format|
+        format.json { render json: pagecontent }
+      end
+
     end
   end
 
