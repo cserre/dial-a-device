@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140114134257) do
+ActiveRecord::Schema.define(version: 20140114165833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 20140114134257) do
     t.string   "serialnumber"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "lastseen"
   end
 
   create_table "groups", force: true do |t|

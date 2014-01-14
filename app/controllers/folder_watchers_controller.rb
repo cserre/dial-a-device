@@ -15,6 +15,8 @@ class FolderWatchersController < ApplicationController
 
       @bb = @folderwatchers.first
 
+      @bb.update_attributes(:lastseen => Time.now)
+
     end
 
     render json: @bb
@@ -22,6 +24,8 @@ class FolderWatchersController < ApplicationController
 
   def export
     fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
+
+    fw.update_attributes(:lastseen => Time.now)
 
     pagefile = Rails.root.join('tmp').join(params[:serialnumber]+"_"+params[:page])
 
