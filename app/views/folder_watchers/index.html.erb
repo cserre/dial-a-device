@@ -18,6 +18,8 @@
  
 
     <td><%= if (folder_watcher.updated_at) then distance_of_time_in_words_to_now(folder_watcher.updated_at)+" ago" else "never" end %></td>
+    <td>
+    </td>
 
     <td><%= link_to 'Edit', edit_folder_watcher_path(folder_watcher) %></td>
     <td><%= link_to 'Destroy', folder_watcher, method: :delete, data: { confirm: 'Are you sure?' } %></td>

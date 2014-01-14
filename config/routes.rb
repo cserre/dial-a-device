@@ -45,13 +45,18 @@ LsiRailsPrototype::Application.routes.draw do
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'beaglebones#assign_do'
   end
 
+  resources :measurements do
+    get 'import', on: :member
+    get 'discard', on: :member
+  end
+
   resources :datasets do
 
     get 'fork', on: :member
     post 'commit', on: :member
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
-  
+
 
     resources :attachments do
       post 'link', :on => :collection

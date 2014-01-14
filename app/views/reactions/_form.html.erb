@@ -258,14 +258,14 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
       <h3>Starting materials&nbsp;<%= link_to_add_association("Add", f, :educts, :partial => 'educt_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#educts', :class => "btn btn-primary educts", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
 
-        <table id="educts-table" class="table table-condensed">
+        <table id="educts-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>
             
-            <th>Molecule</th>
-            <th>Details</th>
-            <th>Equivalent</th>
-            <th>mmol</th>
-            <th>Amount</th>
+            <th style="width:100px;">Molecule</th>
+            <th style="width:200px;">Details</th>
+            <th style="width:100px;">Equivalent</th>
+            <th style="width:100px;">mmol</th>
+            <th style="width:100px;">Amount</th>
             <th></th>
           </thead>
           <tbody id="educts">
@@ -288,14 +288,14 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
       <h3>Reactants&nbsp;<%= link_to_add_association("Add", f, :reactants, :partial => 'reactant_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#reactants', :class => "btn btn-primary reactants", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
 
-        <table id="reactants-table" class="table table-condensed">
+        <table id="reactants-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>
             
-            <th>Molecule</th>
-            <th>Details</th>
-            <th>Equivalent</th>
-            <th>mmol</th>
-            <th>Amount</th>
+            <th style="width:100px;">Molecule</th>
+            <th style="width:200px;">Details</th>
+            <th style="width:100px;">Equivalent</th>
+            <th style="width:100px;">mmol</th>
+            <th style="width:100px;">Amount</th>
             <th></th>
           </thead>
           <tbody id="reactants">
@@ -317,13 +317,13 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
     <fieldset>
       <h3>Products&nbsp;<%= link_to_add_association("Add", f, :products, :partial => 'product_fields', :force_non_association_create => true,:class => "btn btn-primary products", 'data-association-insertion-node' => '#products', 'data-association-insertion-method' => 'append', :title => "Add a new Molecule to the Reaction.") %></h3>
 
-      <table id="products-table" class="table table-condensed">
+      <table id="products-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>
-            <th>Molecule</th>
-            <th>Details</th>            
-            <th>mmol</th>
-            <th>Amount</th>
-            <th>Yield (%)</th>
+            <th style="width:100px;">Molecule</th>
+            <th style="width:200px;">Details</th>            
+            <th style="width:100px;">mmol</th>
+            <th style="width:100px;">Amount</th>
+            <th style="width:100px;">Yield (%)</th>
             <th></th>
           </thead>
           <tbody id="products">

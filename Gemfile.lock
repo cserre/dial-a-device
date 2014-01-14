@@ -47,7 +47,7 @@ GIT
 
 GIT
   remote: git://github.com/plataformatec/simple_form.git
-  revision: 4052bc371b233e1e38924f9f4c83e0f897227b2d
+  revision: ea5ceb7dfa613f432efbfa04195c86599a16d973
   specs:
     simple_form (3.0.1)
       actionpack (>= 4.0.0, < 4.1)
@@ -55,7 +55,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 7678ab662e7c3aba046c22d64af9bdea2beba1fb
+  revision: fc93b5b531634fce0ebca483ac3c20b953fbccec
   branch: 4-0-stable
   specs:
     actionmailer (4.0.2)
@@ -202,7 +202,7 @@ GEM
       subexec (~> 0.2.1)
     mini_portile (0.5.2)
     minitest (4.7.5)
-    multi_json (1.8.2)
+    multi_json (1.8.4)
     multi_xml (0.5.5)
     net-ldap (0.3.1)
     net-scp (1.1.2)
@@ -272,6 +272,7 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     websocket-driver (0.3.2)
+    will_paginate (3.0.5)
 
 PLATFORMS
   ruby
@@ -317,3 +318,4 @@ DEPENDENCIES
   uglifier
   unf
   websocket-rails!
+  will_paginate (~> 3.0.5)

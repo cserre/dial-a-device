@@ -5,7 +5,7 @@ class DatasetsController < ApplicationController
   # GET /datasets
   # GET /datasets.json
   def index
-    @datasets =  policy_scope(Dataset)
+    @datasets =  policy_scope(Dataset).paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -152,6 +152,7 @@ class DatasetsController < ApplicationController
 
     @reaction_id = params[:reaction_id]
   end
+
 
   def commit
     @dataset = Dataset.find(params[:id])

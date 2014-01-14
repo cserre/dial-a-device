@@ -46,9 +46,16 @@
            success: function(data)
            {
                 updatemolecule (data);
+                document.getElementById("molecule_pick_title").innerHTML = data.title;
            }
          });
 
 
 	}
 </script>
+
+<hr>
+
+<div>
+  Selected molecule: <span id="molecule_pick_title">none</span>
+</div>
