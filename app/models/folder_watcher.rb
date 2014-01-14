@@ -1,5 +1,5 @@
 class FolderWatcher < ActiveRecord::Base
-  attr_accessible :device_id, :pattern, :rootfolder, :scanfilter, :serialnumber
+  attr_accessible :device_id, :pattern, :rootfolder, :scanfilter, :serialnumber, :lastseen
 
   has_many :project_folder_watchers
   has_many :projects,
