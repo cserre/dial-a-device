@@ -111,3 +111,5 @@ gem 'acts_as_list'
 gem 'foreman'
 
 gem 'will_paginate', '~> 3.0.5'
+
+gem 'will_paginate-bootstrap'

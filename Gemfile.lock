@@ -273,6 +273,8 @@ GEM
       rack (>= 1.0)
     websocket-driver (0.3.2)
     will_paginate (3.0.5)
+    will_paginate-bootstrap (1.0.0)
+      will_paginate (>= 3.0.3)
 
 PLATFORMS
   ruby
@@ -319,3 +321,4 @@ DEPENDENCIES
   unf
   websocket-rails!
   will_paginate (~> 3.0.5)
+  will_paginate-bootstrap
