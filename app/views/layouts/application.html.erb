@@ -89,27 +89,29 @@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
+
       <div class="container">
+
         <div class="navbar-header">
+
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
 
           </button>
+
           <a class="navbar-brand" href="/"><!-- <img src="/logo.png" height="20px" width="20px">&nbsp; --><%= LsiRailsPrototype::Application.config.application_name %></a>
         </div>
 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
           	<li><a href="/projects">Projects</a></li>
+            
             <li><a href="/devices">Devices</a></li>
-            <li><a href="/beaglebones">BeagleBones</a></li>
-            <li><a href="/folder_watchers">Folder Watchers</a></li>
-            <li><a href="/measurements">Measurements</a></li>
-            <li><a href="/datasets">Datasets</a></li>
+
             <li><a href="/molecules">Molecules</a></li>
-            <li><a href="/reactions">Reactions</a></li>
+
             <li><a href="/about">About</a></li>
             
           </ul>
@@ -143,19 +145,13 @@
 
 <% @showsidebar = true %>
 
-<% @shownavbar = nil %>
+<% @shownavbar = true %>
 
 
     <!--left sidebar navigator -->
     <% if (@shownavbar != nil) then %>
 
-    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
-
-      <div class="well">
-
-        
-      </div>
-    </div>
+      <%= yield :sidenav %>
 
     <% end %>
 

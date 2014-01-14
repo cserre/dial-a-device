@@ -1,3 +1,20 @@
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+      <div class="well">
+
+        <% @currentitem = "datasets" %>
+
+        <%= render 'layouts/devicesmenu' %>
+
+      </div>
+    </div>
+  
+<% end %>
+
 <h1>Listing datasets</h1>
 
 <table>
