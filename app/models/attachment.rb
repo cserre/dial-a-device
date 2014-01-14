@@ -15,6 +15,14 @@ class Attachment < ActiveRecord::Base
     h
   end
 
+  def as_mini_json(options= {})
+    h = Hash.new
+    h[:filename] = read_attribute(:file)
+    h[:filesize] = file.size
+    h[:folder] = read_attribute(:folder)
+    h
+  end
+
   def to_jq_upload
   {
     "id" => read_attribute(:id),

@@ -13,7 +13,6 @@ class DatasetsController < ApplicationController
     end
   end
 
-
   def find
     @dataset =  Dataset.where(["uniqueid = ?", params[:uniqueid]]).first
 
