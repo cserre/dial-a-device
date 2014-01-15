@@ -84,6 +84,10 @@ class DatasetsController < ApplicationController
         measurement.dataset_id = @dataset.id
         measurement.save
 
+        measurement.assign_to_user
+
+        measurement.guess_sample_name
+
       end
 
     end

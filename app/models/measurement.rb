@@ -1,7 +1,7 @@
 class Measurement < ActiveRecord::Base
   attr_accessible :dataset_id, :device_id, :recorded_at
 
-  attr_accessible :user_id, :reaction_id, :molecule_id, :confirmed
+  attr_accessible :user_id, :reaction_id, :molecule_id, :confirmed, :samplename
 
   belongs_to :dataset
   belongs_to :device
@@ -17,6 +17,34 @@ class Measurement < ActiveRecord::Base
 
   def confirmed?
     self.confirmed
+  end
+
+  def assign_to_user
+
+    ui = self.dataset.title.scan(/[A-Z]{3}|[A-Z]{2}/).first
+
+    user = User.where(["sign = ?", ui]).first
+
+    if !user.nil? then
+
+      self.update_attribute(:user_id, user.id)
+
+      return true
+
+    end
+
+    return false
+
+  end
+
+  def guess_samplename
+
+    nr = self.dataset.title.scan(/\d+/)
+
+    self.update_attribute(:samplename, nr.join("-"))
+
+    nr.join("-")
+
   end
   
 
