@@ -17,18 +17,14 @@
 
     <% if m.user_id.nil? then %>
 
-    <!--
-
           <%= link_to import_measurement_path(m), :class => "btn btn-xs btn-warning" do %>Import<% end %>
-
-      -->
 
     <% else %>
     <p>Assigned to <%= User.find(m.user_id).email %><% if (m.confirmed == false) then %> (unconfirmed)<% end %></p>
 
     <% if !(m.reaction_id.nil?) && !(m.molecule_id.nil?) then %>
 
-        <% if m.user_id == current_user.id then %>
+        <% if m.user_id == current_user.id && !m.confirmed? then %>
 
         <%= link_to confirm_measurement_path(m), :class => "btn btn-xs btn-success" do %>Confirm<% end %>
 

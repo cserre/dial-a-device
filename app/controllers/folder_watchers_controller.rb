@@ -47,8 +47,14 @@ class FolderWatchersController < ApplicationController
 
       pagecontent = @datasets.to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}})
 
-      File.open(pagefile, "w") do |f|
-        f.write (pagecontent)
+      if @datasets.length >= 30 then
+
+        # it's a full page, so cache it for future use
+
+        File.open(pagefile, "w") do |f|
+          f.write (pagecontent)
+        end
+
       end
 
       respond_to do |format|

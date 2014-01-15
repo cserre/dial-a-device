@@ -58,8 +58,10 @@
       </td>
       <td>
       <h4><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><b><%= dataset.method %></b><% if !dataset.title.blank? then %> - <%= dataset.title %><% end %><% end %></h4>
+      <% if !dataset.description.blank? then %>
       <p><%= dataset.description.html_safe %></p>
-      <p>Virtual DOI: <%= dataset.doi_identifier %></p>
+      <% end %>
+      
     </td>
     </tr>
   <% end %>
@@ -67,6 +69,29 @@
 
 <% else %>
   <p>You don't have any datasets for this molecule.</p>
+<% end %>
+
+<% ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id = ? and confirmed = ?", current_user.id, @reaction.id, sample.molecule.id, false]) %>
+
+<% if !ms.empty? then %>
+
+<table>
+  <% ms.each do |m| %>
+    <tr>
+      <td><%= link_to dataset_path(:id => m.dataset.id, :reaction_id => @reaction.id) do %><%= image_tag(m.dataset.preview_url, size: "150x100") %><% end %>
+      </td>
+      <td>
+      <h4><%= link_to dataset_path(:id => m.dataset.id, :reaction_id => @reaction.id) do %><b><%= m.dataset.method %></b><% if !m.dataset.title.blank? then %> - <%= m.dataset.title %><% end %><% end %></h4>
+      <% if !m.dataset.description.blank? then %>
+      <p><%= m.dataset.description.html_safe %></p>
+      <% end %>
+      
+    </td>
+    <td><%= link_to confirm_measurement_path(m), :class => "btn btn-success" do %>Confirm<% end %></td>
+    </tr>
+  <% end %>
+</table>
+
 <% end %>
 
 <br />

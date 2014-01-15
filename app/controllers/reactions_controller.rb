@@ -7,6 +7,8 @@ class ReactionsController < ApplicationController
   # GET /reactions
   def index
     @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.paginate(:page => params[:page])
+
+    @analytics = nil
   end
 
   # GET /reactions/1

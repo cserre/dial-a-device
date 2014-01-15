@@ -50,6 +50,11 @@ LsiRailsPrototype::Application.routes.draw do
   resources :measurements do
     get 'import', on: :member
     get 'discard', on: :member
+
+    get 'confirm', on: :member
+
+    post 'assign_molecule', on: :member
+    post 'assign_reaction', on: :member
   end
 
   resources :datasets do

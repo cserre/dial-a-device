@@ -1,3 +1,52 @@
-<h1>Import dataset from measurement</h1>
 
-<%= link_to "Back", measurements_path, :class => "btn btn-default" %>
+<h1>Import dataset from measurement <%= link_to "Back", measurements_path, :class => "btn btn-default" %><% if @measurement.complete? then %><%= link_to "Confirm", confirm_measurement_path(@measurement), :class => "btn btn-success" %><% end %></h1>
+
+<h2>Molecule</h2>
+
+      	<% if !(@measurement.molecule_id.nil?) then %>
+      	<%= Molecule.find(@measurement.molecule_id).title %>
+      	<% else %>
+      	<p>No molecule assigned.</p>
+      	<% end %>
+
+	<%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
+
+	<%= text_field_tag(:molecule_id) %>
+	<%= submit_tag("Assign molecule", :html => {:class => "btn btn-success"}) %>
+
+	<% end %>
+
+
+<h2>Reaction / Sample</h2>
+      	<% if !(@measurement.reaction_id.nil?) then %>
+      	<%= Reaction.find(@measurement.reaction_id).name %>
+      	<% else %>
+      	<p>No reaction/sample assigned.</p>
+      	<% end %>
+
+
+      	<%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
+
+		<%= text_field_tag(:reaction_id) %>
+		<%= submit_tag("Assign reaction", :html => {:class => "btn btn-success"}) %>
+     
+		<% end %>
+
+
+
+<div id="moleculemodal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h3>Select Molecule</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+      <a href="#" class="btn btn-primary" onclick="done(globalcid); ">Select</a>
+    </div>
+  </div>
+  </div>
+</div>
