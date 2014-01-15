@@ -12,6 +12,7 @@ class Attachment < ActiveRecord::Base
     h = super(options)
     h[:filename] = read_attribute(:file)
     h[:filesize] = file.size
+    h[:fullfilename] = read_attribute(:fullfilename)
     h
   end
 

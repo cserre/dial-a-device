@@ -36,13 +36,8 @@ class DatasetsController < ApplicationController
       end
 
     end
-
-    resultjson = {
-      :dataset => @dataset,
-      :attachments => @dataset.attachments
-    }
-
-    render json: resultjson
+ 
+    render json: Dataset.where(["uniqueid = ?", params[:uniqueid]]).to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}})
   end
 
   def finalize
