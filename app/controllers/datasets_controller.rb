@@ -55,7 +55,7 @@ class DatasetsController < ApplicationController
         c.save
 
         measurement = Measurement.new
-        measurement.device_id = fw.device_id
+        measurement.update_attribute(:device_id, fw.device_id)
 
         cd = DateTime.new(1982, 11, 10)
 
@@ -74,14 +74,17 @@ class DatasetsController < ApplicationController
           cd = @dataset.recorded_at
         end
 
-        measurement.recorded_at = cd
+        measurement.update_attribute(:recorded_at, cd)
         
-        measurement.dataset_id = @dataset.id
-        measurement.save
+        measurement.update_attribute(:dataset_id,  @dataset.id)
 
         measurement.assign_to_user
 
         measurement.guess_samplename
+
+        measurement.save
+
+        
 
       end
 
