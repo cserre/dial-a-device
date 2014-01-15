@@ -86,7 +86,7 @@ class DatasetsController < ApplicationController
 
         measurement.assign_to_user
 
-        measurement.guess_sample_name
+        measurement.guess_samplename
 
       end
 
