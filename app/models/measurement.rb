@@ -27,10 +27,23 @@ class Measurement < ActiveRecord::Base
 
     if !user.nil? then
 
-      self.update_attribute(user_id, user.id)
+      self.update_attribute(:user_id, user.id)
+
+      return true
 
     end
 
+    return false
+
+  end
+
+  def guess_samplename
+
+    nr = self.dataset.title.scan(/\d+/)
+
+    self.update_attribute(:samplename, nr.join("-"))
+
+    nr.join("-")
 
   end
   
