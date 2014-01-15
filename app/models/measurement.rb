@@ -7,6 +7,17 @@ class Measurement < ActiveRecord::Base
   belongs_to :device
 
 
+  def complete?
+
+    res = false
+    if !(self.reaction_id.nil?) && !(self.molecule_id.nil?) then res = true end
+
+    res
+  end
+
+  def confirmed?
+    self.confirmed
+  end
   
 
   def update_creationdate

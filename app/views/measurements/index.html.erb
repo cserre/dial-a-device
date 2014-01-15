@@ -40,7 +40,7 @@
 
       <td>
       	<% if !(m.molecule_id.nil?) then %>
-      	<%= Molecule.find(m.molecule_id).first.title %>
+      	<%= Molecule.find(m.molecule_id).title %>
       	<% else %>
       	No molecule.
       	<% end %>
@@ -48,9 +48,9 @@
 
       <td>
       	<% if !(m.reaction_id.nil?) then %>
-      	<%= Reaction.find(m.reaction_id).first.name %>
+      	<%= Reaction.find(m.reaction_id).name %>
       	<% else %>
-      	No reaction.
+      	No reaction/sample.
       	<% end %>
       </td>
 
@@ -60,7 +60,7 @@
 
       <td>
 
-      	<% if !(m.reaction_id.nil?) && !(m.molecule_id.nil?) then %>
+      	<% if m.complete? then %>
 
       	<%= link_to confirm_measurement_path(m), :class => "btn btn-success" do %>Confirm<% end %>
 

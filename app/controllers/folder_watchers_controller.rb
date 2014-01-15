@@ -15,6 +15,8 @@ class FolderWatchersController < ApplicationController
 
       @bb = @folderwatchers.first
 
+      @bb.update_attributes(:lastseen => Time.now)
+
     end
 
     render json: @bb
@@ -22,6 +24,8 @@ class FolderWatchersController < ApplicationController
 
   def export
     fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
+
+    fw.update_attributes(:lastseen => Time.now)
 
     pagefile = Rails.root.join('tmp').join(params[:serialnumber]+"_"+params[:page])
 
@@ -43,8 +47,14 @@ class FolderWatchersController < ApplicationController
 
       pagecontent = @datasets.to_json(:include => {:attachments => {:only => :as_mini_json, :methods => [:as_mini_json]}})
 
-      File.open(pagefile, "w") do |f|
-        f.write (pagecontent)
+      if @datasets.length >= 30 then
+
+        # it's a full page, so cache it for future use
+
+        File.open(pagefile, "w") do |f|
+          f.write (pagecontent)
+        end
+
       end
 
       respond_to do |format|
