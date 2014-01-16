@@ -17,9 +17,22 @@ class MeasurementsController < ApplicationController
 
     @measurement = Measurement.find(params[:id])
 
-    @measurement.update_attribute(:molecule_id, params[:molecule_id])
 
-    redirect_to import_measurement_path(@measurement), notice: "Molecule was assigned to measurement." 
+    if params[:molecule_id].empty? then 
+
+        @measurement.update_attribute(:molecule_id, nil)
+
+        redirect_to import_measurement_path(@measurement), notice: "Measurement was removed from molecule." 
+
+    else
+
+      @measurement.update_attribute(:molecule_id, params[:molecule_id])
+
+
+      redirect_to import_measurement_path(@measurement), notice: "Measurement was assigned to molecule." 
+
+    end
+
   end
 
   def assign_reaction
