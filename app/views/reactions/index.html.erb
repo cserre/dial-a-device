@@ -25,6 +25,8 @@
         <th>Status</th>
         <th>Name</th>
         <th>Products</th>
+        <th>Yield</th>
+        <th style="width:200px;">Analytics</th>
         <th colspan="3"></th>
     </thead>
     <tbody>
@@ -37,7 +39,7 @@
 
                 <td>
 
-                    <% reaction.products.each do |product| %>
+                    <% reaction.products.each_with_index do |product, index| %>
       
 
                         <textarea id="molfile_<%= product.id %>" name="sample.molecule[molfile]" rows="50" cols="300" style="display:none;"><%= product.molecule.molfile %></textarea>
@@ -57,6 +59,39 @@
 
                     <% end %>
 
+                </td>
+
+                <td>
+                  <% reaction.products.each_with_index do |product, index| %>
+                    <span><%= product.yield %> %</span><br>
+
+                  <% end %>
+                </td>
+                <td>
+                  <% reaction.products.each_with_index do |product, index| %>
+
+                    <% if product.has_analytics?(reaction, "1H") then %><span class="label label-success"><% elsif product.has_unconfirmed_analytics?(current_user, reaction, "1H") then %><span class="label label-warning"><% else %><span class="label label-default"><% end %>1H</span>
+
+                    <% if product.has_analytics?(reaction, "13C") then %><span class="label label-success"><% elsif product.has_unconfirmed_analytics?(current_user, reaction, "13C") then %><span class="label label-warning"><% else %><span class="label label-default"><% end %>13C</span>
+
+                    <% if product.has_analytics?(reaction, "Mass") then %><span class="label label-success"><% elsif product.has_unconfirmed_analytics?(current_user, reaction, "Mass") then %><span class="label label-warning"><% else %><span class="label label-default"><% end %>Mass</span>
+
+                    <% if product.has_analytics?(reaction, "IR") then %><span class="label label-success"><% elsif product.has_unconfirmed_analytics?(current_user, reaction, "IR") then %><span class="label label-warning"><% else %><span class="label label-default"><% end %>IR</span>
+
+                    <% if product.has_analytics?(reaction, "EA") then %><span class="label label-success"><% elsif product.has_unconfirmed_analytics?(current_user, reaction, "EA") then %><span class="label label-warning"><% else %><span class="label label-default"><% end %>EA</span>
+
+                    <br>
+
+                  <% end %>
+
+                  <% if reaction.products.length > 0 then %>
+                  <br>
+                  <% end %>
+
+                  <% if reaction.has_unconfirmed_analytics?(current_user) then %>
+                  
+                    <span class="label label-info">Additional measurements available</span>
+                  <% end %>
                 </td>
 
                 <td><%= link_to('<span class="glyphicon glyphicon-eye-open"/>'.html_safe, reaction, :title => "View #{reaction.name}.") %></td>

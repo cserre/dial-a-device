@@ -25,9 +25,62 @@ class MeasurementsController < ApplicationController
   def assign_reaction
     @measurement = Measurement.find(params[:id])
 
-    @measurement.update_attribute(:reaction_id, params[:reaction_id])
+    if !params[:reaction_name].blank? then 
 
-    redirect_to import_measurement_path(@measurement), notice: "Reaction was assigned to measurement." 
+      # creation mode
+
+      @reaction = Reaction.new(:name => params[:reaction_name])
+
+      @reaction.save
+
+
+      #@reaction.samples.each do |s|          
+
+       #   s.molecule.add_to_project(current_user.rootproject_id) 
+       #   s.add_to_project(current_user.rootproject_id)
+       # end
+
+      @reaction.add_to_project(current_user.rootproject_id)
+
+
+      @measurement.update_attribute(:reaction_id, @reaction.id)
+
+
+      redirect_to import_measurement_path(@measurement), notice: "Measurement was assigned to new reaction." 
+
+    else
+
+      # assign mode
+
+      if params[:reaction_id].empty? then 
+
+        @measurement.update_attribute(:reaction_id, nil)
+
+        redirect_to import_measurement_path(@measurement), notice: "Measurement was removed from reaction." 
+
+      else
+
+      @measurement.update_attribute(:reaction_id, params[:reaction_id])
+
+
+      # check if reaction has one product, then assign it to this one
+
+      @reaction = Reaction.find(params[:reaction_id])
+
+      if @reaction.products.length == 1 then 
+
+        @measurement.update_attribute(:molecule_id, @reaction.products.first.molecule_id)
+
+      end
+
+      redirect_to import_measurement_path(@measurement), notice: "Measurement was assigned to reaction." 
+
+      end
+
+    end
+
+
+    
   end
 
 
@@ -38,6 +91,7 @@ class MeasurementsController < ApplicationController
     @measurement.update_attributes(:user_id => current_user.id)
 
     @measurement.save
+
 
     respond_to do |format|
         format.html { render action: "import" }
