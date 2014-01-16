@@ -63,11 +63,11 @@ class Measurement < ActiveRecord::Base
 
   end
 
-  def guess_reaction_id(user)
+  def guess_user_reaction_id(user)
 
     nr = self.dataset.title.scan(/\d+/)
 
-    user.reactions.where(["name ilike ?", "%"+user.sign+"-"+nr.first+"%"]).first.id
+    user.reactions.where(["name ilike ?", "%"+user.sign+"-"+nr.first+"%"]).first.id.to_s
 
   end
   

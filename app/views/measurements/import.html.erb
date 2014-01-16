@@ -21,37 +21,57 @@
         <br>
 
 
-    <h2>Assign molecule</h2>
-
         <% if !(@measurement.molecule_id.nil?) then %>
+
+        <h2>Assign molecule</h2>
+
         <%= Molecule.find(@measurement.molecule_id).title %>
-        <% else %>
-        <p>No molecule assigned.</p>
+
+        <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
+
+          
+          <%= hidden_field_tag(:molecule_id) %>
+
+          <%= submit_tag("Remove from molecule", :class => "btn btn-warning") %>
+     
         <% end %>
 
-  <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
 
-  <%= text_field_tag(:molecule_id) %>
-  <%= submit_tag("Assign molecule", :html => {:class => "btn btn-success"}) %>
+        <% else %>
 
-  <% end %>
+        <h2>Assign to existing molecule</h2>
+
+
+        <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
+
+          <%= select_tag(:molecule_id, options_for_select(Reaction.find(@measurement.reaction_id).products.collect{ |r| [r.molecule.title, r.id] })) %>
+          <%= submit_tag("Assign to molecule", :class => "btn btn-success") %>
+
+        <% end %>
+
+
+        <% end %>
+
+  
 
 
 
 
     <% else %>
 
-        <h2>Assign reaction</h2>
+        <h2>Assign to existing reaction</h2>
 
 
         <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
 
-          <%= select_tag(:reaction_id, options_for_select(current_user.reactions.collect{ |r| [r.name, r.id] }), :default => @measurement.guess_user_reaction_name(current_user)) %>
-          <%= submit_tag("Assign reaction", :class => "btn btn-success") %>
+          <%= select_tag(:reaction_id, options_for_select(current_user.reactions.collect{ |r| [r.name, r.id] }, @measurement.guess_user_reaction_id(current_user))) %>
+          <%= submit_tag("Assign to reaction", :class => "btn btn-success") %>
      
         <% end %>
 
 
+
+        <h2>Assign to new reaction</h2>
 
         <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
 
