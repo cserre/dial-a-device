@@ -32,6 +32,26 @@ class Sample < ActiveRecord::Base
 
   end
 
+  def has_analytics?(reaction, methodpart)
+
+    datasets = reaction.datasets.where(["molecule_id = ?", self.molecule.id])
+
+    datasets.exists?(["method ilike ?", "%"+methodpart+"%"])
+
+  end
+
+  def has_unconfirmed_analytics?(current_user, reaction, methodpart)
+
+    ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id = ? and confirmed = ?", current_user.id, reaction.id, self.molecule.id, false])
+
+    ms.each do |m|
+      if m.dataset.method.include?(methodpart) then return true end
+
+    end
+
+    return false
+  end
+
    # project association
 
   has_many :project_samples

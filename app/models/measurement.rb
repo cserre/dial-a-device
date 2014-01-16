@@ -46,6 +46,30 @@ class Measurement < ActiveRecord::Base
     nr.join("-")
 
   end
+
+  def guess_reaction_name
+
+    nr = self.dataset.title.scan(/\d+/)
+
+    nr.first
+
+  end
+
+  def guess_user_reaction_name(user)
+
+    nr = self.dataset.title.scan(/\d+/)
+
+    user.sign+"-"+nr.first
+
+  end
+
+  def guess_reaction_id(user)
+
+    nr = self.dataset.title.scan(/\d+/)
+
+    user.reactions.where(["name ilike ?", "%"+user.sign+"-"+nr.first+"%"]).first.id
+
+  end
   
 
   def update_creationdate

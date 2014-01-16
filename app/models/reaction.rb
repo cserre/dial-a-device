@@ -27,6 +27,16 @@ class Reaction < ActiveRecord::Base
   has_many :projects,
   	through: :project_reactions
 
+
+  def has_unconfirmed_analytics?(current_user)
+
+    ms = Measurement.where(["user_id = ? and reaction_id = ? and confirmed = ?", current_user.id, self.id, false])
+
+    if ms.length > 0 then return true end
+
+    return false
+  end
+
   def add_to_project (project_id)
 
     pm = ProjectReaction.new

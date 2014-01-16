@@ -1,36 +1,69 @@
 
-<h1>Import dataset from measurement <%= link_to "Back", measurements_path, :class => "btn btn-default" %><% if @measurement.complete? then %><%= link_to "Confirm", confirm_measurement_path(@measurement), :class => "btn btn-success" %><% end %></h1>
-
-<h2>Molecule</h2>
-
-      	<% if !(@measurement.molecule_id.nil?) then %>
-      	<%= Molecule.find(@measurement.molecule_id).title %>
-      	<% else %>
-      	<p>No molecule assigned.</p>
-      	<% end %>
-
-	<%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
-
-	<%= text_field_tag(:molecule_id) %>
-	<%= submit_tag("Assign molecule", :html => {:class => "btn btn-success"}) %>
-
-	<% end %>
+<h1>Import measurement <%= link_to "Back", measurements_path, :class => "btn btn-default" %><% if @measurement.complete? then %><%= link_to "Confirm", confirm_measurement_path(@measurement), :class => "btn btn-success" %><% end %></h1>
 
 
-<h2>Reaction / Sample</h2>
-      	<% if !(@measurement.reaction_id.nil?) then %>
-      	<%= Reaction.find(@measurement.reaction_id).name %>
-      	<% else %>
-      	<p>No reaction/sample assigned.</p>
-      	<% end %>
+    <% if !(@measurement.reaction_id.nil?) then %>
+
+        <h2>Assign reaction</h2>
+
+      	<p><%= Reaction.find(@measurement.reaction_id).name %></p>
 
 
-      	<%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
+        <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
 
-		<%= text_field_tag(:reaction_id) %>
-		<%= submit_tag("Assign reaction", :html => {:class => "btn btn-success"}) %>
+          
+          <%= hidden_field_tag(:reaction_id) %>
+
+          <%= submit_tag("Remove from reaction", :class => "btn btn-warning") %>
      
-		<% end %>
+        <% end %>
+
+        <br>
+
+
+    <h2>Assign molecule</h2>
+
+        <% if !(@measurement.molecule_id.nil?) then %>
+        <%= Molecule.find(@measurement.molecule_id).title %>
+        <% else %>
+        <p>No molecule assigned.</p>
+        <% end %>
+
+  <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
+
+  <%= text_field_tag(:molecule_id) %>
+  <%= submit_tag("Assign molecule", :html => {:class => "btn btn-success"}) %>
+
+  <% end %>
+
+
+
+
+    <% else %>
+
+        <h2>Assign reaction</h2>
+
+
+        <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
+
+          <%= select_tag(:reaction_id, options_for_select(current_user.reactions.collect{ |r| [r.name, r.id] }), :default => @measurement.guess_user_reaction_name(current_user)) %>
+          <%= submit_tag("Assign reaction", :class => "btn btn-success") %>
+     
+        <% end %>
+
+
+
+        <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
+
+        <% name = @measurement.guess_user_reaction_name(current_user) %>
+        <% if name.nil? then name = current_user.sign+"-new" end %>
+          <%= text_field_tag(:reaction_name, name) %>
+          <%= submit_tag("Create reaction", :class => "btn btn-success") %>
+     
+        <% end %>
+
+
+    <% end %>
 
 
 

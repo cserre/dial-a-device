@@ -43,6 +43,52 @@
   
 </fieldset>
 
+<br>
+
+
+
+<% ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id IS NULL and confirmed = ?", current_user.id, @reaction.id, false]) %>
+
+<% if ms.length > 0 then %>
+
+<h1>Additional measurements</h1>
+
+
+<table>
+  <% ms.each do |m| %>
+    <tr>
+      <td>
+        <b><%= m.dataset.method %></b>&nbsp;-&nbsp;<%= m.dataset.title %>
+      </td>
+
+      <td>
+        <%= link_to discard_measurement_path(m), :class => "btn btn-danger" do %>Discard<% end %>
+      </td>
+
+      <td>
+
+        <% if m.complete? then %>
+
+        <%= link_to confirm_measurement_path(m), :class => "btn btn-success" do %>Confirm<% end %>
+
+        <% else %>
+
+        <%= link_to import_measurement_path(m), :class => "btn btn-warning" do %>Import<% end %>
+
+        <% end %>
+      </td>
+
+      
+    </tr>
+
+  <% end %>
+</table>
+
+
+<% end %>
+
+
+
 
 <% @reaction.products.each do |sample| %>
 
