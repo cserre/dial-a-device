@@ -9,34 +9,11 @@
   <tbody>
       <% @reaction.products.each do |sample| %>
 
-          <% uid = Random.new.rand(1..1000000)  %>
-
           <tr class="fields">
             <td>
-
-
-                <textarea id="molfile_<%= uid %>" name="sample.molecule[molfile]" rows="50" cols="300" style="display:none;"><%= if (!sample.molecule.nil? && !sample.molecule.molfile.nil?) then sample.molecule.molfile end %>dd</textarea>
-
-                <canvas id="viewACS_<%= uid %>">
-                            
-                </canvas>
-
-                <script type="text/javascript">
-
-                  viewACS_<%= uid %>  = new ChemDoodle.ViewerCanvas('viewACS_<%= uid %>', 100, 100);
-                          molfile = document.getElementById("molfile_<%= uid %>").value;
-
-                          molecule = ChemDoodle.readMOL (molfile);
-                          molecule.scaleToAverageBondLength(14.4);
-                          viewACS_<%= uid %>.emptyMessage = "empty";
-                          viewACS_<%= uid %>.specs.atoms_displayTerminalCarbonLabels_2D = true;
-                          viewACS_<%= uid %>.loadMolecule(molecule);
-                
-
-               </script>
-
+              <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
             </td>
-             <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %><br>
+            <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample.molecule do %><%= sample.molecule.title %><% end %><br>
             <%= sample.molecule.formula %>
             </td>
             <td><%= sample.mol %></td>

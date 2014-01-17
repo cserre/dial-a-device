@@ -1,0 +1,52 @@
+<iframe id="ifKetcher" src="/assets/ketcher/ketcher.html" width="800" height="600"></iframe>
+
+
+<form id="moldetailform" action="/molecules/getdetails" method="post">
+
+  <textarea id="pick_molfile" name="molecule[molfile]" rows="50" cols="300" style="display:none;">temporary molfile</textarea>
+
+</form>
+
+<script type="text/javascript">
+
+
+  
+	function getdetails() {
+
+
+    var ketcherFrame = document.getElementById("ifKetcher");
+    var ketcher = null;
+
+    if ("contentDocument" in ketcherFrame)
+      ketcher = ketcherFrame.contentWindow.ketcher;
+    else
+      ketcher = document.frames['ifKetcher'].window.ketcher;
+
+
+		document.getElementById("pick_molfile").value = ( ketcher.getMolfile() );
+
+
+		var url = "/molecules/getdetails"; 
+
+    $.ajax({
+           type: "GET",
+           url: url,
+           data: $("#moldetailform").serialize(), 
+           success: function(data)
+           {
+                updatemolecule (data);
+                document.getElementById("molecule_pick_title").innerHTML = data.title;
+           }
+         });
+
+
+	}
+</script>
+
+<button onclick="getdetails();">Update</button>
+
+<hr>
+
+<div>
+  Selected molecule: <span id="molecule_pick_title">none</span>
+</div>
