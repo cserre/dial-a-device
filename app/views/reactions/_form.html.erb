@@ -178,14 +178,7 @@ function pick_molecule (cid) {
 function done(cid) {
 
 
-  
-  mol = sketcher.getMolecule();
-
-
-  console.log (resultmolecule);
-
-
-  document.getElementsByClassName("molfile_["+cid+"]")[0].value = ChemDoodle.writeMOL(mol);
+  document.getElementsByClassName("molfile_["+cid+"]")[0].value = resultmolecule.molfile;
 
   var content = "<strong>"+ resultmolecule.mass +"</strong><br>"+resultmolecule.title+"<br>"+ resultmolecule.formula;
 
@@ -210,12 +203,13 @@ function done(cid) {
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_spin").value = resultmolecule.spin;
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_charge").value = resultmolecule.charge;
 
+  mol = ChemDoodle.readMOL (resultmolecule.molfile);
 
   mol.scaleToAverageBondLength(14.4);
 
   window["viewACS_"+cid].loadMolecule(mol);
 
-  window.clearInterval(tim);
+  if (!(typeof tim === 'undefined')) { window.clearInterval(tim); }
 
   $('#moleculemodal').modal('hide');
   $('#moleculemodal').removeData('bs.modal');

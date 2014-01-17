@@ -42,20 +42,8 @@
                     <% reaction.products.each_with_index do |product, index| %>
       
 
-                        <textarea id="molfile_<%= product.id %>" name="sample.molecule[molfile]" rows="50" cols="300" style="display:none;"><%= product.molecule.molfile %></textarea>
+                      <%= render "molecules/render", :molecule => product.molecule, :width => "100", :height => "100" %>
 
-                        <span id="molecule_<%= product.id %>">
-                            <script type="text/javascript">
-
-                          viewACS  = new ChemDoodle.ViewerCanvas('viewACS_<%= product.id %>', 100, 100);
-                          molfile = document.getElementById("molfile_<%= product.id %>").value;
-                          molecule = ChemDoodle.readMOL (molfile);
-                          molecule.scaleToAverageBondLength(14.4);
-                          viewACS.specs.atoms_displayTerminalCarbonLabels_2D = true;
-                          viewACS.loadMolecule(molecule);
-
-                            </script>
-                          </span>
 
                     <% end %>
 

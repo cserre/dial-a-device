@@ -1,0 +1,39 @@
+<% uid = Random.new.rand(1..1000000)  %>
+
+<span id="rendermolecule_<%= uid %>">
+
+	<textarea id="molfile_<%= uid %>" name="sample.compound[molfile]" rows="50" cols="300" style="display:none;"><%= molecule.molfile %></textarea>
+
+	<canvas id="viewACS_<%= uid %>">
+                            
+    </canvas>
+                            
+
+                            <script type="text/javascript">
+
+                          viewACS_<%= uid %>  = new ChemDoodle.ViewerCanvas('viewACS_<%= uid %>', <%= width %>, <%= height %>);
+
+                          molfile = document.getElementById("molfile_<%= uid %>").value;
+
+
+                          if (molfile.charCodeAt(molfile.length-1) == 10) {
+
+                          	// ketcher to chemdoodleweb molfile conversion
+
+                          	molfile = molfile.substring(0, molfile.length-1);
+                          	molfile = "\r\n" + molfile;
+
+                          }
+
+                          
+
+                          molecule = ChemDoodle.readMOL (molfile);
+                          molecule.scaleToAverageBondLength(14.4);
+
+                          viewACS_<%= uid %> .specs.atoms_displayTerminalCarbonLabels_2D = true;
+                          viewACS_<%= uid %> .loadMolecule(molecule);
+
+                            </script>
+
+
+</span>

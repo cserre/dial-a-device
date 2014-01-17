@@ -3,24 +3,12 @@
   <%= @molecule.title %><% if !current_user.nil? then %><% if current_user.moleculeowner_of?(@molecule) then %>&nbsp;<%= link_to("Delete", @molecule, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{@molecule.title}.", :class => "btn btn-sm btn-warning") %>&nbsp;<%= link_to("Assign to Project",assign_molecule_path(@molecule), :method => :get, :title => "Assign #{@molecule.title}.", :class => "btn btn-sm btn-info") %><% end %><% end %>
 </h1>
 
-<textarea id="molfile_<%= @molecule.id %>" name="sample.compound[molfile]" rows="50" cols="300" style="display:none;"><%= @molecule.molfile %></textarea>
-
 <table style="border-spacing: 10px; border-collapse: separate;">
   <tr>
 
     <td>
 
-<span id="molecule_<%= @molecule.id %>">
-                            <script type="text/javascript">
-
-                          viewACS  = new ChemDoodle.ViewerCanvas('viewACS_<%= @molecule.id %>', 200, 150);
-                          molfile = document.getElementById("molfile_<%= @molecule.id %>").value;
-                          molecule = ChemDoodle.readMOL (molfile);
-                          molecule.scaleToAverageBondLength(14.4);
-                          viewACS.loadMolecule(molecule);
-
-                            </script>
-</span>
+<%= render "molecules/render", :molecule => @molecule, :width => "200", :height => "150" %>
 
 </td>
 
