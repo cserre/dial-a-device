@@ -39,6 +39,12 @@
   <%= @molecule.mass %>
 </p>
 
+<% if PcCompound.exists?(["inchikey = ?", @molecule.inchikey]) then %>
+
+<p><b>Crosslinks:</b>&nbsp;<%= link_to("http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid="+PcCompound.where(["inchikey = ?", @molecule.inchikey]).first.cid.to_s,  :target => "_blank", :class => "btn btn-xs btn-default") do %><%= image_tag("/pubchem.jpg", :size => "40x12") %><% end %></p>
+
+<% end %>
+
 </td>
 </tr>
 </table>

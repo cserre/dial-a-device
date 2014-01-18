@@ -1,0 +1,13 @@
+<span id="rendermolecule_<%= uid %>">
+
+<% if molecule.nil? then %>
+
+<%= image_tag( '/nopreview.jpg', id: "img_"+uid, height: height, width: width ) %>
+
+<% else %>
+
+<%= image_tag( molecule_path(molecule, format: :svg), id: "img_"+uid, height: height, width: width ) %>
+
+<% end %>
+
+</span>

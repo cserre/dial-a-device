@@ -163,6 +163,8 @@ function pick_molecule (cid) {
 
   globalcid = cid.substr (9, cid.length-1-9);
 
+  globalcid = cid;
+
   $('#moleculemodal').modal({
     remote: '/molecules/pick',
     show: true
@@ -203,12 +205,29 @@ function done(cid) {
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_spin").value = resultmolecule.spin;
   document.getElementById("reaction_"+target+"_attributes_"+cid+"_molecule_attributes_charge").value = resultmolecule.charge;
 
-  mol = ChemDoodle.readMOL (resultmolecule.molfile);
 
-  mol.scaleToAverageBondLength(14.4);
+  // chemdoodleweb rendering
+  if (!(typeof window["viewACS_["+cid+"]"] === "undefined")) {
 
-  window["viewACS_"+cid].loadMolecule(mol);
+    mol = ChemDoodle.readMOL (resultmolecule.molfile);
+    mol.scaleToAverageBondLength(14.4);
 
+    window["viewACS_["+cid+"]"].loadMolecule(mol);
+
+  }
+
+  if (!(typeof window["rendermolecule_["+cid+"]"] === "undefined")) {
+
+    var svgBlob = new Blob([resultmolecule.svg], {type: "image/svg+xml;charset=utf-8"});
+    var url = window.URL.createObjectURL(svgBlob);
+
+    window["img_["+cid+"]"].src = url;
+
+    console.log (resultmolecule.svg);
+  }
+
+
+  // only chemdoodleweb sketcher
   if (!(typeof tim === 'undefined')) { window.clearInterval(tim); }
 
   $('#moleculemodal').modal('hide');
@@ -368,11 +387,20 @@ $(document).ready(function(){
 })
 </script>
 
+<style>
+
+.modal-dialog {
+
+    width: 900px;
+
+}
+
+</style>
 
 
-<div id="moleculemodal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+<div id="moleculemodal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true" >
 
-  <div class="modal-dialog">
+  <div class="modal-dialog" >
     <div class="modal-content">
     <div class="modal-header">
       <h3>Select Molecule</h3>

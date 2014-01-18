@@ -27,9 +27,9 @@
 
             <% end %>
 
-            <canvas id="viewACS_[new_products]" width="100px" height="100px" style="width: 100px; height: 100px;" onclick='if (allowcompoundedit) {pick_molecule(this.id);}'>
-                           
-            </canvas>
+            
+          <%= render "molecules/render", :molecule => f.object.molecule, :width => "100", :height => "100", :uid => "[new_products]" %>
+
 
             
 
@@ -67,18 +67,20 @@ if (uid == "new_products") {
 
   document.getElementsByClassName("molfile_[new_products]")[0].className = 'molfile_['+uid+ ']';
 
-  document.getElementById ('viewACS_[new_products]').id = 'viewACS_['+uid + ']';
+  if (!(typeof document.getElementById ('viewACS_[new_products]') === "undefined")) {
+
+    document.getElementById ('viewACS_[new_products]').id = 'viewACS_['+uid + ']';
+
+  }
+
+  if (!(typeof document.getElementById ('rendermolecule_[new_products]') === "undefined")) {
+
+    document.getElementById ('rendermolecule_[new_products]').id = 'rendermolecule_['+uid + ']';
+  }
+
   document.getElementsByClassName('moldetails_[new_products]')[0].className = 'moldetails_['+uid + ']';
 
 }
 
-window["viewACS_"+uid]  = new ChemDoodle.ViewerCanvas('viewACS_['+uid+']', 100, 100);
-molfile = document.getElementsByClassName('molfile_['+uid+']')[0].value;
-molecule = ChemDoodle.readMOL (molfile);
-molecule.scaleToAverageBondLength(14.4);
-window["viewACS_"+uid].emptyMessage = "empty";
-window["viewACS_"+uid].specs.atoms_displayTerminalCarbonLabels_2D = true;
-window["viewACS_"+uid].loadMolecule(molecule);
-
-pick_molecule ("viewACS_[" + uid+"]");
+pick_molecule (uid);
 </script>
