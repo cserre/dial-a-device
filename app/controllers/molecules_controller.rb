@@ -211,6 +211,11 @@ class MoleculesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @molecule }
+      format.svg { 
+      
+        render :text => @molecule.svg
+
+      }
     end
   end
 

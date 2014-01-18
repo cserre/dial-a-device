@@ -1,4 +1,4 @@
-<iframe id="ifKetcher" src="/assets/ketcher/ketcher.html" width="800" height="600"></iframe>
+<iframe id="ifKetcher" src="/assets/ketcher/ketcher.html" width="800" height="510" onmousemove="getdetailsdelayed();"></iframe>
 
 
 <form id="moldetailform" action="/molecules/getdetails" method="post">
@@ -9,7 +9,18 @@
 
 <script type="text/javascript">
 
+  var tim;
 
+  function getdetailsdelayed() {
+
+    window.clearInterval(tim);
+
+    tim = setInterval(function() {
+
+      getdetails();
+    }, 800);
+
+  }
   
 	function getdetails() {
 
