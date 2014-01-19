@@ -7,7 +7,7 @@ LsiRailsPrototype::Application.routes.draw do
       :root_uri_path => '/virtualdatasets',
       :resource_class => VirtualDataset
 
-    ), :at => '/virtualdatasets'#, :constraints => {:subdomain => "webdav"}
+    ), :at => '/virtualdatasets/'#, :constraints => {:subdomain => "webdav"}
 
    mount DAV4Rack::Handler.new(
 
