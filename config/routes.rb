@@ -15,7 +15,7 @@ LsiRailsPrototype::Application.routes.draw do
       :root_uri_path => '/virtualdatasets',
       :resource_class => VirtualDataset
 
-    ), :at => '/', :constraints => {:subdomain => "webdav"}
+    ), :at => '/virtualdatasets/', :constraints => {:subdomain => "webdav"}
 
 
 
