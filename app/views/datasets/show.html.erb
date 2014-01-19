@@ -310,6 +310,6 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
 <br>
 <%= link_to "WebDAV", "webdav://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/virtualdatasets/"+@dataset.webdavpath %>
 <br>
-<%= link_to "WebDAV in Windows Explorer", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/virtualdatasets/"+@dataset.webdavpath %>
+<%= link_to "WebDAV in Windows Explorer", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/DavWWWRoot/virtualdatasets/"+@dataset.webdavpath %>
 
 
