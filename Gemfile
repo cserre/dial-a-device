@@ -94,7 +94,7 @@ gem 'mini_magick'
 
 gem 'carrierwave_direct'
 
-gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
+gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass'
 
 gem 'bootstrap-wysiwyg-rails'
 
