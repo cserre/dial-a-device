@@ -16,7 +16,7 @@ class VirtualDataset < DAV4Rack::Resource
 
 	  	user.datasets.map do |ds|
 
-	        child beautify(ds.id.to_s+"-"+ds.method + "-" +ds.title)
+	        child ds.webdavpath
 	    end
 
 	elsif _virtualdataset?(file_path) then
@@ -101,11 +101,6 @@ class VirtualDataset < DAV4Rack::Resource
     end
 
 
-    def beautify(path)
-    	newpath = path.gsub("/", "_")
-    	newpath = newpath.gsub(" ", "_")
-    	newpath
-    end
 
     
 

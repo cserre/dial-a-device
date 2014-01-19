@@ -41,9 +41,6 @@
                 </div>
         
 
-
-                <% end %>
-
               </div>
             </div>
       
@@ -309,3 +306,10 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
 <% else %>
 <%= link_to 'Back to reaction', Reaction.find(params[:reaction_id]), :class => "btn btn-sm btn-default" %>
 <% end %>
+
+<br>
+<%= link_to "WebDAV", "webdav://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/virtualdatasets/"+@dataset.webdavpath %>
+<br>
+<%= link_to "WebDAV in Windows Explorer", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/virtualdatasets/"+@dataset.webdavpath %>
+
+
