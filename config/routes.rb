@@ -3,11 +3,11 @@ LsiRailsPrototype::Application.routes.draw do
 
   mount DAV4Rack::Handler.new(
 
-      :root => Rails.root.to_s,
-      :root_uri_path => '/',
+      :root => "/virtualdatasets",
+      :root_uri_path => '/virtualdatasets',
       :resource_class => VirtualDataset
 
-    ), :at => '/', :constraints => {:subdomain => "webdav"}
+    ), :at => '/virtualdatasets'#, :constraints => {:subdomain => "webdav"}
 
 
   resources :libraries do
