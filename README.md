@@ -38,6 +38,10 @@ dial-a-device
 	Restart the postgres server
 
 		sudo service postgresql restart
+		
+* Install additional libraries
+* 
+	sudo apt-get install libpq-dev openbabel imagemagick
 
 * Clone the project and set it up
 
