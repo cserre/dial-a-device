@@ -39,6 +39,19 @@ class Dataset < ActiveRecord::Base
 
   end
 
+
+    def webdavpath
+
+      beautify(self.id.to_s+"-"+self.method + "-" +self.title)
+
+    end
+
+    def beautify(path)
+      newpath = path.gsub("/", "_")
+      newpath = newpath.gsub(" ", "_")
+      newpath
+    end
+
 def preview_url
     if !preview_id.nil? then
       at = Attachment.find(preview_id).first
