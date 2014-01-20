@@ -12,7 +12,7 @@ class VirtualDataset < DAV4Rack::Resource
 
     puts request.env["HTTP_USER_AGENT"]
 
-  	if file_path == options[:root_uri_path].to_s then
+  	if _root?(file_path) then
 
   		# root folder, list all datasets
 
@@ -22,18 +22,18 @@ class VirtualDataset < DAV4Rack::Resource
 	    end
 
 
-	elsif _virtualdataset?(file_path) then
+  	elsif _virtualdataset?(file_path) then
 
-  		datasetstring = file_path.split("/").last
+    		datasetstring = file_path.split("/").last
 
-  		#dataset = Dataset.find(datasetstring.split("-").first)
+    		#dataset = Dataset.find(datasetstring.split("-").first)
 
-  		#dataset.attachments.map do |at|
+    		#dataset.attachments.map do |at|
 
-	    #    child beautify(at.filename)
-	    #end
-	    return []
-	end
+  	    #    child beautify(at.filename)
+  	    #end
+  	    return []
+  	end
 
   end
 
@@ -44,7 +44,7 @@ class VirtualDataset < DAV4Rack::Resource
 
    	  res = false
 
-   	  if file_path == options[:root_uri_path].to_s then res = true end
+      if _root?(file_path) then res = true end
 
    	  if _virtualdataset?(file_path) then res = true end
 
@@ -70,7 +70,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = false
 
-   	  if file_path == options[:root_uri_path].to_s then res = true end
+      if _root?(file_path) then res = true end
 
    	  if _virtualdataset?(file_path) then res = true end
 
@@ -87,7 +87,17 @@ class VirtualDataset < DAV4Rack::Resource
 	  end
 
    def file_path
-      ::File.join(root, path)
+      full = File.join(root, path)
+
+      full = full.sub(options[:root_uri_path], "")
+
+      if full == "" then full = "/" end
+
+      if full[0] == "" then full = "/" end
+
+      puts full
+
+      full
       
     end
 
@@ -105,6 +115,10 @@ class VirtualDataset < DAV4Rack::Resource
       user.try(:valid_password?, password)
    end  
 
+   def _root?(path)
+      path == "/"
+   end
+
 
    def _virtualdataset?(path)
 
@@ -114,7 +128,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = false
 
-      if path.count("/") == options[:root_uri_path].to_s.count("/")+1 && path.split("/").last != "" then res = true end
+      if path.count("/") == 1 then res = true end
 
         puts "----"+res.to_s
         res
