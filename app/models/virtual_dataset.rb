@@ -3,14 +3,6 @@ require 'dav4rack/resources/file_resource'
 class VirtualDataset < DAV4Rack::Resource
 
   def children
-  	#Dir[file_path + '/*'].map do |path|
-  	#	child ::File.basename(path)
-  	#end
-
-  	puts "children?"
-  	puts file_path
-
-    puts request.env["HTTP_USER_AGENT"]
 
   	if _root?(file_path) then
 
@@ -38,10 +30,7 @@ class VirtualDataset < DAV4Rack::Resource
   end
 
   def collection?
-   	  puts "collection?"
-   	  puts file_path
-      puts request.env["HTTP_USER_AGENT"]
-
+   	  
    	  res = false
 
       if _root?(file_path) then res = true end
@@ -50,23 +39,15 @@ class VirtualDataset < DAV4Rack::Resource
 
       if path == "/virtualdatasets/desktop.ini" then res = false end
 
-      puts res
-
       res
-   	  # return res
-
-#     File.directory?(file_path)
-#      @bson && _collection?(@bson['filename'])
     end
 
 
 
     # Does this recource exist?
     def exist?
-#     File.exist?(file_path)
-	  puts "exist?"
-	  puts file_path
-    puts request.env["HTTP_USER_AGENT"]
+
+  	  puts "webdav exist? "+file_path+ "("+request.env["HTTP_USER_AGENT"]+")"
 
       res = false
 
@@ -77,6 +58,7 @@ class VirtualDataset < DAV4Rack::Resource
       if path == "/virtualdatasets/desktop.ini" then res = true end
 
       puts res
+
    	  res
     end
 
@@ -94,8 +76,6 @@ class VirtualDataset < DAV4Rack::Resource
       if full == "" then full = "/" end
 
       if full[0] != "/" then full = "/"+full end
-
-      puts full
 
       full
       
@@ -122,20 +102,12 @@ class VirtualDataset < DAV4Rack::Resource
 
    def _virtualdataset?(path)
 
-      puts "----virtualdataset?"
-      puts "----"+path + " count "+path.count("/").to_s
-      puts "----uri-root " + options[:root_uri_path].to_s
-
       res = false
 
       if path.count("/") == 1 then res = true end
 
-        puts "----"+res.to_s
-        res
+      res
     end
-
-
-
-    
+  
 
 end
