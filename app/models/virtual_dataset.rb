@@ -10,7 +10,7 @@ class VirtualDataset < DAV4Rack::Resource
   	puts "children?"
   	puts file_path
 
-  	if file_path == '/virtualdatasets/' then
+  	if file_path == '/virtualdatasets/davwwwroot' then
 
   		# root folder, list all datasets
 
@@ -40,7 +40,7 @@ class VirtualDataset < DAV4Rack::Resource
 
    	  res = false
 
-   	  if file_path == '/virtualdatasets/' then res = true end
+   	  if file_path == '/virtualdatasets//davwwwroot' then res = true end
 
    	  if _virtualdataset?(file_path) then res = true end
 
@@ -60,7 +60,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = false
 
-   	  if path == '/virtualdatasets/' then res = true end
+   	  if path == '/virtualdatasets/davwwwroot' then res = true end
 
    	  if _virtualdataset?(path) then res = true end
 
@@ -97,7 +97,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       puts path.count("/")
 
-      if path.count("/") == 2 && path.split("/").last != "" then true else false end
+      if path.count("/") == 3 && path.split("/").last != "" then true else false end
     end
 
 
