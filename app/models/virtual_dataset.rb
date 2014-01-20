@@ -10,14 +10,17 @@ class VirtualDataset < DAV4Rack::Resource
   	puts "children?"
   	puts file_path
 
-  	if file_path == '/virtualdatasets/davwwwroot' then
+    puts request.env["HTTP_USER_AGENT"]
+
+  	if file_path == options[:root_uri_path].to_s then
 
   		# root folder, list all datasets
 
 	  	user.datasets.map do |ds|
 
-	        child ds.webdavpath
+	        child ds.webdavpath+"-"+request.env["HTTP_USER_AGENT"].to_s.gsub("/", "-")
 	    end
+
 
 	elsif _virtualdataset?(file_path) then
 
@@ -37,10 +40,11 @@ class VirtualDataset < DAV4Rack::Resource
   def collection?
    	  puts "collection?"
    	  puts file_path
+      puts request.env["HTTP_USER_AGENT"]
 
    	  res = false
 
-   	  if file_path == '/virtualdatasets//davwwwroot' then res = true end
+   	  if file_path == options[:root_uri_path].to_s then res = true end
 
    	  if _virtualdataset?(file_path) then res = true end
 
@@ -57,10 +61,11 @@ class VirtualDataset < DAV4Rack::Resource
 #     File.exist?(file_path)
 	  puts "exist?"
 	  puts file_path
+    puts request.env["HTTP_USER_AGENT"]
 
       res = false
 
-   	  if path == '/virtualdatasets/davwwwroot' then res = true end
+   	  if path == options[:root_uri_path].to_s then res = true end
 
    	  if _virtualdataset?(path) then res = true end
 
@@ -97,7 +102,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       puts path.count("/")
 
-      if path.count("/") == 3 && path.split("/").last != "" then true else false end
+      if path.count("/") == options[:root_uri_path].to_s.count("/")+1 && path.split("/").last != "" then true else false end
     end
 
 
