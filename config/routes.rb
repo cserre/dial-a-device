@@ -4,8 +4,8 @@ LsiRailsPrototype::Application.routes.draw do
   # special webdav handling for windows mini redirector (file explorer)
   mount DAV4Rack::Handler.new(
 
-      :root => "/virtualdatasets",
-      :root_uri_path => '/virtualdatasets/',
+      :root => "/",
+      :root_uri_path => '/davwwwroot',
       :resource_class => VirtualDataset
 
     ), :at => '/', :constraints => {:user_agent => /Microsoft-WebDAV-MiniRedir/}
@@ -14,8 +14,8 @@ LsiRailsPrototype::Application.routes.draw do
   # all the other webdav clients
    mount DAV4Rack::Handler.new(
 
-      :root => "/virtualdatasets",
-      :root_uri_path => '/virtualdatasets/davwwwroot',
+      :root => "/",
+      :root_uri_path => '/davwwwroot',
       :resource_class => VirtualDataset
 
     ), :at => '/davwwwroot/'
