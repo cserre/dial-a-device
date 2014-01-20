@@ -35,6 +35,8 @@ class VirtualDataset < DAV4Rack::Resource
 	    return []
 	end
 
+  return []
+
   end
 
   def collection?
@@ -50,7 +52,10 @@ class VirtualDataset < DAV4Rack::Resource
 
       if path == "/virtualdatasets/desktop.ini" then res = false end
 
-   	  res
+        puts res
+
+      return true
+   	  # return res
 
 #     File.directory?(file_path)
 #      @bson && _collection?(@bson['filename'])
@@ -73,7 +78,8 @@ class VirtualDataset < DAV4Rack::Resource
 
       if path == "/virtualdatasets/desktop.ini" then res = true end
 
-   	  true
+        puts res
+   	  res
     end
 
 
