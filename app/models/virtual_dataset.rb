@@ -18,7 +18,7 @@ class VirtualDataset < DAV4Rack::Resource
 
 	  	user.datasets.map do |ds|
 
-	        child ds.webdavpath+"-"+request.env["HTTP_USER_AGENT"].to_s.gsub("/", "-")
+	        child ds.webdavpath
 	    end
 
 
@@ -69,7 +69,7 @@ class VirtualDataset < DAV4Rack::Resource
 
    	  if _virtualdataset?(path) then res = true end
 
-      if path == "/virtualdatasets/desktop.ini" then res = true end
+      # if path == "/virtualdatasets/desktop.ini" then res = true end
 
    	  true
     end
