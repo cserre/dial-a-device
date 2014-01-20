@@ -7,12 +7,12 @@ LsiRailsPrototype::Application.routes.draw do
       :root_uri_path => '/virtualdatasets',
       :resource_class => VirtualDataset
 
-    ), :at => '/', :constraints => {:user_agent => /Microsoft-WebDAV-MiniRedir/, :subdomain => "webdav"}
+    ), :at => '/', :constraints => {:subdomain => "webdav"}
 
    mount DAV4Rack::Handler.new(
 
       :root => "/virtualdatasets",
-      :root_uri_path => '/virtualdatasets',
+      :root_uri_path => '/virtualdatasets/davwwwroot',
       :resource_class => VirtualDataset
 
     ), :at => '/davwwwroot/'#, :constraints => {:subdomain => "webdav"}
