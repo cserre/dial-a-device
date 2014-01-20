@@ -5,6 +5,8 @@
 
 <h3>Windows Operating System</h3>
 <h4>Prerequisite: Enable basic authentication for WebDAV in Registry</h4>
+<p>Load the following Registry Modification file: <a href="/webdav.reg">webdav.reg</a></p>
+<p>OR perform the required changes manually:</p>
 <p>Open the Registry Editor and browse to "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters".</p>
 <p>Create a new DWORD entry called "BasicAuthLevel" with the value of 2, and restart your computer to apply the changes.</p>
 <br>
