@@ -52,9 +52,9 @@ class VirtualDataset < DAV4Rack::Resource
 
       if path == "/virtualdatasets/desktop.ini" then res = false end
 
-        puts res
+      puts res
 
-      return true
+      res
    	  # return res
 
 #     File.directory?(file_path)
@@ -72,13 +72,13 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = false
 
-   	  if path == options[:root_uri_path].to_s then res = true end
+   	  if file_path == options[:root_uri_path].to_s then res = true end
 
-   	  if _virtualdataset?(path) then res = true end
+   	  if _virtualdataset?(file_path) then res = true end
 
       if path == "/virtualdatasets/desktop.ini" then res = true end
 
-        puts res
+      puts res
    	  res
     end
 
@@ -110,9 +110,9 @@ class VirtualDataset < DAV4Rack::Resource
 
    def _virtualdataset?(path)
 
-      puts "virtualdataset?"
-      puts path + " count "+path.count("/").to_s
-      puts "uri-root " + options[:root_uri_path].to_s
+      puts "----virtualdataset?"
+      puts "----"+path + " count "+path.count("/").to_s
+      puts "----uri-root " + options[:root_uri_path].to_s
 
       if path.count("/") == options[:root_uri_path].to_s.count("/")+1 && path.split("/").last != "" then true else false end
     end
