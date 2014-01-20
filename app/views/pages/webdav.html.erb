@@ -3,25 +3,24 @@
 <p>You can open and edit your datasets on your local computer via WebDAV folders.</p>
 <br>
 
-<h3>Windows Operating System</h3>
+<h2>Windows Operating System</h2>
 <h4>Prerequisite: Enable basic authentication for WebDAV in Registry</h4>
-<p>Load the following Registry Modification file: <a href="/webdav.reg">webdav.reg</a></p>
+<p>Load the following Registry Modification file: <a href="/webdav.reg">webdav.reg</a> and reboot your system.</p>
 <p>OR perform the required changes manually:</p>
 <p>Open the Registry Editor and browse to "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters".</p>
 <p>Create a new DWORD entry called "BasicAuthLevel" with the value of 2, and restart your computer to apply the changes.</p>
 <br>
-<h4>Mount network drive</h4>
-<p>To open datasets in the file explorer, map a network drive.</p>
-<p>Right-click on "Computer", and select "Map network drive...".</p>
-<p>Select a drive letter, and insert the following folder location: <%= "http://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/" %></p>
-<br>
-
 <h4>Open Datasets with browser-link</h4>
 <p>To open datasets directly from the browser, the dial-a-device Website has to be in the Trusted Zone.</p>
 <p>In Internet Explorer, go to Settins --> Internet Options --> Security, select "Truste Sites" and klick on "Sites".</p>
 <p>Add a new entry: "http://<%= LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] %>"</p>
 Check if it works: <%= link_to "Open WebDAV folder", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/", :class => "btn btn-xs btn-success" %>
 
+<br>
+<h2>Mount network drive</h2>
+<p>To open datasets in the file explorer, map a network drive.</p>
+<p>Right-click on "Computer", and select "Map network drive...".</p>
+<p>Select a drive letter, and insert the following folder location: <%= "http://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/" %></p>
 <br>
 <br>
 <h3>Linux Operating System</h3>
