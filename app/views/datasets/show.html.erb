@@ -129,8 +129,8 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
 
 <b>Ubuntu Folder:</b> <%= "dav://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath %><br>
 
-<b>Windows Explorer:</b> <%= "\\\\"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"\\davwwwroot\\"+@dataset.webdavpath %>&nbsp;
-<%= link_to "Open", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath, :class => "btn btn-xs btn-success" %></p>
+<b>Windows Explorer:</b> <%= "\\\\"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"\\DavWWWRoot\\"+@dataset.webdavpath %>&nbsp;
+<%= link_to "Open", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/DavWWWRoot/"+@dataset.webdavpath, :class => "btn btn-xs btn-success" %></p>
 
 <p><%= link_to "Instructions and Informations about WebDAV configuration...", "/webdav", :class => "btn btn-xs  btn-default" %></p>
 
