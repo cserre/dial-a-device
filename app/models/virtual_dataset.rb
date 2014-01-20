@@ -69,6 +69,8 @@ class VirtualDataset < DAV4Rack::Resource
 
    	  if _virtualdataset?(path) then res = true end
 
+      if path == "/virtualdatasets/desktop.ini" then res = true end
+
    	  true
     end
 
