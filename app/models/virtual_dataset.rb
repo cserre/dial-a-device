@@ -93,7 +93,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       if full == "" then full = "/" end
 
-      if full[0] == "" then full = "/" end
+      if full[0] != "/" then full = "/"+full end
 
       puts full
 
