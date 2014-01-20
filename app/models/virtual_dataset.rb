@@ -35,8 +35,6 @@ class VirtualDataset < DAV4Rack::Resource
 	    return []
 	end
 
-  return []
-
   end
 
   def collection?
@@ -114,7 +112,12 @@ class VirtualDataset < DAV4Rack::Resource
       puts "----"+path + " count "+path.count("/").to_s
       puts "----uri-root " + options[:root_uri_path].to_s
 
-      if path.count("/") == options[:root_uri_path].to_s.count("/")+1 && path.split("/").last != "" then true else false end
+      res = false
+
+      if path.count("/") == options[:root_uri_path].to_s.count("/")+1 && path.split("/").last != "" then res = true end
+
+        puts "----"+res.to_s
+        res
     end
 
 
