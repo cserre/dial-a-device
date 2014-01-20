@@ -4,21 +4,26 @@
 <br>
 
 <h3>Windows Operating System</h3>
-<p>Disable SSL requirement in Registry</p>
+<h4>Prerequisite: Enable basic authentication for WebDAV in Registry</h4>
+<p>Open the Registry Editor and browse to "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters".</p>
+<p>Create a new DWORD entry called "BasicAuthLevel" with the value of 2, and restart your computer to apply the changes.</p>
+<br>
 <h4>Mount network drive</h4>
-<p>Mount</p>
+<p>To open datasets in the file explorer, map a network drive.</p>
+<p>Right-click on "Computer", and select "Map network drive...".</p>
+<p>Select a drive letter, and insert the following folder location: <%= "http://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/" %></p>
 <br>
 
 <h4>Open Datasets with browser-link</h4>
-<p>Enable Trusted Zone</p>
+<p>To open datasets directly from the browser, the dial-a-device Website has to be in the Trusted Zone.</p>
+<p>In Internet Explorer, go to Settins --> Internet Options --> Security, select "Truste Sites" and klick on "Sites".</p>
+<p>Add a new entry: "http://<%= LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] %>"</p>
+Check if it works: <%= link_to "Open WebDAV folder", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/", :class => "btn btn-xs btn-success" %>
 
 <br>
 <br>
 <h3>Linux Operating System</h3>
-<h4>Mount network drive</h4>
-<p>Mount</p>
 
-<br>
-
-<h4>Open in File Browser</h4>
-<p>Connect to Server</p>
+<h4>Open Datasets in File Browser</h4>
+<p>Open the file browser, and select File --> Connect to Server.</p>
+<p>Enter: "dav://<%= LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] %>" and Connect.</p>
