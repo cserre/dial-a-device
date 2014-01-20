@@ -5,7 +5,7 @@ LsiRailsPrototype::Application.routes.draw do
   mount DAV4Rack::Handler.new(
 
       :root => "/",
-      :root_uri_path => '/davwwwroot',
+      :root_uri_path => '/DavWWWRoot',
       :resource_class => VirtualDataset
 
     ), :at => '/', :constraints => {:user_agent => /Microsoft-WebDAV-MiniRedir/}
