@@ -124,6 +124,7 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
 <br>
 <br>
 
+<% if @changerights then %><h3>Drag & Drop files and folders from your computer into the browser</h3><% else %><h3>View attached files</h3><p>To edit this dataset, please fork it.</p><% end %>
 
 <div class="well">
 <!-- The file upload form used as target for the file upload widget -->
@@ -181,7 +182,6 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
             </div>
     </form>
 
-<br><div><p>Drag & Drop files here...</p></div>
 </div>
 
 <br/>
@@ -301,15 +301,27 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
 <script src="js/cors/jquery.xdr-transport.js"></script>
 <![endif]-->
 
+<br>
+<div>
+<% if @changerights then %><h3>Open this dataset on your computer (editing possible)</h3><% else %><h3>Open this dataset on your computer (read-only)</h3><p>To edit this dataset, please fork it.</p><% end %>
+
+<p>WebDAV in Firefox: <%= "http://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath %>&nbsp;<%= link_to "WebDAV", "http://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath, :class => "btn btn-success" %></p>
+
+<p>Ubuntu Folder: <%= "dav://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath %></p>
+
+<p>Windows Explorer: <%= "\\\\"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"\\davwwwroot\\"+@dataset.webdavpath %>&nbsp;
+<%= link_to "Open", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/davwwwroot/"+@dataset.webdavpath, :class => "btn btn-success" %></p>
+
+<p><%= link_to "Instructions and Informations about WebDAV configuration...", "/webdav", :class => "btn btn-default" %></p>
+
+</div>
+<br>
+<br>
+
 <% if params[:reaction_id].nil? then %>
 <%= link_to 'Back to molecule', @dataset.molecule, :class => "btn btn-sm btn-default" %>
 <% else %>
 <%= link_to 'Back to reaction', Reaction.find(params[:reaction_id]), :class => "btn btn-sm btn-default" %>
 <% end %>
-
-<br>
-<%= link_to "WebDAV", "webdav://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/virtualdatasets/"+@dataset.webdavpath %>
-<br>
-<%= link_to "WebDAV in Windows Explorer", "file://"+ LsiRailsPrototype::Application.config.action_mailer.default_url_options[:host] +"/DavWWWRoot/virtualdatasets/"+@dataset.webdavpath %>
 
 

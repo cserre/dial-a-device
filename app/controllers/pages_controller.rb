@@ -12,6 +12,12 @@ class PagesController < ApplicationController
     end
   end
 
+  def webdav
+    respond_to do |format|
+      format.html # index.html.erb
+    end
+  end
+
   def connectdevice
     respond_to do |format|
       format.html # index.html.erb
