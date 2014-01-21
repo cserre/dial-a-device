@@ -1,10 +1,13 @@
 LsiRailsPrototype::Application.routes.draw do
 
 
-  # special webdav handling for windows mini redirector (file explorer)
+  # create fake root options for WebDAV-MiniRedir, which needs a successful OPTIONS request
+  match "/" => "virtual_datasets#options", via: [:options]
+
+  # special webdav handling for WebDAV-MiniRedir (file explorer)
   mount DAV4Rack::Handler.new(
 
-      :root => "/",
+      :root => "/davwwwroot",
       :root_uri_path => '/davwwwroot',
       :resource_class => VirtualDataset
 
