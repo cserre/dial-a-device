@@ -25,6 +25,14 @@ class Attachment < ActiveRecord::Base
     h
   end
 
+  def filename?
+    read_attribute(:file)
+  end
+
+  def folder?
+    read_attribute(:folder)
+  end
+
   def to_jq_upload
   {
     "id" => read_attribute(:id),
