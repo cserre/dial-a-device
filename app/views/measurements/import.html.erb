@@ -6,7 +6,8 @@
 
         <h2>Assign reaction</h2>
 
-      	<p><%= Reaction.find(@measurement.reaction_id).name %></p>
+      	<p><% r = Reaction.find_by(:id => @measurement.reaction_id) %>
+        <%= if !r.nil? then r.name else "No reaction." end %></p>
 
 
         <%= form_tag(assign_reaction_measurement_path, method: "post") do |f| %>
@@ -25,7 +26,8 @@
 
         <h2>Assign molecule</h2>
 
-        <%= Molecule.find(@measurement.molecule_id).title %>
+        <% mol = Molecule.find_by(:id => @measurement.molecule_id) %>
+        <%= if !mol.nil? then mol.title else "No molecule." end %>
 
         <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
 
@@ -39,13 +41,23 @@
 
         <% else %>
 
+
         <h2>Assign to existing molecule</h2>
+
+
+        <% if r.products.length == 0 then %>
+
+        <p>You have to add at least one product to the reaction: <%= link_to("Edit "+r.name, edit_reaction_path(r)) %><p>
+
+        <% else %>
 
 
         <%= form_tag(assign_molecule_measurement_path, method: "post") do |f| %>
 
-          <%= select_tag(:molecule_id, options_for_select(Reaction.find(@measurement.reaction_id).products.collect{ |r| [r.molecule.title, r.id] })) %>
+          <%= select_tag(:molecule_id, options_for_select(r.products.collect{ |s| [s.molecule.title, s.molecule.id] })) %>
           <%= submit_tag("Assign to molecule", :class => "btn btn-success") %>
+
+        <% end %>
 
         <% end %>
 
