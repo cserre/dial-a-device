@@ -67,7 +67,12 @@ class Measurement < ActiveRecord::Base
 
     nr = self.dataset.title.scan(/\d+/)
 
-    user.reactions.where(["name ilike ?", "%"+user.sign+"-"+nr.first+"%"]).first.id.to_s
+    r = user.reactions.where(["name ilike ?", "%"+user.sign+"-"+nr.first+"%"]).first
+
+    if !r.nil? then r.id.to_s
+    else
+      ""
+    end
 
   end
   
