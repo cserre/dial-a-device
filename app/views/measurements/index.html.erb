@@ -40,7 +40,8 @@
 
       <td>
       	<% if !(m.molecule_id.nil?) then %>
-      	<%= Molecule.find(m.molecule_id).title %>
+      	<% m = Molecule.find(m.molecule_id) %>
+        <%= if !m.nil? then m.title else "No molecule." end %>
       	<% else %>
       	No molecule.
       	<% end %>
@@ -48,7 +49,8 @@
 
       <td>
       	<% if !(m.reaction_id.nil?) then %>
-      	<%= Reaction.find(m.reaction_id).name %>
+      	<% r = Reaction.find(m.reaction_id).name %>
+        <%= if !r.nil? then r.name else "No reaction." end %>
       	<% else %>
       	No reaction/sample.
       	<% end %>
