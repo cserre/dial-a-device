@@ -54,7 +54,7 @@ class VirtualDataset < DAV4Rack::Resource
 
 
 
-  	  puts "webdav exist? "+file_path+ "("+request.env["HTTP_USER_AGENT"]+")"
+  	  puts "webdav exist? "+file_path+ " ("+request.env["HTTP_USER_AGENT"]+")"
 
       res = false
 
@@ -94,7 +94,12 @@ class VirtualDataset < DAV4Rack::Resource
 
 
     def stat
-      #@stat ||= ::File.stat(file_path)
+
+
+      # @stat ||= ::File.stat(_virtualfile(file_path).file)
+
+      puts "stat"
+      puts  _virtualfile(file_path).filename?
 
     end
 
@@ -135,21 +140,24 @@ class VirtualDataset < DAV4Rack::Resource
 
    end
 
-   def _virtualfile?(path)
-
-    res = false
+   def _virtualfile(path)
 
     ds = _get_dataset(path)
 
       ds.attachments.each do |at|
 
-        if ("/"+at.folder?).starts_with?("/"+_get_subpath(path)) then 
-          res = true
+        if (at.folder?).starts_with?(_get_subpath(path)) then 
+          if at.filename? == path.split("/").last then at end
         end
       end
 
-    return res
+
    end
+
+   def _virtualfile?(path)
+     !_virtualfile(path).nil?
+   end
+
 
    def _get_children(path)
 
@@ -209,30 +217,6 @@ class VirtualDataset < DAV4Rack::Resource
     return res
   end
 
-  
-  def _subdirectory?(path)
-
-    res = false
-
-    if !_root?(path) && !_virtualdataset?(path) then 
-
-
-      ds = _get_dataset(path)
-
-      ds.attachments.each do |at|
-
-        if (at.folder?).starts_with?(get_subpath(path)) then 
-          res = true
-        end
-      end
-      # if attachments exist with _get_subpath(path) is folder? then res = true end
-     
-    end
-
-    puts res
-
-    res
-  end
 
   def ds_children(dataset, pathfilter)
 

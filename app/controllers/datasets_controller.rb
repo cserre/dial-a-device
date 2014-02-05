@@ -84,6 +84,9 @@ class DatasetsController < ApplicationController
 
         measurement.save
 
+
+        @dataset.zipit
+
         
 
       end

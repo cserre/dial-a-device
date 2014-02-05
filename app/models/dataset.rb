@@ -22,6 +22,23 @@ class Dataset < ActiveRecord::Base
 
   # acts_as_list scope: :datasetgroup_dataset
 
+  def zipit
+
+    # create zip file
+
+    puts ziplocation?
+
+  end
+
+  def ziplocation?
+
+    if Rails.env.localserver? then 
+       LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}.zip"
+     else
+       "datasets/#{self.id}.zip"
+     end
+  end
+
   def oai_dc_identifier
   	"http://dx.doi.org/"+doi_identifier
   end
