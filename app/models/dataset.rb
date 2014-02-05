@@ -46,11 +46,60 @@ class Dataset < ActiveRecord::Base
 
     end
 
-    def beautify(path)
+def beautify(path)
       newpath = path.gsub("/", "_")
       newpath = newpath.gsub(" ", "_")
       newpath
+end
+
+def allfolders?
+
+  res = []
+
+  self.attachments.each do |at|
+
+    f = "/"+at.folder?[0..-2]
+
+    if !res.include?(f) then
+
+            res <<f
     end
+
+    f.split("/").each do |nf|
+
+    if !res.include?("/"+nf) then
+
+            res << "/"+nf
+    end
+  end
+  end
+
+  return res
+
+end
+
+def uniquefolders?
+
+  res = []
+
+  self.attachments.each do |at|
+
+    f = at.folder?[0..-1]
+
+    if !res.include?(f) then
+
+      if !f.nil? && f != "" then
+
+            res << f
+
+      end
+    end
+
+  end
+
+  return res
+
+end
 
 def preview_url
     if !preview_id.nil? then

@@ -22,13 +22,17 @@ class VirtualDataset < DAV4Rack::Resource
           child res
         end
   	    
-  	end
+  	else
+      []
+
+    end
+      
 
   end
 
   def collection?
 
-    puts "collection?"
+    puts "collection? " +file_path
    	  
    	  res = false
 
@@ -117,19 +121,34 @@ class VirtualDataset < DAV4Rack::Resource
 
     if !ds.nil?
 
-      if _get_children(path).length > 0 then res = true end
+      ds.uniquefolders?.each do |uf|
+
+        if uf.starts_with?(_get_subpath(path)) then  res = true end
+
+      end
+
+      if _get_subpath(path) == "" then res = true end
 
     end
-
-    puts "subpath " + "/"+path.split("/")[2..-1].join("/")
-    puts res
 
     res
 
    end
 
    def _virtualfile?(path)
-    true
+
+    res = false
+
+    ds = _get_dataset(path)
+
+      ds.attachments.each do |at|
+
+        if ("/"+at.folder?).starts_with?("/"+_get_subpath(path)) then 
+          res = true
+        end
+      end
+
+    return res
    end
 
    def _get_children(path)
@@ -174,7 +193,18 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = elements[2..-1]
 
+      return res.join("/")+"/"
+
     end
+
+    return ""
+  end
+
+  def _get_file(path)
+
+    elements = path.split("/")
+
+    res = elements[-1]
 
     return res
   end
@@ -184,9 +214,6 @@ class VirtualDataset < DAV4Rack::Resource
 
     res = false
 
-    puts "subdirectory? "+path
-    puts "_get_subpath "+"/"+_get_subpath(path).join("/")
-
     if !_root?(path) && !_virtualdataset?(path) then 
 
 
@@ -194,7 +221,7 @@ class VirtualDataset < DAV4Rack::Resource
 
       ds.attachments.each do |at|
 
-        if ("/"+at.folder?).starts_with?("/"+_get_subpath(path).join("/")) then 
+        if (at.folder?).starts_with?(get_subpath(path)) then 
           res = true
         end
       end
@@ -211,25 +238,38 @@ class VirtualDataset < DAV4Rack::Resource
 
     res = []
 
-    # list all attachments with folder matching the exact pathfilter
+    dataset.uniquefolders?.each do |uf|
+
+      if uf.starts_with?(pathfilter) then
+
+        # if it's the next level, display it
+
+        if uf[pathfilter.length..-1].split("/").length > 0 then
+
+          nextlevel = uf[pathfilter.length..-1].split("/")[0]
+
+          if !nextlevel.in?(res) then
+
+            res << nextlevel
+
+          end
+
+        end
+      end
+
+    end
 
     dataset.attachments.map do |at|
 
-      puts at.filename?
+      checkfolder = at.folder?
 
-        if pathfilter == "/"+at.folder? then res << at.filename?
+        if pathfilter == checkfolder then 
 
-        elsif ("/"+at.folder?).starts_with?(pathfilter) then 
-
-          if !res.include?(("/"+at.folder?).split("/")[1]) then
-            res << ("/"+at.folder?).split("/")[1]
-          end
+          res << at.filename?
 
         end
 
     end
-
-    puts res
 
     res
   end
