@@ -78,6 +78,18 @@ dial-a-device
 
 		rvmsudo foreman export upstart /etc/init -f Procfile.localserver -a dial-a-devie -u yourusername
 		
+* Enable port forwarding
+		iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 5000
+
+* Make iptables permanent
+		sudo su
+		iptables-save > /etc/iptables.conf
+
+		nano /etc/network/interfaces
+		
+		-- add this line after each adapter:
+		post-up iptables-restore < /etc/iptables.conf
+		
 ## deploy on heroku
 
 * create an account on heroku and install toolbelt
