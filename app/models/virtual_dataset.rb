@@ -22,13 +22,17 @@ class VirtualDataset < DAV4Rack::Resource
           child res
         end
   	    
-  	end
+  	else
+      []
+
+    end
+      
 
   end
 
   def collection?
 
-    puts "collection?"
+    puts "collection? " +file_path
    	  
    	  res = false
 
@@ -50,7 +54,7 @@ class VirtualDataset < DAV4Rack::Resource
 
 
 
-  	  puts "webdav exist? "+file_path+ "("+request.env["HTTP_USER_AGENT"]+")"
+  	  puts "webdav exist? "+file_path+ " ("+request.env["HTTP_USER_AGENT"]+")"
 
       res = false
 
@@ -90,9 +94,121 @@ class VirtualDataset < DAV4Rack::Resource
 
 
     def stat
-      #@stat ||= ::File.stat(file_path)
+      stat = ::File.stat( LsiRailsPrototype::Application.config.datasetroot)
+
+      if _root?(file_path) then 
+
+      elsif _virtualdataset?(file_path) then 
+
+      elsif _virtualfolder?(file_path) then 
+
+      elsif _virtualfile?(file_path) then stat = ::File.stat( LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s ) end
+
+        return stat
+    end
+
+
+
+    # Return the creation time.
+    def creation_date
+      stat.ctime
+    end
+
+
+    # Return the time of last modification.
+    def last_modified
+      stat.mtime
+    end
+
+
+    # Set the time of last modification.
+    def last_modified=(time)
+      ::File.utime(Time.now, time, LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
+    end
+
+
+    # Return an Etag, an unique hash value for this resource.
+    def etag
+      sprintf('%x-%x-%x', stat.ino, stat.size, stat.mtime.to_i)
+    end
+
+
+    # Return the mime type of this resource.
+    def content_type
+      if stat.directory?
+        "text/html"
+      else
+        #mime_type(file_path, DefaultMimeTypes)
+        "text/plain"
+      end
+    end
+
+
+    # Return the size in bytes for this resource.
+    def content_length
+      stat.size
+    end
+
+
+
+  def get(request, response)
+      #raise NotFound unless exist?
+#     if stat.directory?
+#       response.body = ""
+#       Rack::Directory.new(root).call(request.env)[2].each do |line|
+#         response.body << line
+#       end
+#       response['Content-Length'] = response.body.size.to_s
+#     else
+#       file = Rack::File.new(root)
+#       response.body = file
+#     end
+      if collection?
+        response.body = "<html>"
+        response.body << "<h2>" + file_path.html_safe + "</h2>"
+        children.each do |child|
+          name = child.file_path.html_safe
+          path = child.public_path
+          response.body << "<a href='" + path + "'>" + name + "</a>"
+          response.body << "</br>"
+        end
+        response.body << "</html>"
+        response['Content-Length'] = response.body.size.to_s
+        response['Content-Type'] = 'text/html'
+      else
+
+
+        puts "open file " + LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
+
+      File.open(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s, 'r') do |f|
+
+       # response.body = f
+
+          f.lines.each do |l|
+             response.body << l
+          end
+        
+
+        end
+
+        #localfile = LsiRailsPrototype::Application.config.datasetroot+ _virtualfile(file_path).file.to_s
+
+   # puts localfile
+  
+
+       #file = Rack::File.new(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
+       # puts file.to_s
+
+       #response.body = file
+    
+      end
+
+      puts "serving..."
+
+      OK
 
     end
+
 
 
   private
@@ -117,20 +233,51 @@ class VirtualDataset < DAV4Rack::Resource
 
     if !ds.nil?
 
-      if _get_children(path).length > 0 then res = true end
+      ds.uniquefolders?.each do |uf|
+
+        if uf.starts_with?(_get_subpath(path)) then  res = true end
+
+      end
+
+      if _get_subpath(path) == "" then res = true end
 
     end
-
-    puts "subpath " + "/"+path.split("/")[2..-1].join("/")
-    puts res
 
     res
 
    end
 
-   def _virtualfile?(path)
-    true
+   def _virtualfile(path)
+
+    res = nil
+
+    ds = _get_dataset(path)
+
+      ds.attachments.each do |at|
+
+        puts "get subpath "+_get_subpathoffile(path)
+        puts "path "+path
+
+        if (at.folder?).starts_with?(_get_subpathoffile(path)) || (_get_subpathoffile(path) == "")  then 
+
+          if at.filename? == path.split("/").last then 
+
+            res = at
+
+          end
+        end
+      end
+
+
+      res
+
+
    end
+
+   def _virtualfile?(path)
+     !_virtualfile(path).nil?
+   end
+
 
    def _get_children(path)
 
@@ -174,62 +321,76 @@ class VirtualDataset < DAV4Rack::Resource
 
       res = elements[2..-1]
 
+      return res.join("/")+"/"
+
     end
+
+    return ""
+  end
+
+  def _get_subpathoffile(path)
+
+    elements = path.split("/")
+
+    res = []
+
+    if elements.count > 3 then 
+
+      res = elements[2..-2]
+
+      return res.join("/")+"/"
+
+    end
+
+    return ""
+  end
+
+  def _get_file(path)
+
+    elements = path.split("/")
+
+    res = elements[-1]
 
     return res
   end
 
-  
-  def _subdirectory?(path)
-
-    res = false
-
-    puts "subdirectory? "+path
-    puts "_get_subpath "+"/"+_get_subpath(path).join("/")
-
-    if !_root?(path) && !_virtualdataset?(path) then 
-
-
-      ds = _get_dataset(path)
-
-      ds.attachments.each do |at|
-
-        if ("/"+at.folder?).starts_with?("/"+_get_subpath(path).join("/")) then 
-          res = true
-        end
-      end
-      # if attachments exist with _get_subpath(path) is folder? then res = true end
-     
-    end
-
-    puts res
-
-    res
-  end
 
   def ds_children(dataset, pathfilter)
 
     res = []
 
-    # list all attachments with folder matching the exact pathfilter
+    dataset.uniquefolders?.each do |uf|
+
+      if uf.starts_with?(pathfilter) then
+
+        # if it's the next level, display it
+
+        if uf[pathfilter.length..-1].split("/").length > 0 then
+
+          nextlevel = uf[pathfilter.length..-1].split("/")[0]
+
+          if !nextlevel.in?(res) then
+
+            res << nextlevel
+
+          end
+
+        end
+      end
+
+    end
 
     dataset.attachments.map do |at|
 
-      puts at.filename?
+      checkfolder = at.folder?
 
-        if pathfilter == "/"+at.folder? then res << at.filename?
+        if pathfilter == checkfolder then 
 
-        elsif ("/"+at.folder?).starts_with?(pathfilter) then 
-
-          if !res.include?(("/"+at.folder?).split("/")[1]) then
-            res << ("/"+at.folder?).split("/")[1]
-          end
+          res << at.filename?
 
         end
 
     end
-
-    puts res
 
     res
   end

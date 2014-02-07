@@ -22,6 +22,23 @@ class Dataset < ActiveRecord::Base
 
   # acts_as_list scope: :datasetgroup_dataset
 
+  def zipit
+
+    # create zip file
+
+    puts ziplocation?
+
+  end
+
+  def ziplocation?
+
+    if Rails.env.localserver? then 
+       LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}.zip"
+     else
+       "datasets/#{self.id}.zip"
+     end
+  end
+
   def oai_dc_identifier
   	"http://dx.doi.org/"+doi_identifier
   end
@@ -46,11 +63,60 @@ class Dataset < ActiveRecord::Base
 
     end
 
-    def beautify(path)
+def beautify(path)
       newpath = path.gsub("/", "_")
       newpath = newpath.gsub(" ", "_")
       newpath
+end
+
+def allfolders?
+
+  res = []
+
+  self.attachments.each do |at|
+
+    f = "/"+at.folder?[0..-2]
+
+    if !res.include?(f) then
+
+            res <<f
     end
+
+    f.split("/").each do |nf|
+
+    if !res.include?("/"+nf) then
+
+            res << "/"+nf
+    end
+  end
+  end
+
+  return res
+
+end
+
+def uniquefolders?
+
+  res = []
+
+  self.attachments.each do |at|
+
+    f = at.folder?[0..-1]
+
+    if !res.include?(f) then
+
+      if !f.nil? && f != "" then
+
+            res << f
+
+      end
+    end
+
+  end
+
+  return res
+
+end
 
 def preview_url
     if !preview_id.nil? then
