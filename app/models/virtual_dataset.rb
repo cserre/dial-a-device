@@ -2,6 +2,15 @@ require 'dav4rack/resources/file_resource'
 
 class VirtualDataset < DAV4Rack::Resource
 
+
+  def initialize(public_path, path, request, response, options)
+
+    super(public_path, path, request, response, options)
+
+
+
+  end
+
   def children
 
   puts "------------ children? "+file_path
@@ -32,7 +41,9 @@ class VirtualDataset < DAV4Rack::Resource
 
   def collection?
 
-    puts "------------ collection? " +file_path
+    if @collection.nil? then
+
+      puts "------------ collection? " +file_path
    	  
    	  res = false
 
@@ -44,7 +55,10 @@ class VirtualDataset < DAV4Rack::Resource
 
       if path == "/desktop.ini" then res = false end
 
-      res
+    end
+
+    @collection ||= res
+
     end
 
 
@@ -95,18 +109,18 @@ class VirtualDataset < DAV4Rack::Resource
 
     def stat
 
-      puts "---- stat "+file_path
-      stat = ::File.stat( LsiRailsPrototype::Application.config.datasetroot)
+      if @stat.nil? then
 
-      if _root?(file_path) then 
+        if _virtualfile?(file_path) then 
 
-      elsif _virtualdataset?(file_path) then 
+          @stat ||= ::File.stat( LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s )
 
-      elsif _virtualfolder?(file_path) then 
+        end
+        
+      end
 
-      elsif _virtualfile?(file_path) then stat = ::File.stat( LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s ) end
+      @stat ||= ::File.stat( LsiRailsPrototype::Application.config.datasetroot)
 
-        return stat
     end
 
 
@@ -174,17 +188,7 @@ class VirtualDataset < DAV4Rack::Resource
   def get(request, response)
 
     puts "serve "+path
-      #raise NotFound unless exist?
-#     if stat.directory?
-#       response.body = ""
-#       Rack::Directory.new(root).call(request.env)[2].each do |line|
-#         response.body << line
-#       end
-#       response['Content-Length'] = response.body.size.to_s
-#     else
-#       file = Rack::File.new(root)
-#       response.body = file
-#     end
+
       if collection?
         response.body = "<html>"
         response.body << "<h2>" + file_path.html_safe + "</h2>"
@@ -199,35 +203,7 @@ class VirtualDataset < DAV4Rack::Resource
         response['Content-Type'] = 'text/html'
       else
 
-
-        puts "open file " + LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
-
         response.body = read
-
-      #File.open(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s, 'r') do |f|
-
-        #response.each do |chunk|
-        #  trace {chunk}
-        #  send_data f.read(1024)
-       # end
-        #response.body = f.read
-
-         # f.lines.each do |l|
-         #    response.body << l
-         # end
-        
-
-       # end
-
-        #localfile = LsiRailsPrototype::Application.config.datasetroot+ _virtualfile(file_path).file.to_s
-
-   # puts localfile
-  
-
-       #file = Rack::File.new(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
-       # puts file.to_s
-
-       #response.body = file
     
       end
 
@@ -239,7 +215,7 @@ class VirtualDataset < DAV4Rack::Resource
 
     def read
       io = ""
-      tempfile=LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
+      tempfile = LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
       puts "read "+tempfile
 
       open(tempfile, "rb") do |file|
@@ -270,13 +246,14 @@ class VirtualDataset < DAV4Rack::Resource
 
     puts "virtualfolder? "+path
 
-    ds = _get_dataset (path)
+
+    @ds ||= _get_dataset (path)
 
     res = false
 
-    if !ds.nil?
+    if !@ds.nil?
 
-      ds.uniquefolders?.each do |uf|
+      @ds.uniquefolders?.each do |uf|
 
         if uf.starts_with?(_get_subpath(path)) then  res = true end
 
@@ -292,13 +269,17 @@ class VirtualDataset < DAV4Rack::Resource
 
    def _virtualfile(path)
 
+    if @virtualfile.nil? then
+
     puts "virtualfile? "+path
 
     res = nil
 
-    ds = _get_dataset(path)
+    if !_root?(path) then
 
-      ds.attachments.each do |at|
+      @ds ||= _get_dataset(path)
+
+      @ds.attachments.each do |at|
 
 
         if (at.folder?).starts_with?(_get_subpathoffile(path)) || (_get_subpathoffile(path) == "")  then 
@@ -311,8 +292,12 @@ class VirtualDataset < DAV4Rack::Resource
         end
       end
 
+    end
 
-      res
+    end
+
+
+    @virtualfile ||= res
 
 
    end
@@ -326,11 +311,11 @@ class VirtualDataset < DAV4Rack::Resource
 
     puts "get children "+path
 
-    ds = _get_dataset(path)
+    @ds ||= _get_dataset(path)
 
-    if !ds.nil? then
+    if !@ds.nil? then
 
-      ds_children(ds, _get_subpath(path))
+      ds_children(@ds, _get_subpath(path))
 
     end
 
