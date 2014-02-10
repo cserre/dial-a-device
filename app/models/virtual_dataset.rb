@@ -179,7 +179,8 @@ class VirtualDataset < DAV4Rack::Resource
           file << part
         end
       end
-      ::File.rename(tempfile, LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
+
+      FileUtils.cp(tempfile, LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
 
     ensure
       ::File.unlink(tempfile) rescue nil
