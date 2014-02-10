@@ -19,7 +19,7 @@ class VirtualDataset < DAV4Rack::Resource
 
   		# root folder, list all datasets
 
-	  	user.datasets.map do |ds|
+	  	user.datasets.order("datasets.created_at DESC").limit(100).map do |ds|
 
 	        child ds.webdavpath
 	    end
