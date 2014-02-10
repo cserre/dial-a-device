@@ -4,7 +4,7 @@ class VirtualDataset < DAV4Rack::Resource
 
   def children
 
-  puts "children?"
+  puts "------------ children? "+file_path
 
   	if _root?(file_path) then
 
@@ -32,7 +32,7 @@ class VirtualDataset < DAV4Rack::Resource
 
   def collection?
 
-    puts "collection? " +file_path
+    puts "------------ collection? " +file_path
    	  
    	  res = false
 
@@ -54,7 +54,7 @@ class VirtualDataset < DAV4Rack::Resource
 
 
 
-  	  puts "webdav exist? "+file_path+ " ("+request.env["HTTP_USER_AGENT"]+")"
+  	  puts "------------ exist? "+file_path+ " ("+request.env["HTTP_USER_AGENT"]+")"
 
       res = false
 
@@ -94,6 +94,8 @@ class VirtualDataset < DAV4Rack::Resource
 
 
     def stat
+
+      puts "---- stat "+file_path
       stat = ::File.stat( LsiRailsPrototype::Application.config.datasetroot)
 
       if _root?(file_path) then 
@@ -150,8 +152,28 @@ class VirtualDataset < DAV4Rack::Resource
     end
 
 
+    def put(request, response)
+      write(request.body)
+      Created
+    end
+
+    def write(io)
+      tempfile="#{Process.pid}.#{object_id}"
+      puts "write "+tempfile
+      open(tempfile, "wb") do |file|
+        while part = io.read(8192)
+          file << part
+        end
+      end
+      ::File.rename(tempfile, LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
+
+    ensure
+      ::File.unlink(tempfile) rescue nil
+    end
 
   def get(request, response)
+
+    puts "serve "+path
       #raise NotFound unless exist?
 #     if stat.directory?
 #       response.body = ""
@@ -180,16 +202,22 @@ class VirtualDataset < DAV4Rack::Resource
 
         puts "open file " + LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
 
-      File.open(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s, 'r') do |f|
+        response.body = read
 
-       # response.body = f
+      #File.open(LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s, 'r') do |f|
 
-          f.lines.each do |l|
-             response.body << l
-          end
+        #response.each do |chunk|
+        #  trace {chunk}
+        #  send_data f.read(1024)
+       # end
+        #response.body = f.read
+
+         # f.lines.each do |l|
+         #    response.body << l
+         # end
         
 
-        end
+       # end
 
         #localfile = LsiRailsPrototype::Application.config.datasetroot+ _virtualfile(file_path).file.to_s
 
@@ -209,6 +237,19 @@ class VirtualDataset < DAV4Rack::Resource
 
     end
 
+    def read
+      io = ""
+      tempfile=LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s
+      puts "read "+tempfile
+
+      open(tempfile, "rb") do |file|
+        while part = file.read(8192)
+          io << part
+        end
+      end
+      io
+    end
+
 
 
   private
@@ -226,6 +267,8 @@ class VirtualDataset < DAV4Rack::Resource
 
 
    def _virtualfolder?(path)
+
+    puts "virtualfolder? "+path
 
     ds = _get_dataset (path)
 
@@ -249,14 +292,14 @@ class VirtualDataset < DAV4Rack::Resource
 
    def _virtualfile(path)
 
+    puts "virtualfile? "+path
+
     res = nil
 
     ds = _get_dataset(path)
 
       ds.attachments.each do |at|
 
-        puts "get subpath "+_get_subpathoffile(path)
-        puts "path "+path
 
         if (at.folder?).starts_with?(_get_subpathoffile(path)) || (_get_subpathoffile(path) == "")  then 
 
