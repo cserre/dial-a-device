@@ -90,7 +90,11 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'createdirect', :on => :collection, as: :create_direct, :to => "datasets#create_direct"
 
+
+    get ':folder/:filename.:extension', :to => 'attachments#serve'
+    get ':folder/:filename', :to => 'attachments#serve'
     get ':filename.:extension', :to => 'attachments#serve'
+    get ':filename', :to => 'attachments#serve'
 
   end
 

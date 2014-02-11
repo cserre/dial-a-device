@@ -31,7 +31,25 @@ class AttachmentsController < ApplicationController
     end
   end
 
+  def _get_subpathoffile(path)
+
+    elements = path.split("/")
+
+    res = []
+
+    if elements.count > 3 then 
+
+      res = elements[2..-2]
+
+      return res.join("/")+"/"
+
+    end
+
+    return ""
+  end
+
   def serve
+    puts "serve"
     @dataset = Dataset.find(params[:dataset_id])
 
     if params[:extension].blank? then
@@ -40,14 +58,50 @@ class AttachmentsController < ApplicationController
       fn = params[:filename]+"."+params[:extension]
     end
 
-    # fn = "datasets/#{@dataset.id}" + fn
+    if params[:folder].blank? then
+      folder = ""
+    else
+      folder = params[:folder]+"/"
+    end
+
+
+    puts "folder "+folder
+
+    filename = fn.split("/").last
+
+    puts "filename "+filename
+
+    version = nil
+
+    puts "serve folder "+folder+"-"+filename
+
+
+    puts "full name "+fn
     
-    @attachment = @dataset.attachments.where(["file = ?", fn]).first
+    @attachment = @dataset.attachments.where(["file = ? and folder = ?", filename, folder]).first
+
+    if @attachment.nil? then 
+
+      
+
+      if !filename.split("_").first.nil? then
+        version = filename.split("_").first
+        filename = filename.split("_")[1..-1].compact.join("_")
+
+        puts "version "+version
+        puts "newfilename "+filename
+        
+      end
+
+      @attachment = @dataset.attachments.where(["file = ? and folder = ?", filename, folder]).first
+
+    end
+
     authorize @attachment
 
-    localfile = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{@dataset.id}/#{fn}"
+    localfile = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{@dataset.id}/#{folder}#{[version, filename].compact.join("_")}"
 
-    puts localfile
+    # puts localfile
     
     send_file localfile
   end
