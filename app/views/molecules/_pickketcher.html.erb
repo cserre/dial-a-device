@@ -17,12 +17,12 @@
 
     tim = setInterval(function() {
 
-      getdetails();
+      getdetails(false);
     }, 800);
 
   }
   
-	function getdetails() {
+	function getdetails(closeafterwards) {
 
 
     var ketcherFrame = document.getElementById("ifKetcher");
@@ -47,6 +47,9 @@
            {
                 updatemolecule (data);
                 document.getElementById("molecule_pick_title").innerHTML = data.title;
+                if (closeafterwards == true ) {
+                  done(globalcid);
+                }
            }
          });
 
@@ -54,7 +57,7 @@
 	}
 </script>
 
-<button onclick="getdetails();">Update</button>
+<button onclick="getdetails(false);">Update</button>
 
 <hr>
 
