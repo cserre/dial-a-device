@@ -74,6 +74,8 @@ LsiRailsPrototype::Application.routes.draw do
 
   resources :datasets do
 
+    get 'zip', on: :member
+
     get 'fork', on: :member
     post 'commit', on: :member
     get 'assign', on: :member
