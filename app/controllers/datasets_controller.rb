@@ -127,7 +127,7 @@ class DatasetsController < ApplicationController
     Zip::OutputStream.open(temp_file.path) { |zos| 
 
       @dataset.attachments.each do |a|
-        zos.put_next_entry(a.filename?)
+        zos.put_next_entry(a.folder?+a.filename?)
         zos.print a.file.read
       end
     }
