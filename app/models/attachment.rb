@@ -26,11 +26,11 @@ class Attachment < ActiveRecord::Base
   end
 
   def filename?
-    read_attribute(:file)
+    if read_attribute(:file).nil? then "" else read_attribute(:file) end
   end
 
   def folder?
-    read_attribute(:folder)
+    if read_attribute(:folder).nil? then "" else read_attribute(:folder) end
   end
 
   def to_jq_upload
