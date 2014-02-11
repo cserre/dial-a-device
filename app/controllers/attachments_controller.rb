@@ -88,8 +88,7 @@ class AttachmentsController < ApplicationController
         version = filename.split("_").first
         filename = filename.split("_")[1..-1].compact.join("_")
 
-        puts "version "+version
-        puts "newfilename "+filename
+        type = "image/png"
         
       end
 
@@ -103,7 +102,11 @@ class AttachmentsController < ApplicationController
 
     Rails.logger.info "serving "+localfile
     
-    send_file localfile
+    if type.nil? then
+      send_file localfile
+    else 
+      send_file localfile, :type => type
+    end
   end
 
   # GET /attachments/new
