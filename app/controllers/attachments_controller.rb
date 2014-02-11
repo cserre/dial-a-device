@@ -101,7 +101,7 @@ class AttachmentsController < ApplicationController
 
     localfile = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{@dataset.id}/#{folder}#{[version, filename].compact.join("_")}"
 
-    # puts localfile
+    Rails.logger.info "serving "+localfile
     
     send_file localfile
   end
