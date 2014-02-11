@@ -33,8 +33,10 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 
   def url(options={})
+    "thumb?"
+    puts options
      if Rails.env.localserver? then 
-       "/datasets/#{model.dataset_id}/#{model.folder}#{File.basename(model.file.path.to_s)}"
+       "/datasets/#{model.dataset_id}/#{model.folder}#{[version_name, File.basename(model.file.path.to_s)].compact.join('_')}"
      else
        super(options)
      end
@@ -89,13 +91,8 @@ class AttachmentUploader < CarrierWave::Uploader::Base
 
     extensions = %w(jpg jpeg gif png pdf)
 
-    if !File.extname(new_file.path.to_s).nil? then
-
     extension = File.extname(new_file.path.to_s).downcase
     extension = extension[1..-1] if extension[0,1] == '.'
-
-    else extension = ""
-    end
 
     extensions.include?(extension)
 
