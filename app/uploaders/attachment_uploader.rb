@@ -89,8 +89,13 @@ class AttachmentUploader < CarrierWave::Uploader::Base
 
     extensions = %w(jpg jpeg gif png pdf)
 
+    if !File.extname(new_file.path.to_s).nil? then
+
     extension = File.extname(new_file.path.to_s).downcase
     extension = extension[1..-1] if extension[0,1] == '.'
+
+    else extension = ""
+    end
 
     extensions.include?(extension)
 

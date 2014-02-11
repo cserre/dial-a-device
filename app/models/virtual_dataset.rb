@@ -1,7 +1,10 @@
 require 'dav4rack/resources/file_resource'
 
+
+
 class VirtualDataset < DAV4Rack::Resource
 
+  include Pundit
 
   def initialize(public_path, path, request, response, options)
 
@@ -172,7 +175,8 @@ class VirtualDataset < DAV4Rack::Resource
     end
 
     def write(io)
-      tempfile="#{Process.pid}.#{object_id}"
+      tempfile=file_path.split("/").last
+
       puts "write "+tempfile
       open(tempfile, "wb") do |file|
         while part = io.read(8192)
@@ -180,7 +184,36 @@ class VirtualDataset < DAV4Rack::Resource
         end
       end
 
-      FileUtils.cp(tempfile, LsiRailsPrototype::Application.config.datasetroot + _virtualfile(file_path).file.to_s)
+      at = _virtualfile(file_path)
+      
+      if !at.nil? then
+
+        at.file = File.new(tempfile)
+        at.save
+
+      else
+
+        @ds ||= _get_dataset(path)
+
+        folder = _get_subpathoffile(file_path)
+
+        filename = file_path.split("/").last
+
+        puts "create new "+LsiRailsPrototype::Application.config.datasetroot + "datasets/"+@ds.id.to_s+"/"+folder+filename
+
+
+        @attachment = @ds.attachments.build(:folder => folder)
+
+        authorize @attachment, :create?
+
+        @attachment.file = File.new(tempfile)
+
+        
+
+
+        @attachment.save
+
+      end
 
     ensure
       ::File.unlink(tempfile) rescue nil
@@ -230,12 +263,17 @@ class VirtualDataset < DAV4Rack::Resource
 
 
   private
+
+  def current_user
+    @current_user
+  end
   
    def authenticate(username, password)
 
       
       self.user = User.where(["email = ?", username]).first
       user.try(:valid_password?, password)
+      @current_user = self.user
    end  
 
    def _root?(path)
