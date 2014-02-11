@@ -1,5 +1,7 @@
 class DatasetsController < ApplicationController
 
+  require 'zip'
+
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
 
   # GET /datasets
@@ -112,6 +114,28 @@ class DatasetsController < ApplicationController
       format.html { render :template => "datasets/index" }
       format.json { render json: @datasets }
     end
+  end
+
+  def zip
+
+    @dataset = Dataset.find(params[:id])
+
+    authorize @dataset, :show?
+
+    temp_file = Tempfile.new(@dataset.id.to_s+".zip")
+
+    Zip::OutputStream.open(temp_file.path) { |zos| 
+
+      @dataset.attachments.each do |a|
+        zos.put_next_entry(a.filename?)
+        zos.print a.file.read
+      end
+    }
+
+    temp_file.close
+
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => @dataset.webdavpath.to_s+".zip")
+
   end
 
   # GET /datasets/1
