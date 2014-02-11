@@ -105,7 +105,7 @@ class AttachmentsController < ApplicationController
     if type.nil? then
       send_file localfile
     else 
-      send_file localfile, :type => type
+      send_file localfile, :type => type, :disposition => :inline
     end
   end
 
