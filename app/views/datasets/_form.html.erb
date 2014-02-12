@@ -25,14 +25,22 @@
 
       ['13C NMR DMSO 62.5', 'NMR/13C/DMSO/62.5'], ['13C NMR DMSO 75', 'NMR/13C/DMSO/75'], ['13C NMR DMSO 100', 'NMR/13C/DMSO/100'], 
 
-      ['19F NMR CDCl3 367', 'NMR/19F/CDCl3/367'], ['19F NMR MeOD 367', 'NMR/19F/MeOD/367'], ['19F NMR C6D6 367', 'NMR/19F/C6D6/367'], 
+      ['19F NMR acetone 400', 'NMR/19F/acetone/400'],['19F NMR CDCl3 367', 'NMR/19F/CDCl3/367'], ['19F NMR MeOD 367', 'NMR/19F/MeOD/367'], ['19F NMR C6D6 367', 'NMR/19F/C6D6/367'], 
+
+      ['H-H COSY NMR CDCl3', 'NMR/HHCOSY/CDCl3'],
+      ['H-H COSY NMR DMSO', 'NMR/HHCOSY/DMSO'],
+      ['H-H COSY NMR methanol', 'NMR/HHCOSY/methanol'],
+
+      ['H-C COSY NMR CDCl3', 'NMR/HCCOSY/CDCl3'],
+      ['H-C COSY NMR DMSO', 'NMR/HCCOSY/DMSO'],
+      ['H-C COSY NMR methanol', 'NMR/HCCOSY/methanol'],
 
 
       ['DEPT 135', 'DEPT/135'], ['DEPT 90', 'DEPT/90'], ['DEPT 45', 'DEPT/45'],
 
       ['IR', 'IR'], 
 
-      ['Mass EI', 'Mass/EI'], ['Mass GCMS', 'Mass/GCMS'], ['Raman', 'Raman'], ['UV-VIS', 'UV-VIS'], ['TLC', 'TLC'], ['Xray', 'Xray']], f.object.method) %>
+      ['Mass EI', 'Mass/EI'], ['Mass GCMS', 'Mass/GCMS'], ['Raman', 'Raman'], ['UV-VIS', 'UV-VIS'], ['TLC', 'TLC'], ['Xray', 'Xray'], ['Additional material', 'additional']], f.object.method) %>
     </p>
 
     <%= f.input :title, :value => "Dataset" %>
