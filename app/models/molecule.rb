@@ -21,7 +21,7 @@ class Molecule < ActiveRecord::Base
       c=OpenBabel::OBConversion.new
         c.set_out_format 'svg'
         c.set_in_format 'mol'
-        c.set_options 'd', OpenBabel::OBConversion::OUTOPTIONS
+        c.set_options 'd u', OpenBabel::OBConversion::OUTOPTIONS
 
         m=OpenBabel::OBMol.new
         c.read_string m, self.molfile
