@@ -43,14 +43,18 @@
            type: "GET",
            url: url,
            data: $("#moldetailform").serialize(), 
+
            success: function(data)
            {
                 updatemolecule (data);
                 document.getElementById("molecule_pick_title").innerHTML = data.title;
-                if (closeafterwards == true ) {
+                if ((closeafterwards == true) && (data.title != "invalid")) {
                   done(globalcid);
                 }
-           }
+
+          }
+
+                
          });
 
 

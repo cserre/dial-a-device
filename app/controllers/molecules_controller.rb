@@ -32,6 +32,8 @@ class MoleculesController < ApplicationController
     @mol = Molecule.new(params[:molecule])
 
     virtualmolecule = Rubabel::Molecule.from_molstring (@mol.molfile)
+
+    if !virtualmolecule.nil? && !virtualmolecule.to_s.nil? then 
     
     # assign calculated molecule properties from OpenBabel
     @mol.smiles = virtualmolecule.to_s.gsub(/\n/, "").strip
@@ -46,13 +48,19 @@ class MoleculesController < ApplicationController
     existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
     existingmolecule = existingmolecules.first
 
+    else
+
+      # search for existing molecule without openbabel
+
+    end
+
     if (existingmolecule != nil) then
 
       if (existingmolecule.id != nil) then
         @mol = existingmolecule
       end
 
-    else
+    elsif !@mol.inchikey.blank? then
 
       pccompound = PcCompound.where(["inchikey = ?", @mol.inchikey]).first
 
@@ -94,6 +102,10 @@ class MoleculesController < ApplicationController
 
       end
     
+
+    else
+
+      @mol.title = "invalid"
 
     end
 
