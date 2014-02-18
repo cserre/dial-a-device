@@ -211,9 +211,25 @@ class MoleculesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @molecule }
-      format.svg { 
-      
-        render :text => @molecule.svg
+      format.svg {
+
+        pagefile = Rails.root.join('tmp').join("mol_"+@molecule.id.to_s+".svg")
+
+        if File.exists?(pagefile) then
+
+            pagecontent = File.read(pagefile)
+
+        else
+
+          pagecontent = @molecule.svg
+
+          File.open(pagefile, "w") do |f|
+            f.write (pagecontent)
+          end
+
+        end
+
+        render :text => pagecontent
 
       }
     end
