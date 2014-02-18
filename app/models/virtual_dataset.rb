@@ -16,8 +16,6 @@ class VirtualDataset < DAV4Rack::Resource
 
   def children
 
-  puts "------------ children? "+file_path
-
   	if _root?(file_path) then
 
   		# root folder, list all datasets
@@ -45,9 +43,7 @@ class VirtualDataset < DAV4Rack::Resource
   def collection?
 
     if @collection.nil? then
-
-      puts "------------ collection? " +file_path
-   	  
+  
    	  res = false
 
       if _root?(file_path) then res = true
@@ -68,10 +64,6 @@ class VirtualDataset < DAV4Rack::Resource
 
     # Does this recource exist?
     def exist?
-
-
-
-  	  puts "------------ exist? "+file_path+ " ("+request.env["HTTP_USER_AGENT"]+")"
 
       res = false
 

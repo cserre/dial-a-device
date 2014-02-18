@@ -442,7 +442,6 @@ class DatasetsController < ApplicationController
   end
 
 
-
   private
 
   def assign_version_to_dataset (dataset, molecule)
