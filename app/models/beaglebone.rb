@@ -1,5 +1,5 @@
 class Beaglebone < ActiveRecord::Base
-  attr_accessible :ipaddress, :serialnumber, :updateonnextboot, :version, :last_seen, :external_ip
+  attr_accessible :internal_ip, :serialnumber, :updateonnextboot, :version, :last_seen, :external_ip
 
   has_many :project_beaglebones
   has_many :projects,
