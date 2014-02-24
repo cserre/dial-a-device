@@ -22,7 +22,7 @@ class BeaglebonesController < ApplicationController
 
         @bb.update_attribute(:last_seen, Time.now)
 
-        @bb.update_attribute(:ipaddress, params[:beaglebone][:ipaddress])
+        @bb.update_attribute(:internal_ip, params[:beaglebone][:ipaddress])
 
         @bb.update_attribute(:external_ip, request.remote_ip)
 
@@ -164,6 +164,6 @@ class BeaglebonesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def beaglebone_params
-      params.require(:beaglebone).permit(:serialnumber, :internal_ip, :last_seen, :external_ip, :version, :ipaddress)
+      params.require(:beaglebone).permit(:serialnumber, :internal_ip, :last_seen, :external_ip, :version)
     end
 end
