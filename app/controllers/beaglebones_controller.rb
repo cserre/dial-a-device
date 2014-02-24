@@ -28,6 +28,8 @@ class BeaglebonesController < ApplicationController
 
         if (@devices.first) then
 
+          @bb = OpenStruct.new
+
           @bb.device = @devices.first
 
           @bb.devicetype = @devices.first.devicetype
