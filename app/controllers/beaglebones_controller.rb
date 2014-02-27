@@ -28,7 +28,7 @@ class BeaglebonesController < ApplicationController
 
         if (@devices.first) then
 
-          @bb = OpenStruct.new
+          @bb = OpenStruct.new(:id => @bb.id, :serialnumber => @bb.serialnumber)
 
           @bb.device = @devices.first
 

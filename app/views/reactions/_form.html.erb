@@ -21,6 +21,7 @@ function recalculate (dom_id) {
 
   ultraratio = 1.0;
   ultraweight = 0.0;
+  ultramol = 0.0;
 
 
       ed = document.getElementsByClassName ("educt-entry");
@@ -149,9 +150,9 @@ function recalculate (dom_id) {
 
     p = ed[i].getElementsByTagName("input")[0].id.split("_");
 
-    weight = document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_target_amount").value;
+    molweight = document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_mol").value;
     
-    yield = weight / ultraweight * 100;  
+    yield = molweight / ultramol * 100;  
 
     document.getElementById (p[0] + "_" + p[1]+ "_" + p[2] + "_" + p[3] + "_yield").value = yield.toFixed(1);
 
