@@ -10,8 +10,15 @@
     <div class="tab-content">
     <div class="tab-pane active" id="tab1">-->
     
+<% if @device.devicetype.name.start_with?("legacy_") then %>
 
-<%= render 'layouts/' + @device.devicetype.name %>
+<%= render 'devices/ui/' + "legacy_vnc" %>
+
+<% else %>
+
+<%= render 'devices/ui/' + @device.devicetype.name %>
+
+<% end %>
 
 <br/>
 <br/>

@@ -1,0 +1,53 @@
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+      <div class="well">
+
+        <% @currentitem = "vncrelays" %>
+
+        <%= render 'layouts/devicesmenu' %>
+
+      </div>
+    </div>
+  
+<% end %>
+
+<h1>VNC relays <%= link_to 'New', new_vncrelay_path, :class => "btn btn-success" %>
+</h1>
+
+<% if @vncrelays.length > 0 then %>
+
+<table class="table">
+  <thead>
+    <th>Hostname</th>
+    <th>Serial number</th>
+    <th>last seen</th>
+    <th>IP address</th>
+    <th></th>
+    <th></th>
+  </thead>
+
+  <tbody>
+
+<% @vncrelays.each do |vncrelay| %>
+  <tr>
+    <td><%= vncrelay.host %>:<%= vncrelay.port %></td>
+    <td><%= vncrelay.serialnumber %></td>
+    <td><%= if (vncrelay.lastseen) then distance_of_time_in_words_to_now(vncrelay.lastseen)+" ago" else "never" end %></td>
+
+    <td><%= vncrelay.external_ip %> <small><span class="text-muted">(local: <%= vncrelay.internal_ip %>)</span></small></td>
+    <td><%= link_to 'Edit', edit_vncrelay_path(vncrelay) %></td>
+    <td><%= link_to 'Destroy', vncrelay, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+
+</tbody>
+
+</table>
+
+<% else %>
+<p>You don't have any VNC relays yet.</p>
+<% end %>

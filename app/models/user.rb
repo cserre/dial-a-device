@@ -193,6 +193,16 @@ class User < ActiveRecord::Base
     Project.joins(:project_memberships).joins(:beaglebones).where(["project_memberships.role_id >= ? and beaglebone_id = ? and project_memberships.user_id = ?", 88, beaglebone.id, id]).exists?
   end
 
+  # Vncrelays
+
+  def vncrelays
+    Vncrelay.includes(:projects => :project_memberships).where(["project_memberships.user_id = ?", id])
+  end
+
+    def vncrelayowner_of?(vncrelay)
+    Project.joins(:project_memberships).joins(:vncrelays).where(["project_memberships.role_id >= ? and vncrelay_id = ? and project_memberships.user_id = ?", 99, vncrelay.id, id]).exists?
+  end
+
   # Devices
 
   def devices

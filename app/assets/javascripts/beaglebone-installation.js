@@ -1,6 +1,8 @@
 function initialize(){
 
   // dellogfiles();
+
+  console.log ("start initialization");
         
 
   is = setInterval (function steps()

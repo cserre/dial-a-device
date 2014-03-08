@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  host: MyString
+  port: MyString
+  lastseen: 2014-03-08 15:50:17
+  serialnumber: MyString
+  internal_ip: MyString
+  external_ip: MyString
+
+two:
+  host: MyString
+  port: MyString
+  lastseen: 2014-03-08 15:50:17
+  serialnumber: MyString
+  internal_ip: MyString
+  external_ip: MyString

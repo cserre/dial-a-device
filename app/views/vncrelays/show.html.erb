@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Host:</strong>
+  <%= @vncrelay.host %>
+</p>
+
+<p>
+  <strong>Port:</strong>
+  <%= @vncrelay.port %>
+</p>
+
+<p>
+  <strong>Lastseen:</strong>
+  <%= @vncrelay.lastseen %>
+</p>
+
+<p>
+  <strong>Serialnumber:</strong>
+  <%= @vncrelay.serialnumber %>
+</p>
+
+<p>
+  <strong>Internal ip:</strong>
+  <%= @vncrelay.internal_ip %>
+</p>
+
+<p>
+  <strong>External ip:</strong>
+  <%= @vncrelay.external_ip %>
+</p>
+
+<%= link_to 'Edit', edit_vncrelay_path(@vncrelay) %> |
+<%= link_to 'Back', vncrelays_path %>

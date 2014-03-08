@@ -1,6 +1,8 @@
 LsiRailsPrototype::Application.routes.draw do
 
 
+  resources :vncrelays
+
   # create fake root options for WebDAV-MiniRedir, which needs a successful OPTIONS request
   match "/" => "virtual_datasets#options", via: [:options]
 
