@@ -9,9 +9,11 @@
 
     <% @measurements.each do |m| %>
 
+    <% if !m.dataset.nil? then %>
+
     <div class="thumbnail">
         <div>
-        <b><% if !m.dataset.nil? then %><%= m.dataset.method %><% end %></b><% if !m.dataset.title.empty? then %> - <%= m.dataset.title %><% end %>
+        <b><%= m.dataset.method %></b><% if !m.dataset.title.empty? then %> - <%= m.dataset.title %><% end %>
         </div>
     <p><small>Created at: <%= m.recorded_at %></small></p>
 
@@ -42,7 +44,9 @@
 
     </div>
 
-    <% end %>
+    <% end %><!-- if dataset not nil -->
+
+    <% end %> 
 
     <%= will_paginate @measurements, renderer: BootstrapPagination::Rails %>
 
