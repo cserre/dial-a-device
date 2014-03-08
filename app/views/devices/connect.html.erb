@@ -54,13 +54,11 @@
             <%= image_submit_tag "../assets/legacy_vnc.jpg", :style => "width: 240px; height: 140px;", :onclick => "" %>
             <div class="caption">
                 <h3>Connect via VNC</h3>                
-                <p>websockify gateway:<input id="websockifygateway" type="text" name="websockifygateway"/></p>
-                <p>websockify port:<input id="websockifygatewayport" type="text" name="websockifygatewayport"/></p>
-                <p>websockify token:<input id="token" type="text" name="token"/></p>
+                <%= select_tag(:vncrelay_id, options_for_select(current_user.vncrelays.collect{ |r| [r.host, r.id] }, @device.vncrelay)) %>
 
-                <p>vnc host:<input id="vnchost" type="text" name="vnchost"/></p>
-                <p>vnc port:<input id="vncport" type="text" name="vncport"/></p>
-                <p>vnc password:<input id="vncpassword" type="text" name="vncpassword"/></p>
+                <p>VNC host:<input id="vnchost" type="text" name="vnchost" value="<%= @device.vnchost %>"/></p>
+                <p>VNC port:<input id="vncport" type="text" name="vncport" value="<%= @device.vncport %>"/></p>
+                <p>VNC password:<input id="vncpassword" type="text" name="vncpassword" value="<%= @device.vncpassword %>"/></p>
 
                 <p>
                  <button class = "btn btn-primary">Connect</button>                

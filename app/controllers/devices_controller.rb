@@ -56,16 +56,16 @@ def assign
   def connectit
     authorize @device, :connect?
 
-    if (!params[:websockifygateway].nil? && !params[:websockifygateway].empty?) then
+    if (!params[:vncrelay_id].nil? && !params[:vncrelay_id].empty?) then
 
       @device.connectiontype = "vnc"
 
-      @device.websockifygateway = params[:websockifygateway]
-      @device.websockifygatewayport = params[:websockifygatewayport]
-      @device.token = params[:token]
       @device.vnchost = params[:vnchost]
       @device.vncport = params[:vncport]
       @device.vncpassword = params[:vncpassword]
+
+      @device.vncrelay_id = params[:vncrelay_id]
+
       @device.save
 
       redirect_to device_path(@device), notice: "Device connected via VNC."

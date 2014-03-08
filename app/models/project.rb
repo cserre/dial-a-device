@@ -30,6 +30,10 @@ class Project < ActiveRecord::Base
   has_many :folder_watchers,
     through: :project_folder_watchers
 
+    has_many :project_vncrelays
+  has_many :vncrelays,
+    through: :project_vncrelays
+
 
   has_many :project_devices
   has_many :devices,

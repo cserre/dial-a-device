@@ -1,5 +1,5 @@
 class Device < ActiveRecord::Base
-  attr_accessible :devicetype_id, :connectiontype, :lastseen, :name, :beaglebone_id, :portname, :portbaud, :portdetails, :porttype, :vnchost, :vncpassword, :vncport, :websockifygateway, :websockifygatewayport
+  attr_accessible :devicetype_id, :connectiontype, :lastseen, :name, :beaglebone_id, :portname, :portbaud, :portdetails, :porttype, :vnchost, :vncpassword, :vncport, :websockifygateway, :websockifygatewayport, :vncrelay_id
 
   belongs_to :devicetype
 
@@ -7,10 +7,29 @@ class Device < ActiveRecord::Base
   has_many :locations,
     :through => :device_locations, :dependent => :destroy
 
+  belongs_to :vncrelay
 
   has_many :project_devices
   has_many :projects,
     through: :project_devices
+
+  def websockifygateway
+
+    vncrelay.host
+    
+  end
+
+  def websockifygatewayport
+
+    vncrelay.port
+    
+  end
+
+  def token
+
+    vncrelay.id.to_s + "-" + self.id.to_s
+    
+  end
 
   def add_to_project (project_id)
 
