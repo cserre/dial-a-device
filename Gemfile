@@ -52,7 +52,7 @@ group :development, :localserver do
 	gem 'openbabel'
 end
 
-gem 'rubabel', :git => 'git://github.com/Cominch/rubabel.git'
+gem 'rubabel'
 
 gem 'jquery-rails'
 

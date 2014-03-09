@@ -31,7 +31,7 @@ class MoleculesController < ApplicationController
 
     @mol = Molecule.new(params[:molecule])
 
-    virtualmolecule = Rubabel::Molecule.from_molstring (@mol.molfile)
+    virtualmolecule = Rubabel::Molecule.from_string(@mol.molfile, :mdl)
 
     if !virtualmolecule.nil? && !virtualmolecule.to_s.nil? then 
     
@@ -178,7 +178,7 @@ class MoleculesController < ApplicationController
       filtermolfile = params[:molfile]
 
 
-      virtualmolecule = Rubabel::Molecule.from_molstring (filtermolfile)
+      virtualmolecule = Rubabel::Molecule.from_string(filtermolfile, :mdl)
 
       @inchikey = virtualmolecule.to_s(:inchikey).strip
       @smiles = '%'+virtualmolecule.to_s+'%'
@@ -276,7 +276,7 @@ class MoleculesController < ApplicationController
 
     authorize @molecule
 
-    virtualmolecule = Rubabel::Molecule.from_molstring (@molecule.molfile)
+    virtualmolecule = Rubabel::Molecule.from_string(@molecule.molfile, :mdl)
     
     existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
     existingmolecule = existingmolecules.first

@@ -24,14 +24,6 @@ GIT
     openbabel-heroku (2.3.2.0)
 
 GIT
-  remote: git://github.com/Cominch/rubabel.git
-  revision: e67ed8a35393b1c727f16a89c94d9ef330feeddb
-  specs:
-    rubabel (0.4.3)
-      andand (~> 1.3.3)
-      mini_magick (~> 3.6.0)
-
-GIT
   remote: git://github.com/DanKnox/websocket-rails.git
   revision: 060af4602a053c356eb851efb841c281ee800d01
   specs:
@@ -47,7 +39,7 @@ GIT
 
 GIT
   remote: git://github.com/plataformatec/simple_form.git
-  revision: ea5ceb7dfa613f432efbfa04195c86599a16d973
+  revision: d92b48d5a60449736805c86e1c9c8d5a915aafc0
   specs:
     simple_form (3.0.1)
       actionpack (>= 4.0.0, < 4.1)
@@ -55,51 +47,51 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: c4083cb522f34ad8b0f589a7747dd75868bc0913
+  revision: 05bfc1884d50303ad51fa46c9e5e1b674fd11d75
   branch: 4-0-stable
   specs:
-    actionmailer (4.0.2)
-      actionpack (= 4.0.2)
+    actionmailer (4.0.3)
+      actionpack (= 4.0.3)
       mail (~> 2.5.4)
-    actionpack (4.0.2)
-      activesupport (= 4.0.2)
+    actionpack (4.0.3)
+      activesupport (= 4.0.3)
       builder (~> 3.1.0)
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    activemodel (4.0.2)
-      activesupport (= 4.0.2)
+    activemodel (4.0.3)
+      activesupport (= 4.0.3)
       builder (~> 3.1.0)
-    activerecord (4.0.2)
-      activemodel (= 4.0.2)
+    activerecord (4.0.3)
+      activemodel (= 4.0.3)
       activerecord-deprecated_finders (~> 1.0.2)
-      activesupport (= 4.0.2)
+      activesupport (= 4.0.3)
       arel (~> 4.0.0)
-    activesupport (4.0.2)
+    activesupport (4.0.3)
       i18n (~> 0.6, >= 0.6.9)
       minitest (~> 4.2)
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
-    rails (4.0.2)
-      actionmailer (= 4.0.2)
-      actionpack (= 4.0.2)
-      activerecord (= 4.0.2)
-      activesupport (= 4.0.2)
+    rails (4.0.3)
+      actionmailer (= 4.0.3)
+      actionpack (= 4.0.3)
+      activerecord (= 4.0.3)
+      activesupport (= 4.0.3)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 4.0.2)
+      railties (= 4.0.3)
       sprockets-rails (~> 2.0.0)
-    railties (4.0.2)
-      actionpack (= 4.0.2)
-      activesupport (= 4.0.2)
+    railties (4.0.3)
+      actionpack (= 4.0.3)
+      activesupport (= 4.0.3)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
 
 GIT
   remote: git://github.com/thomas-mcdonald/bootstrap-sass.git
-  revision: 4b61cdd0b43b7743f84c748dbad782db950bc489
+  revision: 5e583f0219dc6195e3fc5910e053716c06b523ea
   specs:
-    bootstrap-sass (3.0.3.0)
+    bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
 
 GIT
@@ -115,20 +107,22 @@ GEM
   remote: https://rubygems.org/
   specs:
     activerecord-deprecated_finders (1.0.3)
-    acts_as_list (0.3.0)
+    acts_as_list (0.4.0)
       activerecord (>= 3.0)
-    andand (1.3.3)
-    arel (4.0.1)
-    atomic (1.1.14)
-    bcrypt-ruby (3.1.2)
+    arel (4.0.2)
+    atomic (1.1.15)
+    bcrypt (3.1.7)
+    bcrypt-ruby (3.1.5)
+      bcrypt (>= 3.1.3)
     bootstrap-wysiwyg-rails (0.3.1)
       actionpack (>= 3.1)
       railties (>= 3.1)
     builder (3.1.4)
-    carrierwave (0.9.0)
+    carrierwave (0.10.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       json (>= 1.7)
+      mime-types (>= 1.16)
     carrierwave_direct (0.0.13)
       carrierwave
       fog
@@ -140,21 +134,21 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.3)
+    coffee-script-source (1.7.0)
     daemons (1.1.9)
-    devise (3.2.2)
+    devise (3.2.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
-    devise_invitable (1.3.2)
+    devise_invitable (1.3.4)
       actionmailer (>= 3.2.6, < 5)
-      devise (>= 3.1.0)
+      devise (>= 3.2.0)
     devise_ldap_authenticatable (0.8.1)
       devise (>= 3.0)
       net-ldap (>= 0.3.1, < 0.6.0)
-    dotenv (0.9.0)
+    dotenv (0.10.0)
     em-synchrony (1.0.3)
       eventmachine (>= 1.0.0.beta.1)
     erubis (2.7.0)
@@ -164,7 +158,7 @@ GEM
     faye-websocket (0.7.2)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.3.1)
-    fog (1.19.0)
+    fog (1.20.0)
       builder
       excon (~> 0.31.0)
       formatador (~> 0.2.0)
@@ -172,50 +166,49 @@ GEM
       multi_json (~> 1.0)
       net-scp (~> 1.1)
       net-ssh (>= 2.1.3)
-      nokogiri (~> 1.5)
-      ruby-hmac
+      nokogiri (>= 1.5.11)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
     hike (1.2.3)
     hiredis (0.4.5)
-    httparty (0.12.0)
+    httparty (0.13.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.6.9)
     jquery-hotkeys-rails (0.7.9.1)
       railties (>= 3.1)
-    jquery-rails (3.0.4)
+    jquery-rails (3.1.0)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (4.1.1)
-      railties (>= 3.1.0)
+    jquery-ui-rails (4.2.0)
+      railties (>= 3.2.16)
     json (1.8.1)
     libv8 (3.16.14.3)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
-    mini_magick (3.6.0)
+    mini_magick (3.7.0)
       subexec (~> 0.2.1)
     mini_portile (0.5.2)
     minitest (4.7.5)
-    multi_json (1.8.4)
+    multi_json (1.9.0)
     multi_xml (0.5.5)
     net-ldap (0.3.1)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
-    net-ssh (2.7.0)
+    net-ssh (2.8.0)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     openbabel (2.3.2.0)
     orm_adapter (0.5.0)
     pg (0.17.1)
-    polyglot (0.3.3)
+    polyglot (0.3.4)
     protected_attributes (1.0.5)
       activemodel (>= 4.0.1, < 5.0)
-    pundit (0.2.1)
+    pundit (0.2.2)
       activesupport (>= 3.0.0)
     rack (1.5.2)
     rack-test (0.6.2)
@@ -226,18 +219,19 @@ GEM
     rails_serve_static_assets (0.0.2)
     rails_stdout_logging (0.0.3)
     rake (10.1.1)
-    redis (3.0.6)
-    redis-objects (0.8.0)
+    redis (3.0.7)
+    redis-objects (0.9.0)
       redis (>= 3.0.2)
     ref (1.0.5)
-    ruby-hmac (0.4.0)
+    rubabel (0.1.0)
     rubyzip (1.1.0)
-    sass (3.2.13)
+    sass (3.3.0)
+      rake
     sass-rails (4.0.1)
       railties (>= 4.0.0, < 5.0)
       sass (>= 3.1.10)
       sprockets-rails (~> 2.0.0)
-    sprockets (2.10.1)
+    sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
@@ -247,16 +241,16 @@ GEM
       activesupport (>= 3.0)
       sprockets (~> 2.8)
     subexec (0.2.3)
-    therubyracer (0.12.0)
+    therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
       ref
-    thin (1.6.1)
+    thin (1.6.2)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
     thor (0.18.1)
-    thread_safe (0.1.3)
-      atomic
+    thread_safe (0.2.0)
+      atomic (>= 1.1.7, < 2)
     tilt (1.4.1)
     treetop (1.4.15)
       polyglot
@@ -312,7 +306,7 @@ DEPENDENCIES
   rails_12factor
   rails_serve_static_assets
   rake
-  rubabel!
+  rubabel
   rubyzip
   sass-rails (~> 4.0.0)
   simple_form!
