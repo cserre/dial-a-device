@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git://github.com/Cominch/openbabel-heroku-gem.git
-  revision: 58b986105bf0a309021fdd4129453f78188429b3
+  revision: c351f432cc437021280b432903b22acd8354c240
   specs:
     openbabel-heroku (2.3.2.0)
 
