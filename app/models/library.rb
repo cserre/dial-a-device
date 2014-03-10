@@ -17,4 +17,13 @@ class Library < ActiveRecord::Base
 
   end
 
+  def add_molecule(molecule_id)
+
+    le = LibraryEntry.new
+    le.molecule_id = molecule_id
+    le.library_id = self.id
+    le.save
+
+  end
+
 end
