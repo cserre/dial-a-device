@@ -29,6 +29,24 @@
 	<% else %>
   <%= link_to "Add #{@molecule.title}", assign_to_project_do_molecule_path(@molecule, project_id: project.id), method: :post, :class => "btn btn-success" %>
 
+  <% if Project.exists?(project.parent_id) then parent = Project.find(project.parent_id) end %>
+
+  <% loop do %>
+
+    <% if !parent.nil? then %>
+
+    <br>(automatically assign to <%= parent.title %>)
+
+    <% end %>
+
+    <% break if parent.nil? %>
+
+    <% break if parent.parent_id.nil? %>
+
+    <% parent = Project.find(parent.parent_id) %>
+
+  <% end %>
+
   <% end %>
 
 </td>

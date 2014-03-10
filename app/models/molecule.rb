@@ -35,6 +35,31 @@ class Molecule < ActiveRecord::Base
   has_many :projects,
   through: :project_molecules
 
+  def add_to_project_recursive (project_id)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = Project.find(project_id).parent_id end
+
+    loop do
+
+      if !parent.nil? then
+
+        puts "adding to " + parent.title
+
+        add_to_project(parent.id)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+  end
+
+
   def add_to_project (project_id)
 
     pm = ProjectMolecule.new
