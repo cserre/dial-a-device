@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  attr_accessible :parent_id, :title
+  attr_accessible :parent_id, :title, :rootlibrary_id
 
   has_many :project_memberships
 
@@ -11,6 +11,18 @@ class Project < ActiveRecord::Base
   	User.joins(:project_memberships).where(["role_id = ? and project_id = ?", 99, id]).first
   end
 
+  def create_rootlibrary
+    rp = Library.create!
+    rp.save
+
+    pm = ProjectLibrary.new
+    pm.library_id = rp.id
+    pm.project_id = self.id
+    pm.save
+
+    update_attributes(:rootlibrary_id => rp.id)
+
+  end
 
   # associations
 

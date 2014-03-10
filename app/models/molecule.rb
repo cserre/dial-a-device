@@ -42,5 +42,14 @@ class Molecule < ActiveRecord::Base
     pm.project_id = project_id
     pm.save
 
+    add_to_rootlibrary(project_id)
+   
+
+  end
+
+  def add_to_rootlibrary(project_id)
+
+    Library.find(Project.find(project_id).rootlibrary_id).add_molecule(self.id)
+
   end
 end
