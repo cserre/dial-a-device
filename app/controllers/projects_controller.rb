@@ -86,6 +86,8 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new
 
+    @project.parent_id = params[:parent_id]
+
     authorize @project
 
     respond_to do |format|
@@ -116,6 +118,8 @@ class ProjectsController < ApplicationController
         pm.project = @project
         pm.role_id = 99
         pm.save
+
+        @project.create_rootlibrary
 
         format.html { redirect_to projects_path, notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }

@@ -411,7 +411,7 @@ class MoleculesController < ApplicationController
 
               # newcompound.assign_attributes(lowercasemoldetails, :without_protection => true)
 
-              newcompound.add_to_project(current_user.rootproject_id)
+              newcompound.add_to_project_recursive(current_user.rootproject_id)
 
               newcompound.save
               
