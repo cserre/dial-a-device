@@ -11,15 +11,8 @@ GIT
     dial_a_device_node (0.0.22)
 
 GIT
-  remote: git://github.com/Cominch/noVNCgem.git
-  revision: cd12fa01b0db8a0ed58e8f2806b1c504d9b438cd
-  specs:
-    noVNC (0.3)
-      rails
-
-GIT
   remote: git://github.com/Cominch/openbabel-heroku-gem.git
-  revision: 2d007754c954fa84323b186f4b533f74686b3e21
+  revision: c351f432cc437021280b432903b22acd8354c240
   specs:
     openbabel-heroku (2.3.2.0)
 
@@ -36,6 +29,13 @@ GIT
       redis
       redis-objects
       thin
+
+GIT
+  remote: git://github.com/davidw/noVNCgem.git
+  revision: 50f1826e9d1d9f37e7adfc992a12eca409c885bb
+  specs:
+    noVNC (0.3)
+      rails
 
 GIT
   remote: git://github.com/plataformatec/simple_form.git
@@ -255,7 +255,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.38)
+    tzinfo (0.3.39)
     uglifier (2.4.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)

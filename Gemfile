@@ -60,7 +60,7 @@ gem "jquery-hotkeys-rails"
 
 gem 'jquery-ui-rails'
 
-gem 'noVNC', :git => "git://github.com/Cominch/noVNCgem.git"
+gem 'noVNC', :git => "git://github.com/davidw/noVNCgem.git"
 
 # gem 'audited-activerecord' # rails 4 compatibility
 
