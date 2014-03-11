@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git://github.com/Cominch/openbabel-heroku-gem.git
-  revision: c351f432cc437021280b432903b22acd8354c240
+  revision: 78225803d9d71db5f8fcb5721da9e411f9a2a962
   specs:
     openbabel-heroku (2.3.2.0)
 
@@ -39,15 +39,15 @@ GIT
 
 GIT
   remote: git://github.com/plataformatec/simple_form.git
-  revision: d92b48d5a60449736805c86e1c9c8d5a915aafc0
+  revision: 8a50572e74eb1767d256eec898bdb979f5988c98
   specs:
     simple_form (3.0.1)
-      actionpack (>= 4.0.0, < 4.1)
-      activemodel (>= 4.0.0, < 4.1)
+      actionpack (~> 4.0)
+      activemodel (~> 4.0)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 05bfc1884d50303ad51fa46c9e5e1b674fd11d75
+  revision: 71662c8ff2dc7c7f0b2eb563eeb47e39ded5356c
   branch: 4-0-stable
   specs:
     actionmailer (4.0.3)
@@ -206,7 +206,7 @@ GEM
     orm_adapter (0.5.0)
     pg (0.17.1)
     polyglot (0.3.4)
-    protected_attributes (1.0.5)
+    protected_attributes (1.0.6)
       activemodel (>= 4.0.1, < 5.0)
     pundit (0.2.2)
       activesupport (>= 3.0.0)
@@ -225,8 +225,7 @@ GEM
     ref (1.0.5)
     rubabel (0.1.0)
     rubyzip (1.1.0)
-    sass (3.3.0)
-      rake
+    sass (3.3.1)
     sass-rails (4.0.1)
       railties (>= 4.0.0, < 5.0)
       sass (>= 3.1.10)
