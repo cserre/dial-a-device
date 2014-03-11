@@ -96,6 +96,8 @@ class User < ActiveRecord::Base
     pm.role_id = 99
     pm.save
 
+    rp.create_rootlibrary
+
     update_attributes(:rootproject_id => rp.id)
 
   end
