@@ -36,7 +36,7 @@
 
         <td class="moldetails_[new_educts]">
                 <% if !(f.object.molecule.nil?) then %>
-          <strong><%= f.object.molecule.mass %></strong><br><%= link_to f.object.molecule do %><%= f.object.molecule.title %><% end %><br>
+          <strong><%= f.object.molecule.mass %></strong><br><%= f.object.molecule.title %><br>
             <%= f.object.molecule.formula %>
 
             <% else %>
@@ -55,7 +55,7 @@
 
         <%# if current_page?(new_reaction_path) || current_page?(edit_reaction_path) %>
             <td>
-              <%= link_to_remove_association('<span class="glyphicon glyphicon-remove" />'.html_safe, f, :title => "Delete this Molecule.") %>
+             <!-- <%= link_to_remove_association('<span class="glyphicon glyphicon-remove" />'.html_safe, f, :title => "Delete this Molecule.") %> -->
             </td>
         <%# end %>
       </tr>

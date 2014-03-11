@@ -247,7 +247,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
 <%= form_for(@reaction, :html => {:onkeypress => "return event.keyCode != 13;", :class => "form form-horizontal" }) do |f| %>
 
-<h1>Editing reaction&nbsp;
+<h1>Editing reaction &nbsp;
 
 <%= f.submit("Save", :class => "btn btn-primary", :title => "Save the changes to this Reaction.") %>
       <%= link_to("Cancel", reactions_path, :confirm => "Are you sure you want to cancel?  Any changes will be lost.", :class => "btn btn-inverse", :title => "Cancel the changes and return to the Home page.") %>
@@ -270,7 +270,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
     <fieldset>
 
-      <h3>Starting materials&nbsp;<%= link_to_add_association("Add", f, :educts, :partial => 'educt_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#educts', :class => "btn btn-primary educts", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
+      <h3>Starting materials<!--&nbsp;<%= link_to_add_association("Add", f, :educts, :partial => 'educt_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#educts', :class => "btn btn-primary educts", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %>--></h3>
 
         <table id="educts-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>
@@ -300,7 +300,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
 
       <fieldset>
 
-      <h3>Reactants&nbsp;<%= link_to_add_association("Add", f, :reactants, :partial => 'reactant_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#reactants', :class => "btn btn-primary reactants", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %></h3>
+      <h3>Reactants<!--&nbsp;<%= link_to_add_association("Add", f, :reactants, :partial => 'reactant_fields', :force_non_association_create => true, 'data-association-insertion-node' => '#reactants', :class => "btn btn-primary reactants", 'data-association-insertion-method' => 'append',:title => "Add a new Molecule to the Reaction.") %>--></h3>
 
         <table id="reactants-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>
@@ -329,7 +329,7 @@ $(document).bind('cocoon:after-insert', function (e, inserted_item) {
   <br/>
 
     <fieldset>
-      <h3>Products&nbsp;<%= link_to_add_association("Add", f, :products, :partial => 'product_fields', :force_non_association_create => true,:class => "btn btn-primary products", 'data-association-insertion-node' => '#products', 'data-association-insertion-method' => 'append', :title => "Add a new Molecule to the Reaction.") %></h3>
+      <h3>Products<!--&nbsp;<%= link_to_add_association("Add", f, :products, :partial => 'product_fields', :force_non_association_create => true,:class => "btn btn-primary products", 'data-association-insertion-node' => '#products', 'data-association-insertion-method' => 'append', :title => "Add a new Molecule to the Reaction.") %>--></h3>
 
       <table id="products-table" class="table table-condensed" style="table-layout:fixed;">
           <thead>

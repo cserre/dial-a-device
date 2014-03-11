@@ -19,6 +19,7 @@
             <td><%= sample.equivalent %></td>
             <td><%= sample.mol %></td>
             <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
+            <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, sample_path(sample, :reaction_id => @reaction.id), :method => :delete, :confirm => "Are you sure you want to remove this molecule from #{@reaction.name}?", :title => "Delete #{sample.molecule.title}.") %></td>
           </tr>
       <% end %>
   </tbody>

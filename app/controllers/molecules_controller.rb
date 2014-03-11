@@ -308,11 +308,6 @@ class MoleculesController < ApplicationController
 
         if Reaction.exists?(reaction_id) then
 
-          
-
-          
-
-
           r = Reaction.find(reaction_id)
 
           rp = ReactionPolicy.new(current_user, r)
@@ -340,6 +335,14 @@ class MoleculesController < ApplicationController
           end
 
           s.save
+
+          r.projects.each do |p|
+
+            if current_user.projects.exists?(p) then
+              s.add_to_project(p.id)
+            end
+
+          end
 
           r.samples << s
 
