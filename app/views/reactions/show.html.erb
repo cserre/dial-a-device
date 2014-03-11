@@ -1,4 +1,21 @@
 
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+      <div class="well">
+
+        <% @currentitem = "reactions_"+@reaction.id.to_s %>
+
+        <%= render 'layouts/moleculesmenu' %>
+
+      </div>
+    </div>
+  
+<% end %>
+
 <script src="/assets/canvasmol/canvasmol.js" type="text/javascript"></script>
 
 <h1>Reaction <%= @reaction.name %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %></h1>

@@ -346,7 +346,7 @@ class MoleculesController < ApplicationController
 
           r.samples << s
 
-
+          r.update_attribute(:updated_at, DateTime.now)
 
           format.html { redirect_to Reaction.find(reaction_id), notice: 'Molecule was successfully added.' }
           format.json { render json: @molecule, status: :created, location: @molecule }

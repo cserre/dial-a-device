@@ -8,7 +8,9 @@ class SamplesController < ApplicationController
 
     @sample.destroy
 
-    redirect_to reaction_url(Reaction.find(params[:reaction_id])), notice: 'Sample was successfully destroyed.'
+    Reaction.find(params[:reaction_id]).update_attribute(:updated_at, DateTime.now)
+
+    redirect_to reaction_url(Reaction.find(params[:reaction_id])), notice: 'Molecule was removed.'
   end
 
   private

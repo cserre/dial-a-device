@@ -93,6 +93,8 @@ class ReactionsController < ApplicationController
           s.molecule.add_to_project(current_user.rootproject_id) 
       end
 
+      @reaction.update_attribute(:updated_at, DateTime.now)
+
       redirect_to @reaction, notice: 'Reaction was successfully updated.'
     else
       render action: 'edit'
