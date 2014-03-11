@@ -2,6 +2,22 @@
 <ul class="nav nav-pills nav-stacked">
 
 <% if @currentitem == "reactions" then %><li class="active"><% else %><li><% end %><a href="/reactions">Reactions</a></li>
+
+<% if @currentitem.start_with?("reactions") then %>
+
+<ul class="nav nav-pills nav-stacked">
+
+<% current_user.reactions.order("reactions.updated_at DESC").limit(10).each do |r| %>
+	<% if @currentitem == "reactions_"+r.id.to_s then %><li class="active"><% else %><li><% end %>
+
+	<a href="/reactions/<%= r.id %>"><span class="badge"><%= r.name %></span></a></li>
+
+<% end %>
+
+</ul>
+
+<% end %>
+
 <% if @currentitem == "molecules" then %><li class="active"><% else %><li><% end %><a href="/molecules">Molecules</a></li>
 
 </ul>

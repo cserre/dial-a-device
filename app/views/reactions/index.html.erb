@@ -27,7 +27,7 @@
         <th>Products</th>
         <th>Yield</th>
         <th style="width:200px;">Analytics</th>
-        <th colspan="3"></th>
+        <th></th>
     </thead>
     <tbody>
         <% @reactions.each do |reaction| %>
@@ -35,15 +35,17 @@
             <tr>
                 <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
     
-                <td><%= reaction.name %></td>
+                <td><%= link_to(reaction, :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
 
-                <td>
+                <td><%= link_to(reaction, :title => "View #{reaction.name}.") do %>
 
                     <% reaction.products.each_with_index do |product, index| %>
       
 
                       <%= render "molecules/render", :molecule => product.molecule, :width => "100", :height => "100" %>
 
+
+                    <% end %>
 
                     <% end %>
 
@@ -81,10 +83,6 @@
                     <span class="label label-info">Additional measurements available</span>
                   <% end %>
                 </td>
-
-                <td><%= link_to('<span class="glyphicon glyphicon-eye-open"/>'.html_safe, reaction, :title => "View #{reaction.name}.") %></td>
-
-                <td><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %></td>
 
                 <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction, :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %></td>
 
