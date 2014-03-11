@@ -33,7 +33,9 @@ LsiRailsPrototype::Application.routes.draw do
     end
   end
 
-  resources :reactions
+  resources :reactions do
+    get 'createdirect', on: :collection, as: :createdirect
+  end
 
   resources :samples
 
