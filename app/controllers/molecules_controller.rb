@@ -256,6 +256,7 @@ class MoleculesController < ApplicationController
 
     @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
 
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @molecule }
@@ -272,6 +273,13 @@ class MoleculesController < ApplicationController
   # POST /molecules
   # POST /molecules.json
   def create
+
+    reaction_id = params[:molecule][:reaction_id]
+    role = params[:molecule][:role]
+
+    params[:molecule].delete :reaction_id
+    params[:molecule].delete :role
+
     @molecule = Molecule.new(params[:molecule])
 
     authorize @molecule
@@ -298,8 +306,63 @@ class MoleculesController < ApplicationController
     respond_to do |format|
       if success
 
-        format.html { redirect_to @molecule, notice: 'Molecule was successfully created.' }
-        format.json { render json: @molecule, status: :created, location: @molecule }
+        if Reaction.exists?(reaction_id) then
+
+          
+
+          
+
+
+          r = Reaction.find(reaction_id)
+
+          rp = ReactionPolicy.new(current_user, r)
+
+          if rp.edit? then 
+
+
+          s = Sample.new
+          s.molecule = @molecule
+          s.target_amount = "0"
+          s.unit = "mg"
+          
+
+          if role == "educt" then 
+            s.is_virtual = true
+            s.is_startingmaterial = true
+          end
+          if role == "reactant" then 
+            s.is_virtual = true
+            s.is_startingmaterial = false
+          end
+          if role == "product" then 
+            s.is_virtual = false
+            s.is_startingmaterial = false
+          end
+
+          s.save
+
+          r.samples << s
+
+
+
+          format.html { redirect_to Reaction.find(reaction_id), notice: 'Molecule was successfully added.' }
+          format.json { render json: @molecule, status: :created, location: @molecule }
+
+        else
+
+
+          format.html { redirect_to @molecule, notice: 'Molecule was successfully created.' }
+          format.json { render json: @molecule, status: :created, location: @molecule }
+
+        end
+
+        else
+
+
+          format.html { redirect_to @molecule, notice: 'Molecule was successfully created.' }
+          format.json { render json: @molecule, status: :created, location: @molecule }
+
+        end
       else
         format.html { render action: "new" }
         format.json { render json: @molecule.errors, status: :unprocessable_entity }

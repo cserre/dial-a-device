@@ -9,21 +9,21 @@
 
 
 <fieldset>
-  <h3>Starting materials</h3>
+  <h3>Starting materials&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "educt"), :class => "btn btn-primary" %></h3>
   <%= render('educts_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Reactants</h3>
+  <h3>Reactants&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "reactant"), :class => "btn btn-primary" %></h3>
   <%= render('reactants_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Products</h3>
+  <h3>Products&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "product"), :class => "btn btn-primary" %></h3>
   <%= render('products_display') %>
 </fieldset>
 
