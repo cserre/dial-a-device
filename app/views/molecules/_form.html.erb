@@ -1,6 +1,7 @@
 <%= render 'pickketcher' %>
 
 <%= form_for(@molecule) do |f| %>
+
   <% if @molecule.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@molecule.errors.count, "error") %> prohibited this molecule from being saved:</h2>
@@ -41,6 +42,9 @@
     }
 
   </script>
+
+  <%= f.hidden_field(:reaction_id, :value => params[:reaction_id]) %>
+  <%= f.hidden_field(:role, :value => params[:role]) %>
 
   <div class="field">
     <%= f.label :title %><br />

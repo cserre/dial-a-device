@@ -1,6 +1,7 @@
 class Molecule < ActiveRecord::Base
   attr_accessible :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title
 
+  attr_accessor :reaction_id, :role
 
   has_many :datasets
 

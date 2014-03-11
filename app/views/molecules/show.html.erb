@@ -83,7 +83,8 @@
 <% end %>
 
 
-
-
-<%= link_to 'Back', molecules_path, :class => "btn btn-default btn-sm" %>
-
+<% if params[:reaction_id].nil? then %>
+<%= link_to 'Back',molecules_path, :class => "btn btn-sm btn-default" %>
+<% else %>
+<%= link_to 'Back to reaction', Reaction.find(params[:reaction_id]), :class => "btn btn-sm btn-default" %>
+<% end %>

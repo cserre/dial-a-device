@@ -35,6 +35,8 @@ LsiRailsPrototype::Application.routes.draw do
 
   resources :reactions
 
+  resources :samples
+
   resources :locations
 
   resources :devices do
