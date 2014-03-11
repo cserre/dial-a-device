@@ -18,6 +18,49 @@ class ReactionsController < ApplicationController
     if !current_user.nil? then @owndatasets = @reaction.datasets end
   end
 
+  def createdirect
+    @reaction = Reaction.new
+
+    authorize @reaction, :create?
+
+    namearray = Array.new
+
+    current_user.reactions.each do |r|
+      namearray << r.name
+    end
+
+    puts namearray
+
+    if (current_user.sign != nil) then 
+
+      stillsearching = true
+      c = 1
+
+      while stillsearching
+        suggestedname = current_user.sign + "-" + c.to_s
+
+        if !namearray.include?(suggestedname) then
+          stillsearching = false
+        end
+        c = c + 1
+        
+      end
+
+      @reaction.name = suggestedname
+    end
+
+    if @reaction.save
+
+
+        @reaction.add_to_project(current_user.rootproject_id)
+
+
+      redirect_to @reaction, notice: 'Reaction was successfully created.'
+    else
+      render action: 'new'
+    end
+  end
+
   # GET /reactions/new
   def new
     @reaction = Reaction.new
