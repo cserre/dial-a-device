@@ -37,12 +37,28 @@ class Reaction < ActiveRecord::Base
     return false
   end
 
-  def add_to_project (project_id)
+  def add_to_project_recursive (project_id)
 
-    pm = ProjectReaction.new
-    pm.reaction_id = self.id
-    pm.project_id = project_id
-    pm.save
+    p = Project.find(project_id)
+    p.add_reaction(self)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        parent.add_reaction(self)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
 
   end
 end

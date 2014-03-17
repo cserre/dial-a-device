@@ -1,5 +1,6 @@
+<% @project = Project.find(params[:project_id]) %>
 
-<% @project = Project.find(params[:assign_to_project_id]) %>
+<% @projects = Reaction.find(params[:reaction_id]).projects %>
 
 <% @showsidebar = true %>
 
@@ -22,7 +23,7 @@
 
 			        <ul class="nav nav-pills nav-stacked">
 
-			        	<%= render 'layouts/projecttree', :highlight => [@project], :p => p, :project_id => @project.id, :category => "molecules", :level => 0 %>
+			        	<%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => @project.id, :category => "molecules", :level => 0 %>
 
 
 					</ul>
@@ -39,9 +40,6 @@
 <% end %>
 
 
-<h1>New molecule in <%= @project.title %></h1>
-
+<h1>New molecule as <%= params[:role] %> in <%= Reaction.find(params[:reaction_id]).name %></h1>
 
 <%= render 'form' %>
-
-

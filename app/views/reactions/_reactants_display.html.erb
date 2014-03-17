@@ -13,7 +13,7 @@
             <td>
               <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
             </td>
-            <td><strong><%= sample.molecule.mass %></strong><br><%= link_to molecule_path(:id => sample.molecule.id, :reaction_id => @reaction.id) do %><%= sample.molecule.title %><% end %><br>
+            <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample_path(:id => sample.id, :reaction_id => @reaction.id) do %><%= sample.molecule.title %><% end %><br>
             <%= sample.molecule.formula %>
             </td>
             <td><%= sample.equivalent %></td>

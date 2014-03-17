@@ -86,6 +86,12 @@ class User < ActiveRecord::Base
 
   has_one :rootproject
 
+  def topprojects
+
+    projects.where(["parent_id is null"])
+
+  end
+
   def create_rootproject
     rp = Project.create!
     rp.save

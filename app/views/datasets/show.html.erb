@@ -1,3 +1,24 @@
+<% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+<% end %>
+
+<% @project = Project.find(@projid) %>
+
+<% @projects = @dataset.projects %>
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
 
 
 <% content_for :sidebar do %>
@@ -21,22 +42,22 @@
       
     <% end %>
 
-    <% if !(@dataset.molecule_id.nil?) then %>
+    <% if !(@dataset.sample_id.nil?) then %>
         <% content_for :sidebar_switch do @showsidebar = true end %>
 
             <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
               <div class="well">
-                <h4>Associated Molecule</h4>
+                <h4>Associated Sample</h4>
 
                 <div class="thumbnail">
 
-                    <%= render "molecules/render", :molecule => Molecule.find(@dataset.molecule_id), :width => "100", :height => "100" %>
+                    <%= render "molecules/render", :molecule => @dataset.sample.molecule, :width => "100", :height => "100" %>
                 
 
                 </div>
 
                 <div class="caption">
-                    <p><%= Molecule.find(@dataset.molecule_id).title %></p>
+                    <p><%= @dataset.sample.molecule.title %></p>
 
                 </div>
         
@@ -46,22 +67,100 @@
       
     <% end %>
 
-    <% if @dataset.reactions.length > 0 then %>
+    <% if @dataset.sample.reactions.length > 0 then %>
         <% content_for :sidebar_switch do @showsidebar = true end %>
 
             <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
               <div class="well">
-                <h4>Associated Reactions</h4>
-                    <% @dataset.reactions.each do |r| %>
-                        <%= link_to r.name, reaction_path(r) %>
-                    <% end %>
+                <h4>Associated Reaction</h4>
+
+                        <%= link_to @dataset.sample.reactions.first.name, reaction_path(@dataset.sample.reactions.first) %>
+
               </div>
             </div>
       
     <% end %>
 
 
+
+
+
+
+
+ <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Project visibility</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+      <% current_user.topprojects.each do |p| %>
+
+              <ul class="nav nav-pills nav-stacked">
+
+                <%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => -1, :category => "samples", :level => 0 %>
+
+
+          </ul>
+
+      <% end %>
+
+
+            
+          </div>
+        </div>
+    </div>
+</div>
+  
 <% end %>
+
+
+
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+
+                <% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+      <div class="well">
+
+        <% @currentitem = "datasets" %>
+
+        <%= render 'layouts/moleculesmenu', :category => "datasets", :project_id => @projid %>
+
+      </div>
+
+
+        <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @projid %>
+
+
+
+    </div>
+  
+<% end %>
+
+<% @shownavbar = true %>
+
+
 
 
 <link rel="stylesheet" href="/css/jquery.fileupload.css">

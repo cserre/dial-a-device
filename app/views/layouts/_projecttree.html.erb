@@ -1,0 +1,48 @@
+
+<% if project_id.to_s == p.id.to_s then %><li class="active" style="left:<%= level * 10 %>px;"><% else %><li style="left:<%= level * 10 %>px;"><% end %>
+
+	<% if !highlight.nil? then %>
+	<a href="/<%= category %>?project_id=<%= p.id %>">
+	<% else %>
+	<a href="#">
+	<% end %>
+
+		<% if p.id == current_user.rootproject_id then t = current_user.firstname+"'s Project" else t = p.title end %>
+
+		<% if !highlight.empty? then %>
+
+		<% high = false %>
+
+			<% highlight.each do |hp| %>
+
+				<% if p == hp then high = true end %>
+
+				<% if p.children.exists?(hp) then high = true end %>
+
+			<% end %>
+
+
+		<span class="badge pull-right"><% if high then %>yes<% else %>no<% end %>  </span>
+
+
+		<% else %>
+
+   			<span class="badge pull-right"><% if category.start_with?("reactions") then %><%=  p.reactions.length.to_s %><% elsif category.start_with?("samples") then %><%=  p.samples.length.to_s %><% elsif category.start_with?("datasets") %><%=  p.datasets.length.to_s %><% else %><%=  p.molecules.length.to_s %><% end %>  </span>
+
+
+   		<% end %>
+
+   		<%= t %>
+
+	</a>
+
+</li>
+
+
+
+<% p.children.each do |cp| %>
+
+<%= render 'layouts/projecttree', :highlight => highlight, :p => cp, :project_id => project_id, :category => category, :level => level+1 %>
+
+
+<% end %>

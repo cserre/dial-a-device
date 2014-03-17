@@ -2,14 +2,38 @@ class ReactionsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  before_action :set_reaction, only: [:show, :edit, :update, :destroy]
+  before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
 
   # GET /reactions
   def index
-    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.paginate(:page => params[:page])
+
+    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
+    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.where(["projects.id = ?", projid]).paginate(:page => params[:page])
 
     @analytics = nil
   end
+
+   def assign
+    authorize @reaction, :edit?
+
+    @projects = current_user.projects
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @reaction }
+    end
+  end
+
+  def assign_do
+    authorize @reaction, :edit?
+
+    @project = Project.find(params[:project_id])
+
+    @project.add_reaction(@reaction)
+
+    redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
+  end   
+
 
   # GET /reactions/1
   def show
@@ -51,11 +75,22 @@ class ReactionsController < ApplicationController
 
     if @reaction.save
 
+        if params[:assign_to_project_id].nil? then 
 
-        @reaction.add_to_project(current_user.rootproject_id)
+          current_user.rootproject.add_reaction(@reaction)
+
+          @projid = current_user.rootproject
+
+        else
+
+          Project.find(params[:assign_to_project_id]).add_reaction(@reaction)
+
+          @projid = params[:assign_to_project_id]
+
+        end
 
 
-      redirect_to @reaction, notice: 'Reaction was successfully created.'
+      redirect_to reaction_path(@reaction, :project_id => @projid), notice: 'Reaction was successfully created.'
     else
       render action: 'new'
     end
@@ -110,11 +145,13 @@ class ReactionsController < ApplicationController
     if @reaction.save
 
 
+
         @reaction.samples.each do |s|          
 
           s.molecule.add_to_project(current_user.rootproject_id) 
           s.add_to_project(current_user.rootproject_id)
         end
+
 
         @reaction.add_to_project(current_user.rootproject_id)
 
@@ -131,10 +168,6 @@ class ReactionsController < ApplicationController
 
     if @reaction.update(reaction_params)
 
-      @reaction.samples.each do |s|          
-
-          s.molecule.add_to_project(current_user.rootproject_id) 
-      end
 
       @reaction.update_attribute(:updated_at, DateTime.now)
 

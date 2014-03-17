@@ -1,13 +1,14 @@
 class Molecule < ActiveRecord::Base
   attr_accessible :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title
 
-  attr_accessor :reaction_id, :role
+  attr_accessor :reaction_id, :role, :project_id
 
   has_many :datasets
 
 
   has_many :molecule_samples
-  has_many :samples, :through => :molecule_samples, :dependent => :destroy, inverse_of: :compound
+  has_many :samples, :through => :molecule_samples, 
+    :dependent => :destroy
 
 
   def as_json(options= {})
@@ -38,15 +39,16 @@ class Molecule < ActiveRecord::Base
 
   def add_to_project_recursive (project_id)
 
-    if Project.exists?(Project.find(project_id).parent_id) then parent = Project.find(project_id).parent_id end
+    p = Project.find(project_id)
+    p.add_molecule(self)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
     loop do
 
       if !parent.nil? then
 
-        puts "adding to " + parent.title
-
-        add_to_project(parent.id)
+        parent.add_molecule(self)
 
       end
 
@@ -61,21 +63,4 @@ class Molecule < ActiveRecord::Base
   end
 
 
-  def add_to_project (project_id)
-
-    pm = ProjectMolecule.new
-    pm.molecule_id = self.id
-    pm.project_id = project_id
-    pm.save
-
-    add_to_rootlibrary(project_id)
-   
-
-  end
-
-  def add_to_rootlibrary(project_id)
-
-    Library.find(Project.find(project_id).rootlibrary_id).add_molecule(self.id)
-
-  end
 end

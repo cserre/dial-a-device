@@ -4,16 +4,25 @@
 
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
 
+
       <div class="well">
 
         <% @currentitem = "datasets" %>
 
-        <%= render 'layouts/devicesmenu' %>
+        <%= render 'layouts/moleculesmenu', :category => "datasets", :project_id => @projid %>
 
       </div>
+
+
+
+
+        <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @projid %>
+
+
     </div>
   
 <% end %>
+
 
 <h1>Datasets</h1>
 
@@ -22,8 +31,34 @@
 <table>
   <% @datasets.each do |dataset| %>
     <tr>
-      <h4><%= link_to dataset do %><b><%= dataset.method %></b>&nbsp;-&nbsp;<%= dataset.title %><% end %></h4>
-      <p><%= dataset.description %></p>
+
+              <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+              </td>
+
+              <td>
+                <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+                <p><%= dataset.description.html_safe %></p>
+                <p>Virtual DOI: <%= dataset.doi_identifier %></p>
+              
+            </td>
+
+            <td>
+
+              <%= render "molecules/render", :molecule => dataset.sample.molecule, :width => "200", :height => "150" %>
+
+              </td>
+
+              <td>Molecule: <%= link_to dataset.sample.molecule.title, molecule_path(dataset.sample.molecule, :project_id => @projid) %>
+
+                <br>
+
+                Sample: <%= dataset.sample.id.to_s %>
+
+<% if !dataset.sample.reactions.first.nil? then %><br><p>Used as <% dataset.sample.reactions.each do |r| %><%= dataset.sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>
+              </td>
+
+            </td>
+            
     </tr>
   <% end %>
 </table>
@@ -31,5 +66,5 @@
 <%= will_paginate @datasets, renderer: BootstrapPagination::Rails %>
 
 <% else %>
-<p>You don't have any datasets yet.</p>
+<p>No datasets in this project.</p>
 <% end %> 

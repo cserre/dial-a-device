@@ -1,23 +1,12 @@
 
 <ul class="nav nav-pills nav-stacked">
 
-<% if @currentitem == "reactions" then %><li class="active"><% else %><li><% end %><a href="/reactions">Reactions</a></li>
+<% if category == "molecules" then %><li class="active"><% else %><li><% end %><a href="/molecules?project_id=<%= project_id %>">Molecules</a></li>
 
-<% if @currentitem.start_with?("reactions") then %>
+<% if category == "samples" then %><li class="active"><% else %><li><% end %><a href="/samples?project_id=<%= project_id %>">Samples</a></li>
 
-<ul class="nav nav-pills nav-stacked">
+<% if category == "datasets" then %><li class="active"><% else %><li><% end %><a href="/datasets?project_id=<%= project_id %>">Datasets</a></li>
 
-<% current_user.reactions.order("reactions.updated_at DESC").limit(10).each do |r| %>
-	<% if @currentitem == "reactions_"+r.id.to_s then %><li class="active"><% else %><li><% end %>
-
-	<a href="/reactions/<%= r.id %>"><span class="badge"><%= r.name %></span></a></li>
-
-<% end %>
-
-</ul>
-
-<% end %>
-
-<% if @currentitem == "molecules" then %><li class="active"><% else %><li><% end %><a href="/molecules">Molecules</a></li>
+<% if category == "reactions" then %><li class="active"><% else %><li><% end %><a href="/reactions?project_id=<%= project_id %>">Reactions</a></li>
 
 </ul>

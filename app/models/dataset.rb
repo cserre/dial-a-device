@@ -2,11 +2,12 @@ class Dataset < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id
+  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id
 
   has_many :attachments, :dependent => :destroy
 
   belongs_to :molecule
+  belongs_to :sample
 
   has_one :measurement, :dependent => :destroy
 
@@ -143,6 +144,30 @@ def preview_url
 
   has_many :projects,
   through: :project_datasets
+
+  def add_to_project_recursive (project_id)
+
+    add_to_project(project_id)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = Project.find(Project.find(project_id).parent_id) end
+
+    loop do
+
+      if !parent.nil? then
+
+        add_to_project(parent.id)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+  end
 
   def add_to_project (project_id)
 
