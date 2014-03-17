@@ -1,17 +1,94 @@
+<% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+
+<% @project = Project.find(@projid) %>
+
+<% @projects = @reaction.projects %>
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+ <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Project visibility&nbsp;<%= link_to "Change", assign_reaction_path, :class => "btn btn-xs btn-success" %></h3>
+        </div>
+
+        <div class="panel-body">
+
+
+      <% current_user.topprojects.each do |p| %>
+
+              <ul class="nav nav-pills nav-stacked">
+
+                <%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => -1, :category => "reactions", :level => 0 %>
+
+
+          </ul>
+
+      <% end %>
+
+
+            
+          </div>
+        </div>
+    </div>
+</div>
+  
+<% end %>
+
 
 <% content_for :sidenav_switch do @shownavbar = true end %>
 
 <% content_for :sidenav do %>
 
+
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+
+          <% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
 
       <div class="well">
 
         <% @currentitem = "reactions_"+@reaction.id.to_s %>
 
-        <%= render 'layouts/moleculesmenu' %>
+        <%= render 'layouts/moleculesmenu', :category => "reactions", :project_id => @projid %>
 
       </div>
+
+
+        <%= render 'layouts/projectsmenu', :category => "reactions", :project_id => @projid %>
+
+  
     </div>
   
 <% end %>
@@ -26,21 +103,21 @@
 
 
 <fieldset>
-  <h3>Starting materials&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "educt"), :class => "btn btn-primary" %></h3>
+  <h3>Starting materials&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @projid, :reaction_id => @reaction.id, :role => "educt"), :class => "btn btn-primary" %></h3>
   <%= render('educts_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Reactants&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "reactant"), :class => "btn btn-primary" %></h3>
+  <h3>Reactants&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @projid, :reaction_id => @reaction.id, :role => "reactant"), :class => "btn btn-primary" %></h3>
   <%= render('reactants_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Products&nbsp;<%= link_to "Add", new_molecule_path(:reaction_id => @reaction.id, :role => "product"), :class => "btn btn-primary" %></h3>
+  <h3>Products&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @projid, :reaction_id => @reaction.id, :role => "product"), :class => "btn btn-primary" %></h3>
   <%= render('products_display') %>
 </fieldset>
 
@@ -109,30 +186,13 @@
 
 <% @reaction.products.each do |sample| %>
 
-<h1>Analytics for <%= sample.molecule.title %>&nbsp;<%= link_to 'Add Dataset', create_direct_datasets_path(:molecule_id => sample.molecule.id, :reaction_id => @reaction.id), :class => "btn btn-default btn-sm" %></h1>
+<h1>Analytics for <%= sample.molecule.title %>&nbsp;<%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :molecule_id => sample.molecule.id, :reaction_id => @reaction.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h1>
 
 
-<% if !@owndatasets.empty? then %>
+<%= render 'library_entries/sample', :id => sample.id, :sample => sample, :molecule => sample.molecule %>
 
-<table>
-  <% @owndatasets.where(["molecule_id = ?", sample.molecule.id]).order("method_rank ASC").each do |dataset| %>
-    <tr>
-      <td><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
-      </td>
-      <td>
-      <h4><%= link_to dataset_path(:id => dataset.id, :reaction_id => @reaction.id) do %><b><%= dataset.method %></b><% if !dataset.title.blank? then %> - <%= dataset.title %><% end %><% end %></h4>
-      <% if !dataset.description.blank? then %>
-      <p><%= dataset.description.html_safe %></p>
-      <% end %>
-      
-    </td>
-    </tr>
-  <% end %>
-</table>
 
-<% else %>
-  <p>You don't have any datasets for this molecule.</p>
-<% end %>
+<br>
 
 <% ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id = ? and confirmed = ?", current_user.id, @reaction.id, sample.molecule.id, false]) %>
 

@@ -3,6 +3,10 @@ class Project < ActiveRecord::Base
 
   has_many :project_memberships
 
+  def rootlibrary
+    Library.find(self.rootlibrary_id)
+  end
+
   def members
   	User.joins(:project_memberships).where(["role_id = ? and project_id = ?", 88, id])
   end
@@ -21,6 +25,20 @@ class Project < ActiveRecord::Base
     pm.save
 
     update_attributes(:rootlibrary_id => rp.id)
+
+  end
+
+  def parent
+    Project.find(parent_id)
+  end
+
+  def parent_exists?
+    Project.exists?(parent_id)
+  end
+
+  def children
+
+    Project.where(["parent_id = ?", self.id])
 
   end
 
@@ -62,5 +80,69 @@ class Project < ActiveRecord::Base
   has_many :project_libraries
   has_many :libraries,
     through: :project_libraries
+
+  def add_library(library)
+
+    pm = ProjectLibrary.new
+    pm.library_id = self.id
+    pm.project_id = project_id
+    pm.save
+
+  end
+
+  def add_reaction(reaction)
+    reactions << reaction unless reactions.exists?(reaction)
+
+    reaction.samples.each do |s|
+
+      add_sample_only(s)
+
+    end
+
+    parent.add_reaction(reaction) unless !parent_exists?
+
+  end
+
+  def add_molecule(molecule)
+    molecules << molecule unless molecules.exists?(molecule)
+    rootlibrary.add_molecule(molecule)
+
+    parent.add_molecule(molecule) unless !parent_exists?
+
+  end
+
+  def add_sample_only(sample)
+
+    samples << sample unless samples.exists?(sample)
+    molecules << sample.molecule unless molecules.exists?(sample.molecule)
+
+    rootlibrary.add_sample(sample) unless rootlibrary.sample_exists?(sample)
+
+    sample.datasets.each do |ds|
+      add_dataset_only(ds)
+    end
+
+  end
+
+  def add_sample(sample)
+
+    add_sample_only(sample)
+    
+    parent.add_sample(sample) unless !parent_exists?
+  end
+
+  def add_dataset(dataset)
+
+    add_dataset_only(dataset)
+
+    parent.add_dataset(dataset) unless !parent_exists?
+
+  end
+
+  def add_dataset_only(dataset)
+
+    datasets << dataset unless datasets.exists?(dataset)
+
+  end
 
 end

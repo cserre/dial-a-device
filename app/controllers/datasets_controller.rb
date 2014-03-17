@@ -7,13 +7,42 @@ class DatasetsController < ApplicationController
   # GET /datasets
   # GET /datasets.json
   def index
-    @datasets =  policy_scope(Dataset).paginate(:page => params[:page])
+    if params[:project_id].nil? then @projid = current_user.rootproject_id else @projid = params[:project_id] end
+
+    @datasets =  policy_scope(Dataset).where(["projects.id = ?", @projid]).paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @datasets }
     end
   end
+
+  def assign
+
+          @dataset = Dataset.find(params[:id])
+    authorize @dataset, :edit?
+
+    @projects = current_user.projects
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @molecule }
+    end
+  end
+
+  def assign_do
+
+
+    @dataset = Dataset.find(params[:id])
+    authorize @dataset, :edit?
+
+    @project = Project.find(params[:project_id])
+
+    @project.add_dataset(@dataset)
+
+    redirect_to molecule_path(@molecule, :project_id => params[:project_id]), notice: "Dataset was assigned to project."
+  end   
+
 
   def find
     @dataset =  Dataset.where(["uniqueid = ?", params[:uniqueid]]).first
@@ -215,6 +244,7 @@ class DatasetsController < ApplicationController
     authorize @dataset, :create?
 
     @dataset.molecule_id = params[:molecule_id]
+    @dataset.sample_id = params[:sample_id]
     @dataset.title = "no title"
     @dataset.method = "no method"
     @dataset.description = ""
@@ -239,17 +269,13 @@ class DatasetsController < ApplicationController
           dm.save
         end
 
-        @dataset.add_to_project(current_user.rootproject_id)
+        if params[:project_id].nil? then
 
-        if !@dataset.molecule.nil? then 
+          current_user.rootproject.add_dataset(@dataset)
 
+        else
 
-          @dataset.molecule.projects.each do |p|
-
-            if current_user.projects.exists?(p) then
-              @dataset.add_to_project(p.id)
-            end
-          end
+          Project.find(params[:project_id]).add_dataset(@dataset)
 
         end
 

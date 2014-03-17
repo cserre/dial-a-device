@@ -1,11 +1,13 @@
 class Sample < ActiveRecord::Base
-  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id
+  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id
 
   # has_many :task_samples
   # has_many :tasks, :through => :task_samples
 
   has_many :molecule_samples
   belongs_to :molecule, :autosave => true, inverse_of: :samples
+
+  belongs_to :originsample
 
   accepts_nested_attributes_for :molecule 
 
@@ -14,8 +16,20 @@ class Sample < ActiveRecord::Base
   has_many :reactions,
   	:through => :sample_reactions
 
+  has_many :datasets
+
   def name
     molecule.name
+  end
+
+  def role
+
+      if self.is_virtual && self.is_startingmaterial then return "educt" end
+     
+      if self.is_virtual && !self.is_startingmaterial then return "reactant" end
+
+      if !self.is_virtual && !self.is_startingmaterial then return "product" end
+       
   end
 
   def molecule_attributes=(molecule_attr)
@@ -58,13 +72,30 @@ class Sample < ActiveRecord::Base
   has_many :projects,
   through: :project_samples
 
-  def add_to_project (project_id)
+  def add_to_project_recursive (project_id)
 
-    pm = ProjectSample.new
-    pm.sample_id = self.id
-    pm.project_id = project_id
-    pm.save
+    p = Project.find(project_id)
+    p.add_sample(self)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        parent.add_sample(self)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
 
   end
+
  
 end

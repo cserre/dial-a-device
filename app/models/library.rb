@@ -8,22 +8,40 @@ class Library < ActiveRecord::Base
   has_many :projects,
   through: :project_libraries
 
-  def add_to_project (project_id)
+  def sample_exists?(sample)
+    library_entries.exists?(["sample_id = ?", sample.id])
+  end
 
-    pm = ProjectLibrary.new
-    pm.library_id = self.id
-    pm.project_id = project_id
-    pm.save
+
+  def add_molecule(molecule)
+
+    s = Sample.new
+    s.molecule = molecule 
+    s.target_amount = "0"
+    s.unit = "mg"
+    s.save
+
+
+    add_sample(s)
 
   end
 
-  def add_molecule(molecule_id)
+  def add_sample(sample)
 
     le = LibraryEntry.new
-    le.molecule_id = molecule_id
+    le.molecule_id = sample.molecule.id
+    le.sample_id = sample.id
     le.library_id = self.id
     le.save
 
   end
 
+
+  def migrate
+
+    # add a sample for each molecule in each project
+
+    # add sample_id to each dataset from each molecule
+
+  end
 end

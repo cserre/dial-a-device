@@ -16,7 +16,7 @@ class MoleculesController < ApplicationController
       # options = { :query => {:doi => doi, :url => url}, 
       #             :basic_auth => @auth, :headers => {'Content-Type' => 'text/plain'} }
 
-      options = { :headers => {'Content-Type' => 'text/json'}  }
+      options = { :timeout => 3,  :headers => {'Content-Type' => 'text/json'}  }
       self.class.get('http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/'+inchikey+'/record/JSON', options)
     end
 
@@ -45,7 +45,7 @@ class MoleculesController < ApplicationController
     @mol.spin = virtualmolecule.spin.round(2).to_s.gsub(/\n/, "").strip
     @mol.title = "new "+virtualmolecule.smiles.to_s.gsub(/\n/, "").strip
 
-    existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
+    existingmolecules = Molecule.where (["inchikey = ?", @mol.inchikey])
     existingmolecule = existingmolecules.first
 
     else
@@ -68,7 +68,11 @@ class MoleculesController < ApplicationController
 
         pc = PubChem.new("", "")
 
-        jsonresult = pc.get_record(@mol.inchikey)
+        begin
+          jsonresult = pc.get_record(@mol.inchikey)
+        rescue
+          jsonresult = nil
+        end
 
         
         puts "---"
@@ -76,7 +80,7 @@ class MoleculesController < ApplicationController
         puts "---"
         pccompound = PcCompound.new
 
-        if !jsonresult["PC_Compounds"].nil? then
+        if !jsonresult.nil? && !jsonresult["PC_Compounds"].nil? then
 
           pccompound.cid = jsonresult["PC_Compounds"][0]["id"]["id"]["cid"]
 
@@ -118,9 +122,9 @@ class MoleculesController < ApplicationController
 
 
   def assign
-    @molecule = Molecule.find(params[:id])
 
-    authorize @molecule
+          @molecule = Molecule.find(params[:id])
+    authorize @molecule, :assign?
 
     @projects = current_user.projects
 
@@ -131,36 +135,15 @@ class MoleculesController < ApplicationController
   end
 
   def assign_do
-    @molecule = Molecule.find(params[:id])
 
+        @molecule = Molecule.find(params[:id])
     authorize @molecule, :assign?
 
     @project = Project.find(params[:project_id])
 
-    @molecule.add_to_project(@project.id)
+    @project.add_molecule(@molecule)
 
-    
-    @molecule.projects.each do |p|
-
-      if current_user.projects.exists?(p) then
-              
-
-          @owndatasets = current_user.datasets.includes(:projects => :project_memberships).where(["molecule_id = ?", @molecule.id])
-
-          @owndatasets.each do |ds|
-
-                ds.add_to_project(p.id)
-          end
-
-          @ownsamples = current_user.samples.includes(:projects => :project_memberships).where(["molecule_id = ?", @molecule.id])
-          @ownsamples.each do |s|
-
-                s.add_to_project(p.id)
-          end
-      end
-    end
-
-    redirect_to molecule_path(@molecule), notice: "Molecule was assigned to project."
+    redirect_to molecule_path(@molecule, :project_id => params[:project_id]), notice: "Molecule was assigned to project."
   end   
 
 
@@ -193,7 +176,9 @@ class MoleculesController < ApplicationController
       titlefilter = true
     end
 
-    list = policy_scope(Molecule)
+    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
+
+    list = policy_scope(Molecule).where(["projects.id = ?", projid])
 
     if structurefilter then list = list.where(["smiles ilike ?", @smiles]) end
     if titlefilter then list = list.where(["molecules.title ilike ?", @title]) end
@@ -225,7 +210,7 @@ class MoleculesController < ApplicationController
       format.json { render json: @molecule }
       format.svg {
 
-        pagefile = Rails.root.join('tmp').join("mol_"+@molecule.id.to_s+".svg")
+        pagefile = Rails.root.join('tmp').join("mol_"+@molecule.inchikey.to_s+".svg")
 
         if File.exists?(pagefile) then
 
@@ -263,6 +248,22 @@ class MoleculesController < ApplicationController
     end
   end
 
+    # GET /molecules/new
+  # GET /molecules/new.json
+  def addtoreaction
+    @molecule = Molecule.new
+
+    authorize @molecule, :new?
+
+    @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
+
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @molecule }
+    end
+  end
+
   # GET /molecules/1/edit
   def edit
     @molecule = Molecule.find(params[:id])
@@ -276,9 +277,11 @@ class MoleculesController < ApplicationController
 
     reaction_id = params[:molecule][:reaction_id]
     role = params[:molecule][:role]
+    project_id = params[:molecule][:project_id]
 
     params[:molecule].delete :reaction_id
     params[:molecule].delete :role
+    params[:molecule].delete :project_id
 
     @molecule = Molecule.new(params[:molecule])
 
@@ -286,21 +289,18 @@ class MoleculesController < ApplicationController
 
     virtualmolecule = Rubabel::Molecule.from_string(@molecule.molfile, :mdl)
     
-    existingmolecules = Molecule.where (["smiles = ?", virtualmolecule.to_s])
+    existingmolecules = Molecule.where (["inchikey = ?", virtualmolecule.to_s(:inchikey).gsub(/\n/, "").strip])
     existingmolecule = existingmolecules.first
 
     if (existingmolecule != nil) then
       if (existingmolecule.id != nil) then
-        existingmolecule.add_to_project(current_user.rootproject_id)
-        existingmolecule.add_to_project(params[:assign_to_project_id])
         success = true
         @molecule = existingmolecule
 
       end
     else
       success = @molecule.save
-      @molecule.add_to_project(current_user.rootproject_id)
-      @molecule.add_to_project(params[:assign_to_project_id])
+      
     end
     
     respond_to do |format|
@@ -336,10 +336,12 @@ class MoleculesController < ApplicationController
 
           s.save
 
+          @molecule.samples << s
+
           r.projects.each do |p|
 
             if current_user.projects.exists?(p) then
-              s.add_to_project(p.id)
+              p.add_sample(s)
             end
 
           end
@@ -348,21 +350,39 @@ class MoleculesController < ApplicationController
 
           r.update_attribute(:updated_at, DateTime.now)
 
-          format.html { redirect_to Reaction.find(reaction_id), notice: 'Molecule was successfully added.' }
+          format.html { redirect_to reaction_path(Reaction.find(reaction_id), :project_id => project_id), notice: 'Molecule was successfully added.' }
           format.json { render json: @molecule, status: :created, location: @molecule }
 
         else
 
+          s = Sample.new
+          s.molecule = @molecule
+          s.target_amount = "0"
+          s.unit = "mg"
+          s.save
 
-          format.html { redirect_to @molecule, notice: 'Molecule was successfully created.' }
+          @molecule.samples << s
+
+          Project.find(params[:assign_to_project_id]).add_sample(s)
+
+          format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
           format.json { render json: @molecule, status: :created, location: @molecule }
 
         end
 
         else
 
+          s = Sample.new
+          s.molecule = @molecule
+          s.target_amount = "0"
+          s.unit = "mg"
+          s.save
 
-          format.html { redirect_to @molecule, notice: 'Molecule was successfully created.' }
+          @molecule.samples << s
+
+          Project.find(params[:assign_to_project_id]).add_sample(s)
+
+          format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
           format.json { render json: @molecule, status: :created, location: @molecule }
 
         end

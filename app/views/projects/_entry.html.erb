@@ -1,0 +1,36 @@
+
+<tr>
+                <td><% if project.members.length > 0 then %>
+                  <span class="glyphicon glyphicon-eye-open" />
+   <% else %><span class="glyphicon glyphicon-eye-close" />
+   <% end %></td>
+  
+
+                <td>
+
+   <p><%= project.molecules.length %> Molecules</p>
+   <p><%= project.reactions.length %> Reactions</p>
+   <p><%= project.samples.length %> Samples</p>
+   <p><%= project.libraries.length %> Libraries</p>
+
+   <p><%= project.datasets.length %> Datasets</p>
+   <p><%= project.devices.length %> Devices</p>
+   <p><%= project.beaglebones.length %> BeagleBones</p>
+   <p><%= project.folder_watchers.length %> Folder Watcher</p>
+
+
+</td>
+
+                <td>
+                  
+                  <% if project.members.length > 0 then %>Shared with:<% project.members.each do |m| %><br/><%= m.email %><% end %>
+   <% else %>This project is private.
+   <% end %>
+
+    <% if (project.id != @current_user.rootproject_id) then %><br/><%= link_to 'Invite someone', invite_project_path(project), :class => "btn btn-success btn-sm" %><% end %>
+                </td>
+
+                 <td><% if project.id != @current_user.rootproject_id then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, project, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{project.title}.") %><% end %></td>
+
+
+</tr>

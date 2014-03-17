@@ -1,21 +1,91 @@
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+
+                <% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+      <div class="well">
+
+        <% @currentitem = "samples" %>
+
+        <%= render 'layouts/moleculesmenu', :category => "samples", :project_id => @projid %>
+
+      </div>
+
+
+
+
+        <%= render 'layouts/projectsmenu', :category => "samples", :project_id => @projid %>
+
+
+    </div>
+  
+<% end %>
+
+<% project = Project.find(@projid) %>
+
+
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @library.title %>
-</p>
+<h1>Samples in <% if project.title.nil? then %><%= current_user.firstname %>'s Project<% else %><%= project.title %><% end %>&nbsp;
+<%= link_to 'New Sample', new_molecule_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %></h1>
 
+<h3>Library: all samples</h3>
 
-<ul id="library_entries" data-update-url="<%= sort_library_library_entries_url(:library_id => @library.id) %>">
+<h3>Library format: sorted list</h3>
+   
+
+<ul id="library_entries" data-update-url="<%= sort_library_library_entries_url(:library_id => @library.id) %>" style="float:left; list-style-type: none;">
 <% @library_entries.each do |le| %>
-  <%= content_tag_for :li, le do %>
-    <span class="handle">[drag]</span>
-    <% if le.molecule_id.nil? then link = "#" else link = Molecule.find(le.molecule_id) end %>
-    <%= library_library_entry_url(@library,link) %>
+
+<% sample = le.sample %>
+
+<% project = Project.find(@projid) %>
+
+<% molecule =  sample.molecule %>
+  <%= content_tag_for :li, le, :style => "float:left;clear:left;" do %>
+
+  	<table>
+      <th style="width:20px;"></th>
+      <th style="width:100px;"></th>
+      <th style="width:300px;"></th>
+      <th style="width:200px;"></th>
+  	<tr>
+      <td><%= le.position %></td>
+    <td><span class="handle"><%= render "molecules/render", :molecule => molecule, :width => "100", :height => "100" %></span></td>
+
+    <td><% if !molecule.nil? then %><%= link_to(sample_path(sample, :project_id => @projid)) do %><%= molecule.title %><% end %><% else %>No Molecule<% end %><% if !sample.reactions.first.nil? then %><br>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %><% end %></td>
+
+    <td><%= sample.datasets.length %> Datasets</td>
+    <td>
+<% if !sample.originsample_id.nil? then %> <p>Origin: <%= Sample.find(sample.originsample_id).id.to_s %></p><% end %>
+</td>
+
+    <td><%= link_to "fork", fork_sample_path(sample, :project_id => @projid), :class => "btn btn-xs btn-default" %></td>
+
+
+
+    <% if le.molecule_id.nil? then link = "#" else link = molecule end %>
+    <!-- <%= library_library_entry_url(@library,link) %> -->
+
+    </tr>
+
+	</table>
   <% end %>
 <% end %>
 </ul>
-
-
-<%= link_to 'Edit', edit_library_path(@library) %> |
-<%= link_to 'Back', libraries_path %>

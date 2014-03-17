@@ -1,19 +1,131 @@
-<p id="notice"><%= notice %></p>
+<% @molecule = @library_entry.sample.molecule %>
 
-<p>
-  <strong>Library:</strong>
-  <%= @library_entry.library_id %>
-</p>
+<% sample = @library_entry.sample %>
 
-<p>
-  <strong>Position:</strong>
-  <%= @library_entry.position %>
-</p>
+<% if params[:project_id].nil? then %>
 
-<p>
-  <strong>Molecule:</strong>
-  <%= @library_entry.molecule_id %>
-</p>
+          <% @projid = current_user.rootproject_id.to_s %>
 
-<%= link_to 'Edit', edit_library_entry_path(@library_entry) %> |
-<%= link_to 'Back', library_entries_path %>
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+
+<% @project = Project.find(@projid) %>
+
+<% @projects = @sample.projects %>
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+ <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Project visibility<% if sample.reactions.first.nil? then %>&nbsp;<%= link_to "Change", assign_sample_path, :class => "btn btn-xs btn-success" %><% end %></h3>
+        </div>
+
+        <div class="panel-body">
+
+
+      <% current_user.topprojects.each do |p| %>
+
+              <ul class="nav nav-pills nav-stacked">
+
+                <%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => -1, :category => "samples", :level => 0 %>
+
+
+          </ul>
+
+      <% end %>
+
+
+            
+          </div>
+        </div>
+    </div>
+</div>
+  
+<% end %>
+
+
+
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+
+                <% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+      <div class="well">
+
+        <% @currentitem = "samples" %>
+
+        <%= render 'layouts/moleculesmenu', :category => "samples", :project_id => @projid %>
+
+      </div>
+
+
+        <%= render 'layouts/projectsmenu', :category => "samples", :project_id => @projid %>
+
+
+
+    </div>
+  
+<% end %>
+
+<% @shownavbar = true %>
+
+
+
+
+
+<h1>
+  Sample <%= @molecule.title %>
+</h1>
+
+<% if !sample.originsample_id.nil? then %> <p>Origin: <%= Sample.find(sample.originsample_id).id.to_s %></p><% end %>
+
+<% if !sample.reactions.first.nil? then %><p>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>
+
+<table style="border-spacing: 10px; border-collapse: separate;">
+  <tr>
+
+    <td>
+
+<%= render "molecules/render", :molecule => @molecule, :width => "200", :height => "150" %>
+
+</td>
+
+<td>Molecule: <%= link_to @molecule.title, molecule_path(@molecule, :project_id => @projid) %></td>
+
+
+</tr>
+
+</table>
+
+<%= render 'library_entries/datasets', :id => sample.id, :sample => sample, :molecule => @molecule %>

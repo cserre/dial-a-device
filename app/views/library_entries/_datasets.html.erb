@@ -1,0 +1,26 @@
+<h3>
+          Datasets for Sample <%= sample.id.to_s %><%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h3>
+
+
+
+        <% sampledatasets = sample.datasets %>
+        <% if sampledatasets.length > 0 then %>
+
+        <table>
+          <% sampledatasets.order("method_rank ASC").each do |dataset| %>
+            <tr>
+              <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+              </td>
+              <td>
+              <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+              <p><%= dataset.description.html_safe %></p>
+              <p>Virtual DOI: <%= dataset.doi_identifier %></p>
+              
+            </td>
+            </tr>
+          <% end %>
+        </table>
+
+        <% else %>
+          <p>No datasets for this sample.</p>
+        <% end %>

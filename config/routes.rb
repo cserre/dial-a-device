@@ -35,9 +35,17 @@ LsiRailsPrototype::Application.routes.draw do
 
   resources :reactions do
     get 'createdirect', on: :collection, as: :createdirect
+
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'reactions#assign_do'
   end
 
-  resources :samples
+  resources :samples do
+    get 'assign', on: :member
+    post 'assign', on: :member, as: :assign_to_project_do, :to => 'samples#assign_do'
+
+    get 'fork', on: :member
+  end
 
   resources :locations
 
@@ -84,8 +92,9 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'fork', on: :member
     post 'commit', on: :member
-    get 'assign', on: :member
-    post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
+    
+    #get 'assign', on: :member
+    #post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
 
 
     resources :attachments do
@@ -125,6 +134,8 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'import', :on => :collection
     post 'import', :on => :collection
+
+    get 'addtoreaction', :on => :collection, as: :addtoreaction, :to => 'molecules#addtoreaction'
   end
 
 

@@ -1,6 +1,103 @@
+<% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+
+<% @project = Project.find(@projid) %>
+
+<% @projects = @molecule.projects %>
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+ <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Project visibility<!--&nbsp;<%= link_to "Change", assign_molecule_path, :class => "btn btn-xs btn-success" %>--></h3>
+        </div>
+
+        <div class="panel-body">
+
+
+      <% current_user.topprojects.each do |p| %>
+
+              <ul class="nav nav-pills nav-stacked">
+
+                <%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => -1, :category => "molecules", :level => 0 %>
+
+
+          </ul>
+
+      <% end %>
+
+
+            
+          </div>
+        </div>
+    </div>
+</div>
+  
+<% end %>
+
+
+
+<% content_for :sidenav_switch do @shownavbar = true end %>
+
+<% content_for :sidenav do %>
+
+    <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
+
+
+                <% if params[:project_id].nil? then %>
+
+          <% @projid = current_user.rootproject_id.to_s %>
+
+          <% else %>
+
+          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
+        
+          <% @projid = params[:project_id] %>
+
+          <% end %>
+
+          <% end %>
+
+      <div class="well">
+
+        <% @currentitem = "molecules" %>
+
+        <%= render 'layouts/moleculesmenu', :category => "molecules", :project_id => @projid %>
+
+      </div>
+
+
+        <%= render 'layouts/projectsmenu', :category => "molecules", :project_id => @projid %>
+
+
+
+    </div>
+  
+<% end %>
+
+<% @shownavbar = true %>
 
 <h1>
-  <%= @molecule.title %><% if !current_user.nil? then %><% if current_user.moleculeowner_of?(@molecule) then %>&nbsp;<%= link_to("Delete", @molecule, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{@molecule.title}.", :class => "btn btn-sm btn-warning") %>&nbsp;<%= link_to("Assign to Project",assign_molecule_path(@molecule), :method => :get, :title => "Assign #{@molecule.title}.", :class => "btn btn-sm btn-info") %><% end %><% end %>
+  <%= @molecule.title %>
 </h1>
 
 <table style="border-spacing: 10px; border-collapse: separate;">
@@ -52,35 +149,20 @@
 
 <% if !current_user.nil? then %>
 
-<h1>My Datasets <%= link_to 'Add Dataset', create_direct_datasets_path(:molecule_id => @molecule.id), :class => "btn btn-default btn-sm" %></h1>
+    <% @molecule.samples.each do |s| %>
 
-<% if !@owndatasets.empty? then %>
+      <h1>
+        Sample <%= @molecule.title %> <%= link_to sample_path(s, :project_id => @projid), :class => "btn btn-xs btn-success" do %>Open<% end %>
+      </h1>
 
-<table>
-  <% @owndatasets.order("method_rank ASC").each do |dataset| %>
-    <tr>
-      <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
-      </td>
-      <td>
-      <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.blank? then %> - <%= dataset.title %><% end %><% end %></h4>
-      <% if !dataset.description.blank? then %>
-      <p><%= dataset.description.html_safe %></p>
-      <% end %>
-      
-    </td>
-    </tr>
-  <% end %>
-</table>
 
-<% else %>
-  <p>You don't have any datasets for this molecule.</p>
-<% end %>
+        <%= render 'library_entries/sample', :id => s.id, :sample => s, :molecule => @molecule %>
 
-<br />
+    <% end %>
 
-<br/>
 
 <% end %>
+
 
 
 <% if params[:reaction_id].nil? then %>
