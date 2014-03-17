@@ -63,6 +63,6 @@ class LibraryEntriesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def library_entry_params
-      params.require(:library_entry).permit(:library_id, :position, :molecule_id)
+      params.require(:library_entry).permit(:library_id, :position, :molecule_id, :sample_id)
     end
 end
