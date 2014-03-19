@@ -1,4 +1,5 @@
 
+
 <% if !sample.originsample_id.nil? then %> <p>Origin: <%= Sample.find(sample.originsample_id).id.to_s %></p><% end %>
 
 <% if !sample.reactions.first.nil? then %><p>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>

@@ -13,7 +13,12 @@
             <td>
               <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
             </td>
-            <td><strong><%= sample.molecule.mass %></strong><br><%= link_to sample_path(:id => sample.id, :reaction_id => @reaction.id) do %><%= sample.molecule.title %><% end %><br>
+            <td><strong><%= sample.molecule.mass %></strong><br>
+
+              <%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %><br>
+
+              <span class="glyphicon glyphicon-map-picker" /><%=  sample.molecule.title %><br>
+
             <%= sample.molecule.formula %>
             </td>
             <td><%= sample.mol %></td>

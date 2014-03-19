@@ -263,7 +263,7 @@ class DatasetsController < ApplicationController
 
           if !(params[:reaction_id].nil?) then 
 
-          dm = ReactionDataset.new
+        dm = ReactionDataset.new
           dm.reaction_id = params[:reaction_id]
           dm.dataset_id = @dataset.id
           dm.save
@@ -271,12 +271,23 @@ class DatasetsController < ApplicationController
 
         if params[:project_id].nil? then
 
-          current_user.rootproject.add_dataset(@dataset)
+          @project = current_user.rootproject
 
         else
 
-          Project.find(params[:project_id]).add_dataset(@dataset)
+          @project = Project.find(params[:project_id])
 
+        end
+
+        @project.add_dataset(@dataset)
+
+        os = Sample.find(params[:sample_id]).originsample
+
+        while !os.nil?
+
+          os.datasets << @dataset
+
+          os = os.originsample
         end
 
         dsg = Datasetgroup.new

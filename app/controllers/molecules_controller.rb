@@ -319,6 +319,7 @@ class MoleculesController < ApplicationController
           s.molecule = @molecule
           s.target_amount = "0"
           s.unit = "mg"
+          s.name = r.name
           
 
           if role == "educt" then 

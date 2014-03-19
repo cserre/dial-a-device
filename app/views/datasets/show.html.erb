@@ -47,9 +47,12 @@
 
             <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
               <div class="well">
-                <h4>Associated Sample</h4>
+                <h4>Associated Samples</h4>
+                <span class="glyphicon glyphicon-map-marker" /><%= @dataset.sample.molecule.title %><br>
 
                 <div class="thumbnail">
+
+                    
 
                     <%= render "molecules/render", :molecule => @dataset.sample.molecule, :width => "100", :height => "100" %>
                 
@@ -57,7 +60,10 @@
                 </div>
 
                 <div class="caption">
-                    <p><%= @dataset.sample.molecule.title %></p>
+
+                    
+
+                          <%= link_to(sample_path(@dataset.sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  @dataset.sample.longname %><% end %>
 
                 </div>
         
@@ -74,7 +80,7 @@
               <div class="well">
                 <h4>Associated Reaction</h4>
 
-                        <%= link_to @dataset.sample.reactions.first.name, reaction_path(@dataset.sample.reactions.first) %>
+                        <%= link_to reaction_path(@dataset.sample.reactions.first) do %><span class="glyphicon glyphicon-flash" /><%= @dataset.sample.reactions.first.name %><% end %>
 
               </div>
             </div>
@@ -181,7 +187,7 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<h1><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
+<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
 
     <%= link_to 'Edit metadata', edit_dataset_path(@dataset, :reaction_id => params[:reaction_id]), :class => "btn btn-sm btn-success" %>
     &nbsp;<%= link_to("Delete", @dataset, :method => :delete, :confirm => "Are you sure?", :title => "Delete Dataset.", :class => "btn btn-sm btn-warning") %>
@@ -197,11 +203,6 @@ $(document).ajaxSend(function(e, xhr, options) {
 
     </h1>
 
-
-<% if !@dataset.molecule.nil? then %>
-<h4><b>Associated Molecule:</b>&nbsp;<%= link_to @dataset.molecule do %><%= @dataset.molecule.title %><% end %></h2>
-
-<% end %>
 
 <% if !@dataset.description.blank? then %>
 <p><b>Description:</b>&nbsp;<%= @dataset.description.html_safe %></p>

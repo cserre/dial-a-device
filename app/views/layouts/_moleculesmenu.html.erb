@@ -1,12 +1,12 @@
 
 <ul class="nav nav-pills nav-stacked">
 
-<% if category == "molecules" then %><li class="active"><% else %><li><% end %><a href="/molecules?project_id=<%= project_id %>">Molecules</a></li>
+<% if category == "molecules" then %><li class="active"><% else %><li><% end %><a href="/molecules?project_id=<%= project_id %>"><span class="glyphicon glyphicon-map-marker" /> Molecules</a></li>
 
-<% if category == "samples" then %><li class="active"><% else %><li><% end %><a href="/samples?project_id=<%= project_id %>">Samples</a></li>
+<% if category == "samples" then %><li class="active"><% else %><li><% end %><a href="/samples?project_id=<%= project_id %>"><span class="glyphicon glyphicon-glass" /> Samples</a></li>
 
-<% if category == "datasets" then %><li class="active"><% else %><li><% end %><a href="/datasets?project_id=<%= project_id %>">Datasets</a></li>
+<% if category == "datasets" then %><li class="active"><% else %><li><% end %><a href="/datasets?project_id=<%= project_id %>"><span class="glyphicon glyphicon-paperclip" /> Datasets</a></li>
 
-<% if category == "reactions" then %><li class="active"><% else %><li><% end %><a href="/reactions?project_id=<%= project_id %>">Reactions</a></li>
+<% if category == "reactions" then %><li class="active"><% else %><li><% end %><a href="/reactions?project_id=<%= project_id %>"><span class="glyphicon glyphicon-flash" /> Reactions</a></li>
 
 </ul>
