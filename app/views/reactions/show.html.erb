@@ -183,18 +183,25 @@
 
 
 
+<h3>Analytics</h3>
+
 
 <% @reaction.products.each do |sample| %>
 
-<h1>Analytics for <%= sample.molecule.title %>&nbsp;<%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :molecule_id => sample.molecule.id, :reaction_id => @reaction.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h1>
+<% project = Project.find(@projid) %>
+
+<% molecule =  sample.molecule %>
+
+<h4><%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small>  <%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :molecule_id => sample.molecule.id, :reaction_id => @reaction.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h4>
 
 
-<%= render 'library_entries/sample', :id => sample.id, :sample => sample, :molecule => sample.molecule %>
+      <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>
+    
+  <%= render 'library_entries/datasets', :sample => sample, :id => sample.id %>
 
+  <br>
 
-<br>
-
-<% ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id = ? and confirmed = ?", current_user.id, @reaction.id, sample.molecule.id, false]) %>
+  <% ms = Measurement.where(["user_id = ? and reaction_id = ? and molecule_id = ? and confirmed = ?", current_user.id, @reaction.id, sample.molecule.id, false]) %>
 
 <% if !ms.empty? then %>
 
@@ -219,6 +226,9 @@
 
 <br />
 
- 
-
 <% end %>
+
+<br>
+
+
+ 

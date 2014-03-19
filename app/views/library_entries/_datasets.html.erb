@@ -1,7 +1,3 @@
-<h3>
-          Datasets for Sample <%= sample.id.to_s %><%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h3>
-
-
 
         <% sampledatasets = sample.datasets %>
         <% if sampledatasets.length > 0 then %>

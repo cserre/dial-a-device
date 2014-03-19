@@ -1,5 +1,5 @@
 class SamplesController < ApplicationController
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :fork]
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split]
 
   before_filter :authenticate_user!
 
@@ -33,7 +33,7 @@ class SamplesController < ApplicationController
 
   end
 
-  def fork
+  def split
 
     @project = Project.find(params[:project_id])
 
@@ -52,7 +52,7 @@ class SamplesController < ApplicationController
 
     @project.add_sample(s)
 
-    redirect_to sample_path(s, :project_id => params[:project_id]), notice: "Sample was forked."
+    redirect_to sample_path(s, :project_id => params[:project_id]), notice: "Sample was splitted."
   end
 
   def index
@@ -95,6 +95,6 @@ class SamplesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sample_params
-      params.require(:sampl).permit(:target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
+      params.require(:sample).permit(:name, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
     end
 end

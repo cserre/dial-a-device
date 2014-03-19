@@ -48,13 +48,12 @@
 
               </td>
 
-              <td>Molecule: <%= link_to dataset.sample.molecule.title, molecule_path(dataset.sample.molecule, :project_id => @projid) %>
+              <td>
+                <% sample = dataset.sample %>
+                
+<h4><%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small></h4>
 
-                <br>
 
-                Sample: <%= dataset.sample.id.to_s %>
-
-<% if !dataset.sample.reactions.first.nil? then %><br><p>Used as <% dataset.sample.reactions.each do |r| %><%= dataset.sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>
               </td>
 
             </td>

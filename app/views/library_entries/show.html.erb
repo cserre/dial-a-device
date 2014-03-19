@@ -102,15 +102,19 @@
 
 
 
-
-
 <h1>
-  Sample <%= @molecule.title %>
+  <span class="glyphicon glyphicon-glass" /><%=  sample.longname %>
 </h1>
 
-<% if !sample.originsample_id.nil? then %> <p>Origin: <%= Sample.find(sample.originsample_id).id.to_s %></p><% end %>
+<h3><%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small></h3>
 
-<% if !sample.reactions.first.nil? then %><p>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>
+
+      <% if !sample.reactions.first.nil? then %><br><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %>
+
+
+
+    <td><%= link_to split_sample_path(sample, :project_id => @projid), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-tint"> Split</span><% end %><br/>
+      <%= link_to transfer_sample_path(sample, :project_id => @projid), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-send"> Transfer</span><% end %></td>
 
 <table style="border-spacing: 10px; border-collapse: separate;">
   <tr>
@@ -127,5 +131,8 @@
 </tr>
 
 </table>
+
+<h3><span class="glyphicon glyphicon-paperclip"/> <%= sample.datasets.length %> Datasets<%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h3>
+
 
 <%= render 'library_entries/datasets', :id => sample.id, :sample => sample, :molecule => @molecule %>

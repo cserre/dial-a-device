@@ -97,7 +97,7 @@
 <% @shownavbar = true %>
 
 <h1>
-  <%= @molecule.title %>
+  <span class="glyphicon glyphicon-map-marker" /><%= @molecule.title %>
 </h1>
 
 <table style="border-spacing: 10px; border-collapse: separate;">
@@ -147,21 +147,25 @@
 </table>
 
 
-<% if !current_user.nil? then %>
+<% @molecule.samples.each do |sample| %>
 
-    <% @molecule.samples.each do |s| %>
+<% project = Project.find(@projid) %>
 
-      <h1>
-        Sample <%= @molecule.title %> <%= link_to sample_path(s, :project_id => @projid), :class => "btn btn-xs btn-success" do %>Open<% end %>
-      </h1>
+<% molecule = sample.molecule %>
+
+<h4><%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small></h4>
 
 
-        <%= render 'library_entries/sample', :id => s.id, :sample => s, :molecule => @molecule %>
+      <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>
+    
+  <%= render 'library_entries/datasets', :sample => sample, :id => sample.id %>
 
-    <% end %>
-
+  <br>
 
 <% end %>
+
+
+
 
 
 

@@ -44,7 +44,8 @@ LsiRailsPrototype::Application.routes.draw do
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'samples#assign_do'
 
-    get 'fork', on: :member
+    get 'split', on: :member
+    get 'transfer', on: :member
   end
 
   resources :locations

@@ -1,13 +1,14 @@
 class Sample < ActiveRecord::Base
-  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id
+  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id, :name
 
   # has_many :task_samples
   # has_many :tasks, :through => :task_samples
 
   has_many :molecule_samples
+
   belongs_to :molecule, :autosave => true, inverse_of: :samples
 
-  belongs_to :originsample
+  belongs_to :originsample, :class_name => Sample, :foreign_key => :originsample_id
 
   accepts_nested_attributes_for :molecule 
 
@@ -19,8 +20,48 @@ class Sample < ActiveRecord::Base
   has_many :datasets
 
   def name
-    molecule.name
+
+    if read_attribute(:name).nil? then
+
+      "S"+self.id.to_s
+
+    else read_attribute(:name)
+
+
+    end
+
   end
+
+  def breadcrumbs
+
+    s = self
+
+    res = []
+
+    while !s.originsample.nil? do
+
+      s = s.originsample
+
+      res << s.name
+     
+    end
+
+    return res.join("/")
+
+  end
+
+  def longname
+
+    s = self
+
+    res = s.name
+
+    if !breadcrumbs.empty? then res = breadcrumbs + "/"+res end
+
+    return res
+
+  end
+
 
   def role
 
