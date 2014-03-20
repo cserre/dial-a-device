@@ -111,18 +111,16 @@
 
 <% end %>
 
-<% if !current_user.nil? then %>
 
 <% project = Project.find(@projid) %>
 
 <h1><% if project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= project.title %><% end %>&nbsp;
 <!-- <%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %>--></h1>
 
-<% projectmolecules = @molecules.where(["project_memberships.project_id = ?", project.id]) %>
-<% if projectmolecules.length > 0 then %>
+<% if @molecules.length > 0 then %>
 <table>
     
-<% projectmolecules.each do |molecule| %>
+<% @molecules.each do |molecule| %>
   <tr>
     <td>
       
@@ -134,6 +132,10 @@
     </td>
 
     <td><%= link_to(molecule_path(molecule, :project_id => @projid)) do %><%= molecule.title %><% end %></td>
+
+
+    <td><% if PcCompound.exists?(["inchikey = ?", molecule.inchikey]) then %>&nbsp;<%= link_to("http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid="+PcCompound.where(["inchikey = ?", molecule.inchikey]).first.cid.to_s,  :target => "_blank", :class => "btn btn-xs btn-default") do %><%= image_tag("/pubchem.jpg", :size => "40x12") %><% end %><% end %>
+      </td>
 
     <td>
 
@@ -161,11 +163,3 @@
 <p>No molecules found.</p>
 
 <% end %>
-
-<% end %>
-
-
-<br/>
-
-
-<br/>
