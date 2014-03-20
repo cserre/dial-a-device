@@ -1,5 +1,5 @@
 class SamplesController < ApplicationController
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split]
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer]
 
   before_filter :authenticate_user!
 
@@ -31,6 +31,11 @@ class SamplesController < ApplicationController
 
 
 
+  end
+
+  def transfer
+
+  
   end
 
   def split
