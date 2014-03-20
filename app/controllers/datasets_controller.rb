@@ -372,9 +372,12 @@ class DatasetsController < ApplicationController
 
     authorize @olddataset, :show?
 
-    @dataset = @olddataset.dup
+    @dataset = @olddataset.transfer_to_sample(@olddataset.sample)
 
-    
+    @olddataset.transfer_attachments_to_dataset(@dataset)
+
+    dsg = @olddataset.datasetgroups.first
+    dsg.datasets << @dataset
 
 #    if !@dataset.molecule.nil? then 
 
@@ -384,59 +387,9 @@ class DatasetsController < ApplicationController
 
     respond_to do |format|
 
-      if @dataset.save
-
-        @dataset.add_to_project(current_user.rootproject_id)
-
-        if !@dataset.molecule.nil? then 
-
-
-          @dataset.molecule.projects.each do |p|
-
-            if current_user.projects.exists?(p) then
-              @dataset.add_to_project(p.id)
-            end
-          end
-
-        end
-
-        @olddataset.attachments.each do |a|
-
-          newattachment = Attachment.new(:dataset => @dataset)
-
-          if Rails.env.localserver? then 
-
-            old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
-            puts old_path
-
-
-            newattachment.file = File.new(old_path)
-
-            new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
-            puts new_path
-
-            FileUtils.mkdir_p(File.dirname(new_path))
-            FileUtils.cp(old_path, new_path)
-
-          else
-            newattachment.remote_file_url = a.file_url
-          end
-
-          newattachment.save
-
-          @dataset.attachments << newattachment
-
-        end
-
-        dsg = @olddataset.datasetgroups.first
-        dsg.datasets << @dataset
-
         format.html { redirect_to @dataset, notice: 'Dataset was successfully forked.' }
         format.json { render json: @dataset, status: :created, location: @dataset }
-      else
-        format.html { redirect_to @olddataset, notice: 'Dataset could not be forked.' }
-        format.json { render json: @dataset.errors, status: :unprocessable_entity }
-      end
+
     end
   end
 

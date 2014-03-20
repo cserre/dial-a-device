@@ -35,7 +35,18 @@ class SamplesController < ApplicationController
 
   def transfer
 
-  
+    targetproject = nil
+
+    newsample = @sample.transfer_to_project(targetproject)
+
+    @sample.datasets.each do |ds|
+
+      newdataset = ds.transfer_to_sample(newsample)
+      ds.transfer_attachments_to_dataset(newdataset)
+
+    end
+
+
   end
 
   def split

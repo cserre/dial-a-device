@@ -19,6 +19,26 @@ class Sample < ActiveRecord::Base
 
   has_many :datasets
 
+  def add_dataset(dataset)
+
+    self.datasets << dataset
+
+    self.projects.each do |p|
+      p.add_dataset(dataset)
+    end
+
+  end
+
+  def transfer_to_project(project)
+
+    newsample = self.dup
+
+    project.add_sample(newsample)
+
+    return newsample
+
+  end
+
   def name
 
     if read_attribute(:name).nil? then
