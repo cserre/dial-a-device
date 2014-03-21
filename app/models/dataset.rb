@@ -94,13 +94,13 @@ class Dataset < ActiveRecord::Base
   end
 
   def doi_identifier
-  	if !molecule.nil? then 
+  	if !sample.molecule.nil? then 
 
       v = ""
       if (!version.blank? && !(version == "0")) then v = "."+version end
 
   		if !ENV['DOI_PREFIX'].nil? then
-  			ENV['DOI_PREFIX']+"/"+molecule.inchikey+"/"+method+v
+  			ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
   		end
   	end
 
