@@ -244,7 +244,11 @@ class DatasetsController < ApplicationController
     authorize @dataset, :create?
 
     @dataset.molecule_id = params[:molecule_id]
+
     @dataset.sample_id = params[:sample_id]
+
+    puts "ADDED TO SAMPLE " + @dataset.sample_id.to_s
+
     @dataset.title = "no title"
     @dataset.method = "no method"
     @dataset.description = ""
@@ -281,14 +285,8 @@ class DatasetsController < ApplicationController
 
         @project.add_dataset(@dataset)
 
-        os = Sample.find(params[:sample_id]).originsample
+        Sample.find(params[:sample_id]).add_dataset(@dataset)
 
-        while !os.nil?
-
-          os.datasets << @dataset
-
-          os = os.originsample
-        end
 
         dsg = Datasetgroup.new
         dsg.save
