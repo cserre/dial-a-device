@@ -84,7 +84,7 @@ class User < ActiveRecord::Base
   has_many :projects,
     through: :project_memberships, :foreign_key => :user_id
 
-  has_one :rootproject, :class_name => Project
+  belongs_to :rootproject, :class_name => Project
 
   def topprojects
 
