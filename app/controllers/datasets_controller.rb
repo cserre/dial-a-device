@@ -183,11 +183,11 @@ class DatasetsController < ApplicationController
     @attachment = Attachment.new(:dataset => @dataset)
 
     respond_to do |format|
-      if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
+      if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
 
-      if (Commit.exists?(["dataset_id = ?", @dataset.id])) then flash[:notice] = 'Dataset is read-only. To edit, fork it first.' end
+      if (Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is read-only. To edit, fork it first.' end
 
-        if true == false then flash[:warning] = "This is not the last version of the dataset, check the version history." end
+      if true == false then flash.now[:warning] = "This is not the last version of the dataset, check the version history." end
 
       format.html { render action: "show" }
       format.json { render json: @dataset }
