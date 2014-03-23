@@ -1,5 +1,5 @@
 
-
+<% if !current_user.nil? then %>
  <div class="panel panel-default">
 
         <div class="panel-heading">
@@ -7,9 +7,6 @@
         </div>
 
         <div class="panel-body">
-
-          <% if !current_user.nil? then %>
-
 
 <% current_user.topprojects.each do |p| %>
 
@@ -23,13 +20,15 @@
 
 <% end %>
 
-<% end %>
 
 <br>
 
         </div>
 
       </div>
+
+<% end %>
+
 
 
       <% if !current_user.nil? then %>
