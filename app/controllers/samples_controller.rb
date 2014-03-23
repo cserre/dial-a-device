@@ -1,7 +1,8 @@
 class SamplesController < ApplicationController
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer]
 
-  before_filter :authenticate_user!, except: [:index]
+  before_filter :authenticate_user!, except: [:index, :show]
+
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer]
 
   before_action :set_project
 
@@ -81,6 +82,7 @@ class SamplesController < ApplicationController
 
   def show
 
+    authorize @sample
 
     @library_entry = LibraryEntry.all.where(["sample_id = ?",  @sample.id]).first
 
