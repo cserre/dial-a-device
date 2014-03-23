@@ -15,7 +15,7 @@ class LibraryEntriesController < ApplicationController
 
   # GET /library_entries
   def index
-    @library_entries = LibraryEntry.all
+    @library_entries = LibraryEntry.all.paginate(:page => params[:page])
   end
 
   # GET /library_entries/1

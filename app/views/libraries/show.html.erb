@@ -31,6 +31,8 @@
 <h3>Library: all samples</h3>
 
 <h3>Library format: sorted list</h3>
+
+<%= will_paginate @library_entries, renderer: BootstrapPagination::Rails %>
    
 
 <ul id="library_entries" data-update-url="<%= sort_library_library_entries_url(:library_id => @library.id) %>" style="float:left; list-style-type: none;">

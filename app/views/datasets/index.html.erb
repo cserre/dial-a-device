@@ -25,6 +25,7 @@
 
 
 <h1>Datasets</h1>
+<%= will_paginate @datasets, renderer: BootstrapPagination::Rails %>
 
 <% if @datasets.length > 0 then %>
 
@@ -61,8 +62,6 @@
     </tr>
   <% end %>
 </table>
-
-<%= will_paginate @datasets, renderer: BootstrapPagination::Rails %>
 
 <% else %>
 <p>No datasets in this project.</p>

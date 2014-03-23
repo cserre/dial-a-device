@@ -186,7 +186,7 @@ class MoleculesController < ApplicationController
     if structurefilter then @filter = true end
     if titlefilter then @filter = true end
 
-    @molecules = list
+    @molecules = list.paginate(:page => params[:page])
 
 
     respond_to do |format|

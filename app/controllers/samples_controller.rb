@@ -74,7 +74,7 @@ class SamplesController < ApplicationController
 
     @library = @project.rootlibrary
 
-    @library_entries = @library.library_entries
+    @library_entries = @library.library_entries.paginate(:page => params[:page])
 
     render 'libraries/show', :id => @library.id
 
