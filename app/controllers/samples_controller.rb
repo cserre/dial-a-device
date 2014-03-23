@@ -1,7 +1,9 @@
 class SamplesController < ApplicationController
   before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer]
 
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:index]
+
+  before_action :set_project
 
   def assign
     authorize @sample, :edit?
@@ -16,8 +18,6 @@ class SamplesController < ApplicationController
 
   def assign_do
     authorize @sample, :edit?
-
-    @project = Project.find(params[:project_id])
 
     @project.add_sample(@sample)
 
@@ -51,8 +51,6 @@ class SamplesController < ApplicationController
 
   def split
 
-    @project = Project.find(params[:project_id])
-
     s = Sample.new
     s.molecule = @sample.molecule
     s.target_amount = "0"
@@ -73,9 +71,7 @@ class SamplesController < ApplicationController
 
   def index
 
-    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
-
-    @library = Library.find(Project.find(projid).rootlibrary_id)
+    @library = @project.rootlibrary
 
     @library_entries = @library.library_entries
 
@@ -107,6 +103,18 @@ class SamplesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_sample
       @sample = Sample.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

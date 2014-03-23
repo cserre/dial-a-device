@@ -9,14 +9,14 @@
 
         <% @currentitem = "datasets" %>
 
-        <%= render 'layouts/moleculesmenu', :category => "datasets", :project_id => @projid %>
+        <%= render 'layouts/moleculesmenu', :category => "datasets", :project_id => @project.id %>
 
       </div>
 
 
 
 
-        <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @projid %>
+        <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @project.id %>
 
 
     </div>
@@ -51,7 +51,7 @@
               <td>
                 <% sample = dataset.sample %>
                 
-<h4><%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small></h4>
+<h4><%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small></h4>
 
 
               </td>

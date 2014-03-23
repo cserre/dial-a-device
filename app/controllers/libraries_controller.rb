@@ -1,8 +1,11 @@
 class LibrariesController < ApplicationController
 
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:index]
 
   before_action :set_library, only: [:show, :edit, :update, :destroy]
+
+  before_action :set_project
+
 
   # GET /libraries
   def index
@@ -65,6 +68,19 @@ class LibrariesController < ApplicationController
     def set_library
       @library = Library.find(params[:id])
     end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
+    end
+
 
     # Only allow a trusted parameter "white list" through.
     def library_params

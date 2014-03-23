@@ -1,7 +1,7 @@
 class SamplePolicy < Struct.new(:user, :sample)
   class Scope < Struct.new(:user, :sample)
     def resolve
-      user.molecules
+      user.samples
     end
   end
 
