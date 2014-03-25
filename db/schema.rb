@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140319112400) do
+ActiveRecord::Schema.define(version: 20140325082911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,14 @@ ActiveRecord::Schema.define(version: 20140319112400) do
     t.datetime "last_seen"
     t.string   "external_ip"
     t.string   "version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "citations", force: true do |t|
+    t.string   "doi"
+    t.string   "fullcitation"
+    t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -336,6 +344,13 @@ ActiveRecord::Schema.define(version: 20140319112400) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "description"
+  end
+
+  create_table "sample_citations", force: true do |t|
+    t.integer  "sample_id"
+    t.integer  "citation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sample_reactions", force: true do |t|
