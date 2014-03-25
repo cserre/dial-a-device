@@ -102,7 +102,7 @@
 
 
 
-  <h3><span class="glyphicon glyphicon-book" /> Literature <% if policy(@sample).edit? then %><%= link_to 'Add Citation', add_literature_to_sample_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %><% end %></h3>
+  <h3><span class="glyphicon glyphicon-book" /> Literature <% if policy(sample).edit? then %><%= link_to 'Add Citation', add_literature_to_sample_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %><% end %></h3>
 
     <% if !sample.citations.empty? then %>
 
