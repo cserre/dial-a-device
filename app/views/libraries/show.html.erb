@@ -25,8 +25,8 @@
 
 <p id="notice"><%= notice %></p>
 
-<h1>Samples in <% if @project.title.nil? then %><%= current_user.firstname %>'s Project<% else %><%= @project.title %><% end %>&nbsp;
-<%= link_to 'New Sample', new_molecule_path(:assign_to_project_id => @project.id), :class => "btn btn-sm btn-success" %></h1>
+<h1>Samples in <% if @project.title.nil? then %><%= current_user.firstname %>'s Project<% else %><%= @project.title %><% end %><% if policy(@project).addsample? then %>&nbsp;
+<%= link_to 'New Sample', new_molecule_path(:assign_to_project_id => @project.id), :class => "btn btn-sm btn-success" %><% end %></h1>
 
 <h3>Library: all samples</h3>
 
