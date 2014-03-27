@@ -6,6 +6,10 @@
 
 <%= text_field_tag(:doi) %>
 
+<%= label_tag(:relationtype, "Type of relation:") %>
+
+<%= select_tag(:relationtype, options_for_select([["Is Supplement To", "IsSupplementTo"]], "IsSupplementTo")) %>
+
 <%= submit_tag("Add") %> 
 
 <% end %>
