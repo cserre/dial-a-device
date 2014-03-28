@@ -164,7 +164,9 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1
   # GET /datasets/1.json
+  
   def show
+    @dataset = Dataset.find(params[:id])
     authorize @dataset
 
     @changerights = false
@@ -174,6 +176,11 @@ class DatasetsController < ApplicationController
     if Commit.exists?(["dataset_id = ?", @dataset.id]) then @changerights = false end
 
     @attachment = Attachment.new(:dataset => @dataset)
+
+    if @dataset.jdx_file 
+      file=@dataset.jdx_file
+      process_jdx(file)
+    end
 
     respond_to do |format|
       if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
@@ -464,5 +471,61 @@ class DatasetsController < ApplicationController
         end
       end
     end
+
+ def process_jdx(file)
+    jdx_data=Jcampdx.load_jdx({:file =>file})
+
+    #if NMR
+    if jdx_data[0][0][:"DATA TYPE"][0] == "NMR SPECTRUM"
+      freq=jdx_data[0][0][:".OBSERVE FREQUENCY"][0].to_f
+    #jdx_data[0][0][:".OBSERVE NUCLEUS"][0]
+    #jdx_data[0][0][:".SOLVENT NAME"][0]
+    #jdx_data[0][0][:".PULSE SEQUENCE"][0]
+    end
+    #select first block with  data
+    block_counter=0
+    while block_counter <jdx_data.size
+      b ||= block_counter if jdx_data[block_counter][1][0] != []
+      block_counter += 1
+    end
+
+    #@jdx_title = (jdx_data[b][0][:TITLE]  && jdx_data[b][0][:TITLE][0]) || jdx_data[0][0][:TITLE][0]
+    #puts @jdx_title
+    @dx_data=[{},[]]
+
+    if b
+      @dx_data[0]=jdx_data[b][0]
+      #check if xaxis reversed
+      indx= jdx_data[b][1][0][0]
+      indy= jdx_data[b][1][0][1]
+
+      @dx_data[0][:xaxis_reversed] = false
+      if jdx_data[b][0][:FIRST][indx] > jdx_data[b][0][:LAST][indx]
+        @dx_data[0][:xaxis_reversed]  = true
+      end
+      #data points
+      x=jdx_data[b][1][1][0]
+      if freq && @dx_data[0][:UNITS][indx] =~ /^\s*(HZ|Hz|hz|Hertz|HERTZ)/
+        x=x.map{|e| e/freq}
+        @dx_data[0][:UNITS][indx]= "ppm"
+      end
+      y=jdx_data[b][1][1][1]
+      xy=x.zip(y)
+      #sample data points
+      if (s=xy.size.to_f) > 4096
+        samp_rate = s/2048.floor
+        xy_samp =  Array.new(samp_rate){Array.new}
+        for i in Array.new((s/samp_rate).ceil).fill{|k| k*samp_rate}
+          xy_samp.each.with_index{|c,j| c<<xy[i+j]}
+        end
+      xy =  xy_samp[0].compact
+      end
+      @dx_data[0][:TITLE] ||=jdx_data[0][0][:TITLE]
+    @dx_data[1][0]=xy
+    else
+      @dx_data=[{:UNITS =>["x","y"],:xaxis_reversed => false, :TITLE =>["no data"]},[[[10,10], [90,90], [50,50], [10,90],[90,10]]]]
+    end
+
+  end
 
 end

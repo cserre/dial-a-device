@@ -7,7 +7,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
-  if Rails.env.localserver? then 
+  if Rails.env.localserver? or Rails.env.development? then 
     storage :file
   else
      storage :fog
@@ -17,7 +17,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    if Rails.env.localserver? then 
+    if Rails.env.localserver? or Rails.env.development? then 
        LsiRailsPrototype::Application.config.datasetroot + "datasets/#{model.dataset_id}/#{model.folder}"
      else
        "datasets/#{model.dataset_id}/#{model.folder}"
@@ -35,7 +35,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   def url(options={})
     "thumb?"
     puts options
-     if Rails.env.localserver? then 
+     if Rails.env.localserver? or Rails.env.development? then 
        "/datasets/#{model.dataset_id}/#{model.folder}#{[version_name, File.basename(model.file.path.to_s)].compact.join('_')}"
      else
        super(options)
