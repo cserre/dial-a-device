@@ -122,6 +122,16 @@
 
 
       <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>
+
+          <% if !sample.citations.empty? then %>
+
+ <% sample.citations.each do |c| %>
+
+    <span class="glyphicon glyphicon-book" /> <%= link_to "http://dx.doi.org/"+c.doi, :target => "_blank" do %><%= c.title %><% end %><br><%= c.fullcitation %><br>
+
+  <% end %>
+
+<% end %>
     
   <%= render 'library_entries/datasets', :sample => sample, :id => sample.id %>
 

@@ -19,6 +19,57 @@ class Sample < ActiveRecord::Base
 
   has_many :datasets
 
+
+
+  class CrossRef
+    include HTTParty
+    debug_output $stderr
+    base_uri 'http://search.crossref.org'
+
+
+    def get_record(doi)
+      # options = { :query => {:doi => doi, :url => url}, 
+      #             :basic_auth => @auth, :headers => {'Content-Type' => 'text/plain'} }
+
+      options = { :timeout => 3,  :headers => {'Content-Type' => 'text/json'}  }
+
+      self.class.get('http://search.crossref.org/dois?q='+doi, options)
+    end
+
+  end
+
+  def add_literature(doi)
+
+    res = CrossRef
+
+    cr = CrossRef.new
+
+    begin
+          jsonresult = cr.get_record(doi)
+    rescue
+          jsonresult = nil
+    end
+
+    if !jsonresult.nil? && !jsonresult[0].nil? then
+
+      puts jsonresult[0]
+
+      c = Citation.new
+      c.title = jsonresult[0]["title"]
+      c.fullcitation = jsonresult[0]["fullCitation"]
+      c.doi = doi
+      c.save
+
+      citations << c
+
+    end
+
+  end
+
+  has_many :sample_citations
+  has_many :citations,
+    :through => :sample_citations
+
   def add_dataset(dataset)
 
     self.datasets << dataset

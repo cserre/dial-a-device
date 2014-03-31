@@ -1,0 +1,17 @@
+<h1>Add citation</h1>
+
+<%= form_tag(add_literature_to_sample_path(@sample), method: "get") do %>
+
+<%= label_tag(:doi, "DOI:") %>
+
+<%= text_field_tag(:doi) %>
+
+<%= label_tag(:relationtype, "Type of relation:") %>
+
+<%= select_tag(:relationtype, options_for_select([["Is Supplement To", "IsSupplementTo"]], "IsSupplementTo")) %>
+
+<%= submit_tag("Add") %> 
+
+<% end %>
+
+<%= link_to('Back', @sample, :class => "btn btn-default") %>

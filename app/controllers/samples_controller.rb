@@ -2,9 +2,30 @@ class SamplesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:index, :show]
 
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer]
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature]
 
   before_action :set_project
+
+
+
+  def addliterature
+
+    authorize @sample, :edit?
+
+    if params[:doi].nil? then 
+
+          render 'samples/addliterature', :id => @sample.id
+
+    else
+
+      @sample.add_literature(params[:doi])
+
+      redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Literature was added."
+
+    end
+
+
+  end
 
   def assign
     authorize @sample, :edit?

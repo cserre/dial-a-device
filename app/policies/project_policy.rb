@@ -23,6 +23,15 @@ class ProjectPolicy < Struct.new(:user, :project)
     true
   end
 
+  def addsample?
+    result = false
+
+    if !user.nil? then result = user.projectowner_of?(project) end
+
+    result
+
+  end
+
   def adduser?
     user.projectowner_of?(project)
   end

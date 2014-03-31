@@ -100,7 +100,25 @@
 
 </table>
 
-<h3><span class="glyphicon glyphicon-paperclip"/> <%= sample.datasets.length %> Datasets<%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %></h3>
+
+
+  <h3><span class="glyphicon glyphicon-book" /> Literature <% if policy(sample).edit? then %><%= link_to 'Add Citation', add_literature_to_sample_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %><% end %></h3>
+
+    <% if !sample.citations.empty? then %>
+
+ <% sample.citations.each do |c| %>
+
+    <%= link_to "http://dx.doi.org/"+c.doi, :target => "_blank" do %><%= c.title %><% end %><br><%= c.fullcitation %><br>
+
+  <% end %>
+
+<% else %>
+
+No literature is linked to this sample.
+
+<% end %>
+
+<h3><span class="glyphicon glyphicon-paperclip"/> <%= sample.datasets.length %> Datasets <%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %></h3>
 
 
 <%= render 'library_entries/datasets', :id => sample.id, :sample => sample, :molecule => @molecule %>
