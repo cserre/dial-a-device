@@ -94,6 +94,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def doi_identifier
+    if !sample.nil? then
   	if !sample.molecule.nil? then 
 
       v = ""
@@ -103,6 +104,7 @@ class Dataset < ActiveRecord::Base
   			ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
   		end
   	end
+    end
 
   end
 
