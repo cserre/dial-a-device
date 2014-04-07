@@ -373,4 +373,8 @@ def preview_url
 
   end
 
+  def as_json(options={})
+    super(:include => [:attachments => {:methods => :as_json}])
+  end
+
 end

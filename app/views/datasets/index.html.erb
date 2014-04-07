@@ -38,7 +38,7 @@
 
               <td>
                 <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
-                <p><%= dataset.description.html_safe %></p>
+                <p><% if !dataset.description.blank? then %><%= dataset.description.html_safe %><% end %></p>
                 <p>Virtual DOI: <%= dataset.doi_identifier %></p>
               
             </td>

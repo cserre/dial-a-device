@@ -17,7 +17,6 @@ class Molecule < ActiveRecord::Base
     h
   end
 
-
   def svg
 
       c=OpenBabel::OBConversion.new
