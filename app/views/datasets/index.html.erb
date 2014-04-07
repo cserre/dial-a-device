@@ -45,8 +45,11 @@
 
             <td>
 
+              <% if !dataset.sample.nil? && !dataset.sample.molecule.nil? then %>
+
               <%= render "molecules/render", :molecule => dataset.sample.molecule, :width => "200", :height => "150" %>
 
+              <% end %>
               </td>
 
               <td>
