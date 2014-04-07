@@ -2,24 +2,6 @@
 
 <% sample = @library_entry.sample %>
 
-<% if params[:project_id].nil? then %>
-
-          <% @projid = current_user.rootproject_id.to_s %>
-
-          <% else %>
-
-          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
-        
-          <% @projid = params[:project_id] %>
-
-          <% end %>
-
-          <% end %>
-
-
-<% @project = Project.find(@projid) %>
-
-<% @projects = @sample.projects %>
 
 <% @showsidebar = true %>
 
@@ -42,7 +24,7 @@
 
               <ul class="nav nav-pills nav-stacked">
 
-                <%= render 'layouts/projecttree', :highlight => @projects, :p => p, :project_id => -1, :category => "samples", :level => 0 %>
+                <%= render 'layouts/projecttree', :highlight => @sample.projects, :p => p, :project_id => -1, :category => "samples", :level => 0 %>
 
 
           </ul>
@@ -67,30 +49,16 @@
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
 
 
-                <% if params[:project_id].nil? then %>
-
-          <% @projid = current_user.rootproject_id.to_s %>
-
-          <% else %>
-
-          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
-        
-          <% @projid = params[:project_id] %>
-
-          <% end %>
-
-          <% end %>
-
       <div class="well">
 
         <% @currentitem = "samples" %>
 
-        <%= render 'layouts/moleculesmenu', :category => "samples", :project_id => @projid %>
+        <%= render 'layouts/moleculesmenu', :category => "samples", :project_id => @project.id %>
 
       </div>
 
 
-        <%= render 'layouts/projectsmenu', :category => "samples", :project_id => @projid %>
+        <%= render 'layouts/projectsmenu', :category => "samples", :project_id => @project.id %>
 
 
 
@@ -109,12 +77,12 @@
 <h3><%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small></h3>
 
 
-      <% if !sample.reactions.first.nil? then %><br><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %>
+      <% if !sample.reactions.first.nil? then %><br><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %>
 
 
 
-    <td><%= link_to split_sample_path(sample, :project_id => @projid), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-tint"> Split</span><% end %><br/>
-      <%= link_to transfer_sample_path(sample, :project_id => @projid), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-send"> Transfer</span><% end %></td>
+    <td><%= link_to split_sample_path(sample, :project_id => @project.id), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-tint"> Split</span><% end %><br/>
+     <!-- <%= link_to transfer_sample_path(sample, :project_id => @project.id), :class => "btn btn-xs btn-default" do %><span class="glyphicon glyphicon-send"> Transfer</span><% end %></td> -->
 
 <table style="border-spacing: 10px; border-collapse: separate;">
   <tr>
@@ -125,14 +93,32 @@
 
 </td>
 
-<td>Molecule: <%= link_to @molecule.title, molecule_path(@molecule, :project_id => @projid) %></td>
+<td>Molecule: <%= link_to @molecule.title, molecule_path(@molecule, :project_id => @project.id) %></td>
 
 
 </tr>
 
 </table>
 
-<h3><span class="glyphicon glyphicon-paperclip"/> <%= sample.datasets.length %> Datasets<%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @projid), :class => "btn btn-default btn-sm" %></h3>
+
+
+  <h3><span class="glyphicon glyphicon-book" /> Literature <% if policy(sample).edit? then %><%= link_to 'Add Citation', add_literature_to_sample_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %><% end %></h3>
+
+    <% if !sample.citations.empty? then %>
+
+ <% sample.citations.each do |c| %>
+
+    <%= link_to "http://dx.doi.org/"+c.doi, :target => "_blank" do %><%= c.title %><% end %><br><%= c.fullcitation %><br>
+
+  <% end %>
+
+<% else %>
+
+No literature is linked to this sample.
+
+<% end %>
+
+<h3><span class="glyphicon glyphicon-paperclip"/> <%= sample.datasets.length %> Datasets <%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %></h3>
 
 
 <%= render 'library_entries/datasets', :id => sample.id, :sample => sample, :molecule => @molecule %>

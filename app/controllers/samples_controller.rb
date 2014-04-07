@@ -1,7 +1,31 @@
 class SamplesController < ApplicationController
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split]
 
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:index, :show]
+
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature]
+
+  before_action :set_project
+
+
+
+  def addliterature
+
+    authorize @sample, :edit?
+
+    if params[:doi].nil? then 
+
+          render 'samples/addliterature', :id => @sample.id
+
+    else
+
+      @sample.add_literature(params[:doi])
+
+      redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Literature was added."
+
+    end
+
+
+  end
 
   def assign
     authorize @sample, :edit?
@@ -17,8 +41,6 @@ class SamplesController < ApplicationController
   def assign_do
     authorize @sample, :edit?
 
-    @project = Project.find(params[:project_id])
-
     @project.add_sample(@sample)
 
     redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
@@ -33,9 +55,23 @@ class SamplesController < ApplicationController
 
   end
 
-  def split
+  def transfer
 
-    @project = Project.find(params[:project_id])
+    targetproject = nil
+
+    newsample = @sample.transfer_to_project(targetproject)
+
+    @sample.datasets.each do |ds|
+
+      newdataset = ds.transfer_to_sample(newsample)
+      ds.transfer_attachments_to_dataset(newdataset)
+
+    end
+
+
+  end
+
+  def split
 
     s = Sample.new
     s.molecule = @sample.molecule
@@ -57,11 +93,9 @@ class SamplesController < ApplicationController
 
   def index
 
-    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
+    @library = @project.rootlibrary
 
-    @library = Library.find(Project.find(projid).rootlibrary_id)
-
-    @library_entries = @library.library_entries
+    @library_entries = @library.library_entries.paginate(:page => params[:page])
 
     render 'libraries/show', :id => @library.id
 
@@ -69,6 +103,7 @@ class SamplesController < ApplicationController
 
   def show
 
+    authorize @sample
 
     @library_entry = LibraryEntry.all.where(["sample_id = ?",  @sample.id]).first
 
@@ -91,6 +126,18 @@ class SamplesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_sample
       @sample = Sample.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

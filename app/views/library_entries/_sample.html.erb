@@ -2,7 +2,17 @@
 
 <% if !sample.originsample_id.nil? then %> <p>Origin: <%= Sample.find(sample.originsample_id).id.to_s %></p><% end %>
 
-<% if !sample.reactions.first.nil? then %><p>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @projid) %><% end %></p><% end %>
+<% if !sample.reactions.first.nil? then %><p>Used as <% sample.reactions.each do |r| %><%= sample.role %> in Reaction <%= link_to r.name, reaction_path(r, :project_id => @project.id) %><% end %></p><% end %>
+
+<% if !sample.citations.empty? then %>
+
+	<% sample.citations.each do |c| %>
+
+		<span class="glyphicon glyphicon-book" /><%= c.title %><br><%= link_to "http://dx.doi.org/"+c.doi, :target => "_blank" do %><%= c.fullcitation %><% end %>
+
+	<% end %>
+
+<% end %>
 
 
 <%= render 'library_entries/datasets', :sample => sample, :id => sample.id %>

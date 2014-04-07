@@ -4,12 +4,14 @@ class DatasetsController < ApplicationController
 
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
 
+  before_action :set_project
+
+  before_action :set_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+
   # GET /datasets
   # GET /datasets.json
   def index
-    if params[:project_id].nil? then @projid = current_user.rootproject_id else @projid = params[:project_id] end
-
-    @datasets =  policy_scope(Dataset).where(["projects.id = ?", @projid]).paginate(:page => params[:page])
+    @datasets =  policy_scope(Dataset).joins(:projects).where(["projects.id = ?", @project.id]).paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -19,7 +21,6 @@ class DatasetsController < ApplicationController
 
   def assign
 
-          @dataset = Dataset.find(params[:id])
     authorize @dataset, :edit?
 
     @projects = current_user.projects
@@ -32,11 +33,7 @@ class DatasetsController < ApplicationController
 
   def assign_do
 
-
-    @dataset = Dataset.find(params[:id])
     authorize @dataset, :edit?
-
-    @project = Project.find(params[:project_id])
 
     @project.add_dataset(@dataset)
 
@@ -147,8 +144,6 @@ class DatasetsController < ApplicationController
 
   def zip
 
-    @dataset = Dataset.find(params[:id])
-
     authorize @dataset, :show?
 
     temp_file = Tempfile.new(@dataset.id.to_s+".zip")
@@ -170,8 +165,6 @@ class DatasetsController < ApplicationController
   # GET /datasets/1
   # GET /datasets/1.json
   def show
-    @dataset = Dataset.find(params[:id])
-
     authorize @dataset
 
     @changerights = false
@@ -183,11 +176,11 @@ class DatasetsController < ApplicationController
     @attachment = Attachment.new(:dataset => @dataset)
 
     respond_to do |format|
-      if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
+      if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
 
-      if (Commit.exists?(["dataset_id = ?", @dataset.id])) then flash[:notice] = 'Dataset is read-only. To edit, fork it first.' end
+      if (Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is read-only. To edit, fork it first.' end
 
-        if true == false then flash[:warning] = "This is not the last version of the dataset, check the version history." end
+      if true == false then flash.now[:warning] = "This is not the last version of the dataset, check the version history." end
 
       format.html { render action: "show" }
       format.json { render json: @dataset }
@@ -209,8 +202,6 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1/edit
   def edit
-    @dataset = Dataset.find(params[:id])
-
     authorize @dataset
 
     @reaction_id = params[:reaction_id]
@@ -218,8 +209,6 @@ class DatasetsController < ApplicationController
 
 
   def commit
-    @dataset = Dataset.find(params[:id])
-
     authorize @dataset, :edit?
 
     c = Commit.new
@@ -244,7 +233,11 @@ class DatasetsController < ApplicationController
     authorize @dataset, :create?
 
     @dataset.molecule_id = params[:molecule_id]
+
     @dataset.sample_id = params[:sample_id]
+
+    puts "ADDED TO SAMPLE " + @dataset.sample_id.to_s
+
     @dataset.title = "no title"
     @dataset.method = "no method"
     @dataset.description = ""
@@ -281,14 +274,8 @@ class DatasetsController < ApplicationController
 
         @project.add_dataset(@dataset)
 
-        os = Sample.find(params[:sample_id]).originsample
+        Sample.find(params[:sample_id]).add_dataset(@dataset)
 
-        while !os.nil?
-
-          os.datasets << @dataset
-
-          os = os.originsample
-        end
 
         dsg = Datasetgroup.new
         dsg.save
@@ -372,9 +359,12 @@ class DatasetsController < ApplicationController
 
     authorize @olddataset, :show?
 
-    @dataset = @olddataset.dup
+    @dataset = @olddataset.transfer_to_sample(@olddataset.sample)
 
-    
+    @olddataset.transfer_attachments_to_dataset(@dataset)
+
+    dsg = @olddataset.datasetgroups.first
+    dsg.datasets << @dataset
 
 #    if !@dataset.molecule.nil? then 
 
@@ -384,67 +374,15 @@ class DatasetsController < ApplicationController
 
     respond_to do |format|
 
-      if @dataset.save
-
-        @dataset.add_to_project(current_user.rootproject_id)
-
-        if !@dataset.molecule.nil? then 
-
-
-          @dataset.molecule.projects.each do |p|
-
-            if current_user.projects.exists?(p) then
-              @dataset.add_to_project(p.id)
-            end
-          end
-
-        end
-
-        @olddataset.attachments.each do |a|
-
-          newattachment = Attachment.new(:dataset => @dataset)
-
-          if Rails.env.localserver? then 
-
-            old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
-            puts old_path
-
-
-            newattachment.file = File.new(old_path)
-
-            new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
-            puts new_path
-
-            FileUtils.mkdir_p(File.dirname(new_path))
-            FileUtils.cp(old_path, new_path)
-
-          else
-            newattachment.remote_file_url = a.file_url
-          end
-
-          newattachment.save
-
-          @dataset.attachments << newattachment
-
-        end
-
-        dsg = @olddataset.datasetgroups.first
-        dsg.datasets << @dataset
-
         format.html { redirect_to @dataset, notice: 'Dataset was successfully forked.' }
         format.json { render json: @dataset, status: :created, location: @dataset }
-      else
-        format.html { redirect_to @olddataset, notice: 'Dataset could not be forked.' }
-        format.json { render json: @dataset.errors, status: :unprocessable_entity }
-      end
+
     end
   end
 
   # PUT /datasets/1
   # PUT /datasets/1.json
   def update
-    @dataset = Dataset.find(params[:id])
-
     authorize @dataset
 
     assign_method_rank @dataset
@@ -467,7 +405,6 @@ class DatasetsController < ApplicationController
   # DELETE /datasets/1
   # DELETE /datasets/1.json
   def destroy
-    @dataset = Dataset.find(params[:id])
     authorize @dataset
 
     @dataset.destroy
@@ -481,33 +418,51 @@ class DatasetsController < ApplicationController
 
   private
 
-  def assign_version_to_dataset (dataset, molecule)
+    def assign_version_to_dataset (dataset, molecule)
 
-    similarmethoddatasets = molecule.datasets.where(["method = ?", dataset.method])
-    dataset.version = (similarmethoddatasets.length).to_s
+      similarmethoddatasets = molecule.datasets.where(["method = ?", dataset.method])
+      dataset.version = (similarmethoddatasets.length).to_s
 
-  end
-
-  def assign_method_rank (dataset)
-
-    m = dataset.method
-
-    r = 0
-
-    if !m.nil? then
-      if m.start_with?('Rf') then r = 10 end
-      if m.start_with?('NMR/1H') then r = 20 end
-      if m.start_with?('NMR/13C') then r = 30 end
-      if m.start_with?('IR') then r = 40 end
-      if m.start_with?('Mass') then r = 50 end
-      if m.start_with?('GCMS') then r = 60 end
-      if m.start_with?('Raman') then r = 65 end
-      if m.start_with?('UV') then r = 70 end
-      if m.start_with?('TLC') then r = 75 end
-      if m.start_with?('Xray') then r = 80 end
     end
 
-    dataset.method_rank = r
+    def assign_method_rank (dataset)
 
-  end
+      m = dataset.method
+
+      r = 0
+
+      if !m.nil? then
+        if m.start_with?('Rf') then r = 10 end
+        if m.start_with?('NMR/1H') then r = 20 end
+        if m.start_with?('NMR/13C') then r = 30 end
+        if m.start_with?('IR') then r = 40 end
+        if m.start_with?('Mass') then r = 50 end
+        if m.start_with?('GCMS') then r = 60 end
+        if m.start_with?('Raman') then r = 65 end
+        if m.start_with?('UV') then r = 70 end
+        if m.start_with?('TLC') then r = 75 end
+        if m.start_with?('Xray') then r = 80 end
+      end
+
+      dataset.method_rank = r
+
+    end
+
+    # Use callbacks to share common setup or constraints between actions.
+    def set_dataset
+      @dataset = Dataset.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
+    end
+
 end

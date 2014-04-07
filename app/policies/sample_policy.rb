@@ -1,7 +1,7 @@
 class SamplePolicy < Struct.new(:user, :sample)
   class Scope < Struct.new(:user, :sample)
     def resolve
-      user.molecules
+      user.samples
     end
   end
 
@@ -25,7 +25,10 @@ class SamplePolicy < Struct.new(:user, :sample)
   end
 
   def edit?
-    user.sampleowner_of?(sample)
+    result = false
+    if !user.nil? && user.sampleowner_of?(sample) then result = true end
+
+    result
   end
 
   def update?

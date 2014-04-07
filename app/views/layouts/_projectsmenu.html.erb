@@ -1,5 +1,5 @@
 
-
+<% if !current_user.nil? then %>
  <div class="panel panel-default">
 
         <div class="panel-heading">
@@ -7,7 +7,6 @@
         </div>
 
         <div class="panel-body">
-
 
 <% current_user.topprojects.each do |p| %>
 
@@ -21,41 +20,50 @@
 
 <% end %>
 
+
 <br>
 
         </div>
 
       </div>
-
-
-<% if ProjectPolicy::JointScope.new(current_user, Project).resolve.length > 0 then %>
-
-
- <div class="panel panel-default">
-
-        <div class="panel-heading">
-          <h3 class="panel-title">Joint Projects</h3>
-        </div>
-
-        <div class="panel-body">
-
-
-<% ProjectPolicy::JointScope.new(current_user, Project).resolve.order("created_at ASC").each do |p| %>
-
-        <ul class="nav nav-pills nav-stacked">
-
-        	<%= render 'layouts/projecttree', :highlight => [], :p => p, :project_id => project_id, :category => category, :level => 0 %>
-
-
-		</ul>
-
 
 <% end %>
 
-<br>
+
+
+      <% if !current_user.nil? then %>
+
+
+          <% if ProjectPolicy::JointScope.new(current_user, Project).resolve.length > 0 then %>
+
+
+           <div class="panel panel-default">
+
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Joint Projects</h3>
+                  </div>
+
+                  <div class="panel-body">
+
+
+          <% ProjectPolicy::JointScope.new(current_user, Project).resolve.order("created_at ASC").each do |p| %>
+
+                  <ul class="nav nav-pills nav-stacked">
+
+                  	<%= render 'layouts/projecttree', :highlight => [], :p => p, :project_id => project_id, :category => category, :level => 0 %>
+
+
+          		</ul>
+
+
+          <% end %>
+
+          <br>
+
+          </div>
 
         </div>
 
-      </div>
+      <% end %>
 
 <% end %>

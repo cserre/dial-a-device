@@ -23,6 +23,55 @@ class Dataset < ActiveRecord::Base
 
   # acts_as_list scope: :datasetgroup_dataset
 
+  def transfer_to_sample(sample)
+
+    newdataset = self.dup
+
+    newdataset.save
+
+    sample.add_dataset(newdataset)
+
+    return newdataset
+
+  end
+
+  def transfer_attachments_to_dataset(dataset)
+    self.attachments.each do |a|
+
+          newattachment = Attachment.new(:dataset => dataset)
+
+          if Rails.env.localserver? then 
+
+            old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
+
+
+            newattachment.file = File.new(old_path)
+
+            new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
+            puts new_path
+
+            FileUtils.mkdir_p(File.dirname(new_path))
+            FileUtils.cp(old_path, new_path)
+
+          else
+            newattachment.remote_file_url = a.file_url
+          end
+
+          newattachment.save
+
+          dataset.add_attachment(newattachment)
+
+    end
+
+  end
+
+  def add_attachment(attachment)
+
+    self.attachments << attachment
+
+  end
+
+
   def zipit
 
     # create zip file
@@ -45,13 +94,13 @@ class Dataset < ActiveRecord::Base
   end
 
   def doi_identifier
-  	if !molecule.nil? then 
+  	if !sample.molecule.nil? then 
 
       v = ""
       if (!version.blank? && !(version == "0")) then v = "."+version end
 
   		if !ENV['DOI_PREFIX'].nil? then
-  			ENV['DOI_PREFIX']+"/"+molecule.inchikey+"/"+method+v
+  			ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
   		end
   	end
 
@@ -322,6 +371,10 @@ def preview_url
 
     end
 
+  end
+
+  def as_json(options={})
+    super(:include => [:attachments => {:methods => :as_json}])
   end
 
 end

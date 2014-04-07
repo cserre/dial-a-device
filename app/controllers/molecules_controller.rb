@@ -1,6 +1,10 @@
 class MoleculesController < ApplicationController
 
-  before_filter :authenticate_user!, except: [:getdetails, :pick]
+  before_filter :authenticate_user!, except: [:index, :getdetails, :pick]
+
+  before_action :set_molecule, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
+
+  before_action :set_project
 
   
   class PubChem
@@ -123,7 +127,6 @@ class MoleculesController < ApplicationController
 
   def assign
 
-          @molecule = Molecule.find(params[:id])
     authorize @molecule, :assign?
 
     @projects = current_user.projects
@@ -136,7 +139,6 @@ class MoleculesController < ApplicationController
 
   def assign_do
 
-        @molecule = Molecule.find(params[:id])
     authorize @molecule, :assign?
 
     @project = Project.find(params[:project_id])
@@ -176,9 +178,7 @@ class MoleculesController < ApplicationController
       titlefilter = true
     end
 
-    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
-
-    list = policy_scope(Molecule).where(["projects.id = ?", projid])
+    list = policy_scope(Molecule).joins(:projects).where(["projects.id = ?", @project.id])
 
     if structurefilter then list = list.where(["smiles ilike ?", @smiles]) end
     if titlefilter then list = list.where(["molecules.title ilike ?", @title]) end
@@ -186,7 +186,7 @@ class MoleculesController < ApplicationController
     if structurefilter then @filter = true end
     if titlefilter then @filter = true end
 
-    @molecules = list
+    @molecules = list.paginate(:page => params[:page])
 
 
     respond_to do |format|
@@ -198,8 +198,6 @@ class MoleculesController < ApplicationController
   # GET /molecules/1
   # GET /molecules/1.json
   def show
-    @molecule = Molecule.find(params[:id])
-
     authorize @molecule
 
     if !current_user.nil? then @owndatasets = current_user.datasets.where(["molecule_id = ?", @molecule.id]) end
@@ -266,7 +264,6 @@ class MoleculesController < ApplicationController
 
   # GET /molecules/1/edit
   def edit
-    @molecule = Molecule.find(params[:id])
     
     authorize @molecule
   end
@@ -397,8 +394,6 @@ class MoleculesController < ApplicationController
   # PUT /molecules/1
   # PUT /molecules/1.json
   def update
-    @molecule = Molecule.find(params[:id])
-
     authorize @molecule
 
     respond_to do |format|
@@ -415,7 +410,6 @@ class MoleculesController < ApplicationController
   # DELETE /molecules/1
   # DELETE /molecules/1.json
   def destroy
-    @molecule = Molecule.find(params[:id])
     authorize @molecule
 
     current_user.projects.each do |p|
@@ -556,5 +550,24 @@ class MoleculesController < ApplicationController
 
     end
   end
+
+   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_molecule
+      @molecule = Molecule.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
+    end
+
 
 end

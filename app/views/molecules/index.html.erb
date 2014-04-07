@@ -5,30 +5,16 @@
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
 
 
-                <% if params[:project_id].nil? then %>
-
-          <% @projid = current_user.rootproject_id.to_s %>
-
-          <% else %>
-
-          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
-        
-          <% @projid = params[:project_id] %>
-
-          <% end %>
-
-          <% end %>
-
       <div class="well">
 
         <% @currentitem = "molecules" %>
 
-        <%= render 'layouts/moleculesmenu', :category => "molecules", :project_id => @projid %>
+        <%= render 'layouts/moleculesmenu', :category => "molecules", :project_id => @project.id %>
 
       </div>
 
 
-        <%= render 'layouts/projectsmenu', :category => "molecules", :project_id => @projid %>
+        <%= render 'layouts/projectsmenu', :category => "molecules", :project_id => @project.id %>
 
 
     </div>
@@ -42,7 +28,7 @@
 <% if @filter then %>
 
 <div class="alert alert-info">
-<p>This molecule list is filtered.&nbsp;<a class="btn btn-primary btn-xs" href="/molecules?project_id=<%= @projid %>">Remove filter</a></p>
+<p>This molecule list is filtered.&nbsp;<a class="btn btn-primary btn-xs" href="/molecules?project_id=<%= @project.id %>">Remove filter</a></p>
 </div>
 
 <% else %>
@@ -83,7 +69,7 @@
 
             <textarea id="search_molfile" name="molfile" rows="50" cols="300" style="display:none;">temporary molfile</textarea>
 
-            <input type="hidden" name="project_id" value="<%= @projid %>" />
+            <input type="hidden" name="project_id" value="<%= @project.id %>" />
 
             <button type="submit" class="btn btn-primary" onclick="">Structure Search &raquo;</button>
             
@@ -94,7 +80,7 @@
 
           <form id="moldetailform" action="/molecules/filter" method="get">
 
-            <input type="hidden" name="project_id" value="<%= @projid %>" />
+            <input type="hidden" name="project_id" value="<%= @project.id %>" />
 
             <p>Molecule name:&nbsp;
             <input type="text" id="search_molfile" name="title" rows="1" cols="30"></input>&nbsp; <button type="submit" class="btn btn-primary" onclick="">Name Search &raquo;</button></p>
@@ -111,18 +97,16 @@
 
 <% end %>
 
-<% if !current_user.nil? then %>
 
-<% project = Project.find(@projid) %>
+<h1><% if @project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= @project.title %><% end %>&nbsp;
+<!-- <%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => @project.id), :class => "btn btn-sm btn-success" %>--></h1>
 
-<h1><% if project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= project.title %><% end %>&nbsp;
-<!-- <%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %>--></h1>
+<%= will_paginate @molecules, renderer: BootstrapPagination::Rails %>
 
-<% projectmolecules = @molecules.where(["project_memberships.project_id = ?", project.id]) %>
-<% if projectmolecules.length > 0 then %>
+<% if @molecules.length > 0 then %>
 <table>
     
-<% projectmolecules.each do |molecule| %>
+<% @molecules.each do |molecule| %>
   <tr>
     <td>
       
@@ -133,15 +117,17 @@
 
     </td>
 
-    <td><%= link_to(molecule_path(molecule, :project_id => @projid)) do %><%= molecule.title %><% end %></td>
+    <td><%= link_to(molecule_path(molecule, :project_id => @project.id)) do %><%= molecule.title %><% end %></td>
+
+
+    <td><% if PcCompound.exists?(["inchikey = ?", molecule.inchikey]) then %>&nbsp;<%= link_to("http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid="+PcCompound.where(["inchikey = ?", molecule.inchikey]).first.cid.to_s,  :target => "_blank", :class => "btn btn-xs btn-default") do %><%= image_tag("/pubchem.jpg", :size => "40x12") %><% end %><% end %>
+      </td>
 
     <td>
 
       <% molecule.samples.each do |sample| %>
 
-        <% project = Project.find(@projid) %>
-
-        <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>&nbsp;<%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @projid) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small>
+        <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>&nbsp;<%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small>
 
         <br>
 
@@ -161,11 +147,3 @@
 <p>No molecules found.</p>
 
 <% end %>
-
-<% end %>
-
-
-<br/>
-
-
-<br/>
