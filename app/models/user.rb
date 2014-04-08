@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   if LsiRailsPrototype::Application.config.useldap == true then
     devise :ldap_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :invitable
+         :invitable
 
     before_save :get_ldap_email
   else
@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
 
   def get_ldap_email
 
-    self.email = Devise::LDAP::Adapter.get_ldap_param(self.username, "mail").first
+    self.email = Devise::LDAP::Adapter.get_ldap_param(self.email, "mail").first
 
   end
 
