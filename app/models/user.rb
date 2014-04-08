@@ -6,10 +6,18 @@ class User < ActiveRecord::Base
     devise :ldap_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :invitable
+
+    before_save :get_ldap_email
   else
     devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :invitable
+  end
+
+  def get_ldap_email
+
+    self.email = Devise::LDAP::Adapter.get_ldap_param(self.username, "mail").first
+
   end
 
   # Setup accessible (or protected) attributes for your model
