@@ -3,7 +3,7 @@
 Devise.setup do |config|
   # ==> LDAP Configuration 
   # config.ldap_logger = true
-  config.ldap_create_user = false
+  config.ldap_create_user = true
   config.ldap_update_password = false
   config.ldap_config = "#{Rails.root}/config/ldap.yml"
   # config.ldap_check_group_membership = false
@@ -11,7 +11,8 @@ Devise.setup do |config|
   config.ldap_use_admin_to_bind = true
   # config.ldap_ad_group_check = false
 
-  config.ldap_auth_username_builder = Proc.new() { |attribute, login, ldap| "#{attribute}=#{login.split("@").first},#{ldap.base}"}
+  # config.ldap_auth_username_builder = Proc.new() { |attribute, login, ldap| "#{attribute}=#{login.split("@").first},#{ldap.base}"}
+  config.ldap_auth_username_builder = Proc.new() { |attribute, login, ldap| "#{attribute}=#{login}"}
 
   
   # The secret key used by Devise. Devise uses this key to generate
