@@ -8,15 +8,16 @@
 
                 <td>
 
-   <p><%= project.molecules.length %> Molecules</p>
-   <p><%= project.reactions.length %> Reactions</p>
-   <p><%= project.samples.length %> Samples</p>
-   <p><%= project.libraries.length %> Libraries</p>
+   <p><a href="/reactions?project_id=<%= project.id %>"><%= project.reactions.length %> Reactions</a></p>
+   <p><a href="/molecules?project_id=<%= project.id %>"><%= project.molecules.length %> Molecules</a></p>   
+   <p><a href="/samples?project_id=<%= project.id %>"><%= project.samples.length %> Samples</a></p>
+   <p><a href="/datasets?project_id=<%= project.id %>"><%= project.datasets.length %> Datasets</a></p>
+   <br>
 
-   <p><%= project.datasets.length %> Datasets</p>
    <p><%= project.devices.length %> Devices</p>
    <p><%= project.beaglebones.length %> BeagleBones</p>
    <p><%= project.folder_watchers.length %> Folder Watcher</p>
+   <p><%= project.vncrelays.length %> VNC Relays</p>
 
 
 </td>
