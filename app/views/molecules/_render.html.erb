@@ -1,15 +1,17 @@
 <% if !defined? mode then mode = "svg" end %>
 
+<% if !defined? highlight then highlight = "" end %>
+
 <% if !defined? uid then uid = Random.new.rand(1..1000000).to_s end %>
 
 <% if mode == "svg" then %>
 
 
-<%= render "molecules/rendersvg", :molecule => molecule, :width => width, :height => height, :uid => uid %>
+<%= render "molecules/rendersvg", :molecule => molecule, :highlight => highlight, :width => width, :height => height, :uid => uid %>
 
 <% elsif mode == "cdw" then %>
 
 
-<%= render "molecules/rendercdw", :molecule => molecule, :width => width, :height => height, :uid => uid %>
+<%= render "molecules/rendercdw", :molecule => molecule, :highlight => highlight, :width => width, :height => height, :uid => uid %>
 
 <% end %>

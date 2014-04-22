@@ -6,7 +6,7 @@
 
 <% else %>
 
-<%= image_tag( molecule_path(molecule, format: :svg), id: "img_"+uid, height: height, width: width ) %>
+<%= image_tag( molecule_path(molecule, format: :svg, highlight: highlight), id: "img_"+uid, height: height, width: width ) %>
 
 <% end %>
 
