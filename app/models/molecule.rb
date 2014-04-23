@@ -34,7 +34,7 @@ class Molecule < ActiveRecord::Base
         c.set_out_format 'svg'
         c.set_in_format 'mol'
 
-        if !highlight.empty? then
+        if !highlight.blank? then
 
           c.add_option 's', OpenBabel::OBConversion::GENOPTIONS, highlight+" green"
 

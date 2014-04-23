@@ -233,7 +233,7 @@ class MoleculesController < ApplicationController
 
         pagefile = Rails.root.join('tmp').join("mol_"+@molecule.inchikey.to_s+".svg")
 
-        if params[:highlight].empty? && File.exists?(pagefile) then
+        if params[:highlight].blank? && File.exists?(pagefile) then
 
             pagecontent = File.read(pagefile)
 
@@ -241,7 +241,7 @@ class MoleculesController < ApplicationController
 
           pagecontent = @molecule.svg(params[:highlight])
 
-          if params[:highlight].empty? then
+          if params[:highlight].blank? then
             File.open(pagefile, "w") do |f|
               f.write (pagecontent)
             end
