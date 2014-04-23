@@ -51,7 +51,7 @@ class ReactionsController < ApplicationController
         sample.datasets.each do |dataset|
 
           dataset.attachments.each do |a|
-            zos.put_next_entry(sample.id.to_s+"/"+a.folder?+a.filename?)
+            zos.put_next_entry(dataset.id.to_s+"/"+a.folder?+a.filename?)
             zos.print a.file.read
           end
 
@@ -64,7 +64,7 @@ class ReactionsController < ApplicationController
 
     temp_file.close
 
-    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => @reaction.name.to_s+".zip")
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => "reaction_"+@reaction.name.to_s+".zip")
 
   end
 
