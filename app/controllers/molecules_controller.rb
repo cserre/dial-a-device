@@ -162,6 +162,8 @@ class MoleculesController < ApplicationController
     if !params[:molfile].nil? then
       filtermolfile = params[:molfile]
 
+      @m = Molecule.new(:molfile => filtermolfile)
+
 
       virtualmolecule = Rubabel::Molecule.from_string(filtermolfile, :mdl)
 
@@ -180,7 +182,28 @@ class MoleculesController < ApplicationController
 
     list = policy_scope(Molecule).joins(:projects).where(["projects.id = ?", @project.id])
 
-    if structurefilter then list = list.where(["smiles ilike ?", @smiles]) end
+    if structurefilter then
+
+      list = list.order(
+
+        "("+
+
+          "length(replace((B'"+@m.fp2+"' | fp)::text, '0', '')) "+
+
+
+          "/ ("+
+
+      #      "CASE WHEN (length(replace(B'"+m.fp2+"'::text, '0', ''))+length(replace(fp::text, '0', ''))-length(replace((B'"+m.fp2+"' | fp)::text, '0', '')) = 0) THEN 10 "+
+
+      #      "ELSE (length(replace(B'"+m.fp2+"'::text, '0', ''))+length(replace(fp::text, '0', ''))-length(replace((B'"+m.fp2+"' | fp)::text, '0', '')))"+
+
+      "(length(replace(B'"+@m.fp2+"'::text, '0', ''))+length(replace(fp::text, '0', ''))-length(replace((B'"+@m.fp2+"' | fp)::text, '0', ''))+0.0001)"+
+
+            ")"+
+
+        ") ASC")
+
+    end
     if titlefilter then list = list.where(["molecules.title ilike ?", @title]) end
 
     if structurefilter then @filter = true end
@@ -210,16 +233,18 @@ class MoleculesController < ApplicationController
 
         pagefile = Rails.root.join('tmp').join("mol_"+@molecule.inchikey.to_s+".svg")
 
-        if File.exists?(pagefile) then
+        if params[:highlight].blank? && File.exists?(pagefile) then
 
             pagecontent = File.read(pagefile)
 
         else
 
-          pagecontent = @molecule.svg
+          pagecontent = @molecule.svg(params[:highlight])
 
-          File.open(pagefile, "w") do |f|
-            f.write (pagecontent)
+          if params[:highlight].blank? then
+            File.open(pagefile, "w") do |f|
+              f.write (pagecontent)
+            end
           end
 
         end

@@ -40,6 +40,16 @@ class ReactionsController < ApplicationController
     authorize @reaction
 
     if !current_user.nil? then @owndatasets = @reaction.datasets end
+
+    if !params[:render].blank? && params[:render] == "inline" then 
+
+        @device = Device.find(params[:device_id])
+
+        render "showbalance", :layout => false
+
+        return
+
+    end
   end
 
   def createdirect
