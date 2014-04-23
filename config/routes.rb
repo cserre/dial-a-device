@@ -34,6 +34,9 @@ LsiRailsPrototype::Application.routes.draw do
   end
 
   resources :reactions do
+
+    get 'zip', on: :member
+
     get 'createdirect', on: :collection, as: :createdirect
 
     get 'assign', on: :member
