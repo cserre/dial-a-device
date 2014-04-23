@@ -2,7 +2,7 @@ class ReactionsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
+  before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
 
   # GET /reactions
   def index
@@ -34,6 +34,39 @@ class ReactionsController < ApplicationController
     redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
   end   
 
+  def zip
+
+    authorize @reaction, :show?
+
+    temp_file = Tempfile.new(@reaction.id.to_s+".zip")
+
+
+    Zip::OutputStream.open(temp_file.path) { |zos| 
+
+      zos.put_next_entry("reaction.json")
+      zos.print @reaction.as_json
+
+      @reaction.samples.each do |sample|
+
+        sample.datasets.each do |dataset|
+
+          dataset.attachments.each do |a|
+            zos.put_next_entry(sample.id+"/"+a.folder?+a.filename?)
+            zos.print a.file.read
+          end
+
+        end
+
+      end
+
+
+    }
+
+    temp_file.close
+
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => @reaction.name.to_s+".zip")
+
+  end
 
   # GET /reactions/1
   def show
