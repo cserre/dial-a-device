@@ -211,7 +211,7 @@ class Sample < ActiveRecord::Base
 
 
   def as_json(options={})
-    super(:include => [:molecule => {:methods => :as_json}, :datasets => {:methods => :as_json}])
+    super(:include => [:molecule, :datasets => {:include => :attachments}])
     
   end
  

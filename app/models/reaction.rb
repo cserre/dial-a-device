@@ -63,6 +63,6 @@ class Reaction < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:include => [:samples => {:methods => :as_json}])
+    super(:include => [:samples => {:include => [:molecule, :datasets => {:include => :attachments}]}])
   end
 end
