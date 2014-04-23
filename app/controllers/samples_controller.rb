@@ -2,7 +2,7 @@ class SamplesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:index, :show]
 
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature]
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature, :zip]
 
   before_action :set_project
 
@@ -108,6 +108,36 @@ class SamplesController < ApplicationController
     @library_entry = LibraryEntry.all.where(["sample_id = ?",  @sample.id]).first
 
     render 'library_entries/show', :id => @library_entry.id
+
+  end
+
+  def zip
+
+    authorize @sample, :show?
+
+    temp_file = Tempfile.new(@sample.id.to_s+".zip")
+
+
+    Zip::OutputStream.open(temp_file.path) { |zos| 
+
+      zos.put_next_entry("sample.json")
+      zos.print @sample.as_json
+
+        @sample.datasets.each do |dataset|
+
+          dataset.attachments.each do |a|
+            zos.put_next_entry(dataset.id.to_s+"/"+a.folder?+a.filename?)
+            zos.print a.file.read
+          end
+
+        end
+
+
+    }
+
+    temp_file.close
+
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => "sample_"+@sample.id.to_s+".zip")
 
   end
 

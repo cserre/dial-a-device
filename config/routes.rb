@@ -44,6 +44,9 @@ LsiRailsPrototype::Application.routes.draw do
   end
 
   resources :samples do
+
+    get 'zip', on: :member
+    
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'samples#assign_do'
 
