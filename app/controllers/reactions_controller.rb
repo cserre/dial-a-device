@@ -51,7 +51,7 @@ class ReactionsController < ApplicationController
         sample.datasets.each do |dataset|
 
           dataset.attachments.each do |a|
-            zos.put_next_entry(sample.id+"/"+a.folder?+a.filename?)
+            zos.put_next_entry(sample.id.to_s+"/"+a.folder?+a.filename?)
             zos.print a.file.read
           end
 
