@@ -1,4 +1,4 @@
-  <h1>Reaction: <%=  @reaction.name %></h1>
+  <h1>Reaction <%=  @reaction.name %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %></h1>
   
 <br/>
 <h4>Starting materials</h4>
