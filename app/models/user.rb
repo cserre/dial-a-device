@@ -18,6 +18,12 @@ class User < ActiveRecord::Base
 
     self.email = Devise::LDAP::Adapter.get_ldap_param(self.email, "mail").first
 
+    self.firstname = Devise::LDAP::Adapter.get_ldap_param(self.email, "givenname").first
+
+    self.lastname = Devise::LDAP::Adapter.get_ldap_param(self.email, "sn").first
+
+    self.sign = self.firstname[0] + self.lastname[0]
+
   end
 
   # Setup accessible (or protected) attributes for your model
