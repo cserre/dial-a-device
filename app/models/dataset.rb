@@ -2,7 +2,7 @@ class Dataset < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id
+  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id, :method_rank
 
   has_many :attachments, :dependent => :destroy
 
@@ -40,18 +40,18 @@ class Dataset < ActiveRecord::Base
 
           newattachment = Attachment.new(:dataset => dataset)
 
+          newattachment.folder = a.folder
+
           if Rails.env.localserver? then 
 
-            old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
+            old_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}/#{a.folder}#{a.filename}"
 
-
-            newattachment.file = File.new(old_path)
-
-            new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
-            puts new_path
+            new_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{dataset.id}/#{a.folder}#{a.filename}"
 
             FileUtils.mkdir_p(File.dirname(new_path))
             FileUtils.cp(old_path, new_path)
+
+            newattachment.file = File.new(new_path)
 
           else
             newattachment.remote_file_url = a.file_url
@@ -376,7 +376,7 @@ def preview_url
   end
 
   def as_json(options={})
-    super(:include => [:attachments => {:methods => :as_json}])
+    super(:include => [:attachments => {:methods => [:filename, :filesize]}])
   end
 
 end

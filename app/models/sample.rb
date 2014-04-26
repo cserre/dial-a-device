@@ -211,7 +211,7 @@ class Sample < ActiveRecord::Base
 
 
   def as_json(options={})
-    super(:include => [:molecule, :datasets => {:include => :attachments}])
+    super(:include => [:molecule, :datasets => {:include => [:attachments => {:methods => [:filename, :filesize]}]}])
     
   end
  
