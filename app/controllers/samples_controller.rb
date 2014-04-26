@@ -120,8 +120,8 @@ class SamplesController < ApplicationController
 
     Zip::OutputStream.open(temp_file.path) { |zos| 
 
-      zos.put_next_entry("sample.json")
-      zos.print @sample.as_json
+      zos.put_next_entry("sample_"+@sample.id.to_s+".json")
+      zos.print @sample.to_json
 
         @sample.datasets.each do |dataset|
 

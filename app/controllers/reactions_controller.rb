@@ -43,8 +43,8 @@ class ReactionsController < ApplicationController
 
     Zip::OutputStream.open(temp_file.path) { |zos| 
 
-      zos.put_next_entry("reaction.json")
-      zos.print @reaction.as_json
+      zos.put_next_entry("reaction_"+@reaction.id.to_s+".json")
+      zos.print @reaction.to_json
 
       @reaction.samples.each do |sample|
 

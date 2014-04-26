@@ -9,12 +9,10 @@ class Attachment < ActiveRecord::Base
   belongs_to :dataset
 
   def as_json(options= {})
-    h = super(options)
-    h[:filename] = read_attribute(:file)
-    h[:filesize] = file.size
-    h[:fullfilename] = read_attribute(:fullfilename)
-    h
+    super(:methods => [:filename, :filesize])
+
   end
+
 
   def as_mini_json(options= {})
     h = Hash.new
@@ -23,6 +21,18 @@ class Attachment < ActiveRecord::Base
     h[:filesize] = file.size
     h[:folder] = read_attribute(:folder)
     h
+  end
+
+  def filesize
+
+    file.size
+
+  end
+
+  def filename
+
+    filename?
+
   end
 
   def filename?

@@ -157,6 +157,9 @@ LsiRailsPrototype::Application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "users/registrations"}
 
+  get 'import' => 'pages#import'
+  post 'importzip' => 'pages#importzip'
+
   get 'about' => 'pages#about'
   get 'webdav' => 'pages#webdav'
 
