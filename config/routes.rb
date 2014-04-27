@@ -152,13 +152,13 @@ LsiRailsPrototype::Application.routes.draw do
     get 'adduser/:user_id', :to => 'projects#adduser', :on => :member
     get 'adduser', :to => 'projects#adduser', :on => :member
     get 'invite', :to => 'projects#invite', :on => :member
+
+    get 'import' => 'projects#import', :on => :member
+    post 'import' => 'projects#importzip', :on => :member
   end
 
 
   devise_for :users, :controllers => {:registrations => "users/registrations"}
-
-  get 'import' => 'pages#import'
-  post 'importzip' => 'pages#importzip'
 
   get 'about' => 'pages#about'
   get 'webdav' => 'pages#webdav'
