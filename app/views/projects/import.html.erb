@@ -1,0 +1,12 @@
+<% if params[:type].nil? then type = "" else type = params[:type] end %>
+
+<h1>Import <%= type %> to <% if @project.title.nil? then %><%= current_user.firstname %>'s Project<% else %><%= @project.title %><% end %></h1>
+
+<%= form_tag({:action => 'import'}, :multipart => true) do %>
+
+<p><label for="upload_file">Select File</label>: 
+<%= file_field "upload", "file" %></p>
+<%= hidden_field "upload", "type", :value => type %>
+<%= submit_tag "Upload" %>
+
+<% end %>
