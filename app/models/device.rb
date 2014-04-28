@@ -27,7 +27,11 @@ class Device < ActiveRecord::Base
 
   def token
 
-    vncrelay.id.to_s + "-" + self.id.to_s
+    if !vncrelay.nil? then
+
+      vncrelay.id.to_s + "-" + self.id.to_s
+
+    end
     
   end
 
