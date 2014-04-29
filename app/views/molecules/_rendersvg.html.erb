@@ -6,8 +6,18 @@
 
 <% else %>
 
+
+<a href="#" id="link__<%= uid %>" style="position: absolute;" onclick="javascript:$('#dialog_<%= uid %>').dialog();" ><small>m</small></a>
+
 <%= image_tag( molecule_path(molecule, format: :svg, highlight: highlight), id: "img_"+uid, height: height, width: width ) %>
 
 <% end %>
 
 </span>
+
+<div id="dialog_<%= uid %>" title="Mol Clipboard (Ctrl+A, Ctrl+C)" style="display:none;">
+
+  <p><textarea name="Text1" cols="80" rows="5"><%= molecule.molfile.to_s if !molecule.nil? %></textarea></p>
+
+</div>
+
