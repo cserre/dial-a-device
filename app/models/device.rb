@@ -15,13 +15,18 @@ class Device < ActiveRecord::Base
 
   def websockifygateway
 
-    vncrelay.host
+    if !vncrelay.nil? then 
+      vncrelay.host
+    end
     
   end
 
   def websockifygatewayport
 
-    vncrelay.port
+    if !vncrelay.nil? then 
+
+      vncrelay.port
+    end
     
   end
 
