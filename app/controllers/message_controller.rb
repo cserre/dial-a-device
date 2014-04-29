@@ -51,6 +51,23 @@ class MessageController < WebsocketRails::BaseController
 
 	    	if (mi[:devicetype] == "kern") then
 
+	    		weightstring = data[:weight]
+
+	    		myvalue = weightstring.gsub(/[\[,\],g,m]/, '')
+
+	    		myunit = weightstring.gsub(/[0-9,\[,\],\.]/, '')
+
+	    		if myunit == "g" then
+
+	    			myvalue = (myvalue.to_d * 1000).to_s
+
+	    			myunit = "mg"
+
+	    			# convert into mg
+
+	    		end
+
+
 	    		s = Sample.find(location.sample_id)
 
 	    		Rails.logger.info ("Weight: ")
@@ -59,7 +76,19 @@ class MessageController < WebsocketRails::BaseController
     			Rails.logger.info ("Sample: ")
     			Rails.logger.info (s.id)
 
-	    		s.actual_amount = data[:weight]
+	    		s.actual_amount = myvalue
+
+	    		if !(s.unit == myunit) then 
+
+	    			if myunit == "g" then
+
+	    				s.target_amount = (s.target_amount.to_d * 1000).to_s
+	    			end
+
+	    		end
+
+	    		s.unit = myunit
+
 	    		s.save
 
     		end
