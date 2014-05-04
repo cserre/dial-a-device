@@ -172,6 +172,6 @@ class SamplesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sample_params
-      params.require(:sample).permit(:name, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
+      params.require(:sample).permit(:name, :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
     end
 end

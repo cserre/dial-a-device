@@ -1,5 +1,5 @@
 class Sample < ActiveRecord::Base
-  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id, :name
+  attr_accessible :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id, :name
 
   # has_many :task_samples
   # has_many :tasks, :through => :task_samples
@@ -133,6 +133,11 @@ class Sample < ActiveRecord::Base
 
   end
 
+  def weight
+
+    self.actual_amount - self.tare_amount
+
+  end
 
   def role
 
