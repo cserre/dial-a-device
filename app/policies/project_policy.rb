@@ -32,6 +32,24 @@ class ProjectPolicy < Struct.new(:user, :project)
 
   end
 
+  def addreaction?
+    result = false
+
+    if !user.nil? then result = user.projectowner_of?(project) end
+
+    result
+
+  end
+
+  def adddataset?
+    result = false
+
+    if !user.nil? then result = user.projectowner_of?(project) end
+
+    result
+
+  end
+
   def adduser?
     user.projectowner_of?(project)
   end
