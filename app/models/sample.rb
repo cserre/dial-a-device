@@ -21,6 +21,18 @@ class Sample < ActiveRecord::Base
 
   has_many :library_entries, :dependent => :destroy
 
+  before_destroy :cleanup_projects
+
+  
+  def cleanup_projects
+
+    self.projects.each do |p|
+
+      self.remove_from_project_recursive(p)
+    end
+
+  end
+
 
 
   class CrossRef
@@ -203,6 +215,30 @@ class Sample < ActiveRecord::Base
       if !parent.nil? then
 
         parent.add_sample(self)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+  end
+
+  def remove_from_project_recursive(project)
+
+    project.remove_sample(self)
+
+    if Project.exists?(project.parent_id) then parent = project.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        parent.remove_sample(self)
 
       end
 

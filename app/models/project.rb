@@ -145,4 +145,44 @@ class Project < ActiveRecord::Base
 
   end
 
+  def remove_dataset_only(dataset)
+
+    datasets.delete(dataset) if datasets.exists?(dataset)
+
+  end
+
+
+  def remove_sample(sample)
+    remove_sample_only(sample)
+    
+    parent.remove_sample(sample) unless !parent_exists?
+  end
+
+  # überarbeiten:
+
+  def remove_sample_only(sample)
+
+    samples.delete(sample) if samples.exists?(sample)
+
+    # if no other samples exist with same molecule, remove it
+
+    more_samples_with_same_molecule = false
+
+    self.samples.each do |s|
+
+      if s.molecule == sample.molecule then more_samples_with_same_molecule = true end
+    end
+
+    molecules.delete(sample.molecule) if !more_samples_with_same_molecule
+
+    # remove library entries
+
+    # rootlibrary.remove_sample(sample) if rootlibrary.sample_exists?(sample)
+
+    sample.datasets.each do |ds|
+      remove_dataset_only(ds)
+    end
+
+  end
+
 end
