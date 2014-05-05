@@ -23,6 +23,8 @@ class Project < ActiveRecord::Base
 
       if r.role_id == 99 then return "R+W" end
 
+      if r.role_id == 95 then return "R+P" end
+
       if r.role_id == 88 then return "R" end
 
     end
