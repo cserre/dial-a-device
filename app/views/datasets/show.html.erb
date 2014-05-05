@@ -184,7 +184,14 @@ $(document).ajaxSend(function(e, xhr, options) {
 <p><b>Details:</b>&nbsp;<%= @dataset.details.html_safe %></p>
 <% end %>
 
-<%= image_tag(@dataset.preview_url, size: "450x300", alt: "preview") %> 
+
+<% if @dataset.jdx_file != nil then %> 
+<%= link_to 'Plot', @dataset, :method => :plot,  :class => "btn btn-sm btn-warning" %>   
+
+<%end%>
+
+<%= image_tag(@dataset.preview_url, size: "450x300", alt: "preview") %>
+
 
 <script type="text/javascript">
 
@@ -317,7 +324,7 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
         <td>
             <span class="preview">
                 {% if (file.thumbnailUrl) { %}
-                    <a href="{%=file.url%}" target="_blank" title="{%=file.name%}" download="{%=file.name%}" ><img src="{%=file.thumbnailUrl%}" height="20px"></a>
+                    <a href="{%=file.url%}" target="_blank" title="{%=file.name%}" download="{%=file.name%}" ><img src="{%=file.thumbnailUrl%}" height="40px"></a>
                 {% } %}
             </span>
         </td>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140327091741) do
+ActiveRecord::Schema.define(version: 20140403112353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20140327091741) do
     t.integer  "position"
     t.datetime "recorded_at"
     t.integer  "sample_id"
+    t.string   "jdx_file"
   end
 
   create_table "department_groups", force: true do |t|

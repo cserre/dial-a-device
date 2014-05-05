@@ -125,7 +125,7 @@ class Dataset < ActiveRecord::Base
 
       if !res.include?(f) then
 
-      res <<f
+      res << f
       end
 
       f.split("/").each do |nf|
@@ -173,7 +173,7 @@ class Dataset < ActiveRecord::Base
       if (at.nil?) then
         # select the best fit
 
-        at = attachments.where(["file ilike ? or file ilike ? or file ilike ?", "%jpg", "%pdf", "%gif"]).first
+        at = attachments.where(["file ilike ? or file ilike ? or file ilike ? or file ilike ? or file ilike ? or file ilike ?", "%jpg", "%pdf", "%gif", "%ps", "%dx", "%jdx"]).first
       end
     end
 
@@ -254,32 +254,27 @@ class Dataset < ActiveRecord::Base
 
     #detect jdx
       if a.folder == "" && a.read_attribute(:file).downcase =~ /j?dx\z/ then
-        jdx_data = Jcampdx.load_jdx(":file #{a.file.path.to_s} :process  header")
-
-        title = jdx_data[0][0][:"TITLE"][0]
-        if jdx_data[0][0][:"DATA TYPE"][0] == "NMR SPECTRUM"
+        extract_label="TITLE, DATA TYPE,.OBSERVE NUCLEUS,.SOLVENT NAME,.PULSE SEQUENCE,.OBSERVE FREQUENCY"
+        jdx_data = Jcampdx.load_jdx(":file #{a.file.path.to_s} :process  extract #{extract_label}, extract_first ").last[:extract]
+       
+        
+        title = (jdx_data[:"TITLE"] && jdx_data[:"TITLE"][0] ) || "n.d." 
+        if jdx_data[:"DATA TYPE"] && jdx_data[:"DATA TYPE"][0] =~ /NMR/
           m = "NMR/"
-          if jdx_data[0][0][:".OBSERVE NUCLEUS"][0]
-            m << jdx_data[0][0][:".OBSERVE NUCLEUS"][0].gsub(/\^/,"")
-          end
+          m << jdx_data[:".OBSERVE NUCLEUS"][0].gsub(/\^/,"") if jdx_data[:".OBSERVE NUCLEUS"]
           m << "/"
-          if jdx_data[0][0][:".SOLVENT NAME"][0]
-            m << jdx_data[0][0][:".SOLVENT NAME"][0]
-          end
+          m << jdx_data[:".SOLVENT NAME"][0] if jdx_data[:".SOLVENT NAME"]
           m << "/"
-          if jdx_data[0][0][:".OBSERVE FREQUENCY"][0]
-            m <<  jdx_data[0][0][:".OBSERVE FREQUENCY"][0].to_f.round.to_s
-          end
-          if jdx_data[0][0][:".PULSE SEQUENCE"][0]
-            title << "-" + jdx_data[0][0][:".PULSE SEQUENCE"][0]
-          end
+          m <<  jdx_data[:".OBSERVE FREQUENCY"][0].to_f.round.to_s if jdx_data[:".OBSERVE FREQUENCY"]
+          title << "-" + jdx_data[:".PULSE SEQUENCE"][0]  if jdx_data[:".PULSE SEQUENCE"]
+         
         else
-          m = jdx_data[0][0][:"DATA TYPE"][0]
+          m = (jdx_data[:"DATA TYPE"] && jdx_data[:"DATA TYPE"][0]) || "n.d."  
         end
 
-        self.update_attribute(:title, title)
-        self.update_attribute(:method, m)
-        self.update_attribute(:jdx_file, a.file.path.to_s)
+        self.update_attribute(:title, title) if title
+        self.update_attribute(:method, m)    if m
+        self.update_attribute(:jdx_file, "jdx|"+a.file.path.to_s)
 
       end
 
