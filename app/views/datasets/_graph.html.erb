@@ -10,22 +10,22 @@
 
 <script type="text/javascript">
 var cont,cont2, data, opt; 
-cont =  document.getElementById("spectrum");
+cont  =   document.getElementById("spectrum");
 cont2 =  document.getElementById("fullspectrum");
 
-data =  <%= @dx_data[2][@page] %> ;
+data =  <%= @plotdx.xy %> ;
 
 
 opt = {
         
-        title: "<%= @dx_data[0][:TITLE][0] %>",
+        title: "<%= @plotdx.TITLE %> - <%= @plotdx.TYPE %> ",
         xaxis: {
-        title: "<%= @dx_data[0][:SYMBOL][@indx] %> ( <%= @dx_data[0][:kUNITS][@indx]  %> )",
+        title: "<%= @plotdx.SYMBOL[0] %> ( <%= @plotdx.UNITS[0]  %> )",
        
-        directionReversed: <%=@dx_data[0][:xaxis_reversed]%>,
+        directionReversed: <%=@plotdx.xaxis_reversed%>,
         },
         yaxis: {
-        title: "<%= @dx_data[0][:SYMBOL][@indy] %> ( <%= @dx_data[0][:kUNITS][@indy] %> )",
+        title: "<%= @plotdx.SYMBOL[1] %> ( <%= @plotdx.UNITS[1] %> )",
         titleAngle: 90, 
         autoscale: false     
         },
