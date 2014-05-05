@@ -41,7 +41,16 @@ class SamplesController < ApplicationController
   def assign_do
     authorize @sample, :edit?
 
-    @project.add_sample(@sample)
+
+    if !params[:remove].nil? then
+
+      @project.remove_sample_only(@sample)
+
+    else
+
+      @project.add_sample(@sample)
+
+    end
 
     redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
   end   

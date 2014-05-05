@@ -4,6 +4,8 @@ class ReactionsController < ApplicationController
 
   before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
 
+  before_action :set_project
+
   # GET /reactions
   def index
 
@@ -29,7 +31,15 @@ class ReactionsController < ApplicationController
 
     @project = Project.find(params[:project_id])
 
-    @project.add_reaction(@reaction)
+    if !params[:remove].nil? then
+
+      @project.remove_reaction_only(@reaction)
+
+    else
+
+      @project.add_reaction(@reaction)
+
+    end
 
     redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
   end   
@@ -232,6 +242,18 @@ class ReactionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_reaction
       @reaction = Reaction.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          @project = current_user.rootproject
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

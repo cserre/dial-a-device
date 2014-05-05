@@ -15,6 +15,18 @@ class Project < ActiveRecord::Base
   	User.joins(:project_memberships).where(["role_id = ? and project_id = ?", 99, id]).first
   end
 
+  def role_str(user)
+
+    roles = ProjectMembership.where(["user_id = ? and project_id = ?", user.id, id])
+
+    roles.each do |r|
+
+      return r.role_id.to_s
+
+    end
+
+  end
+
   def create_rootlibrary
     rp = Library.create!
     rp.save
@@ -25,6 +37,24 @@ class Project < ActiveRecord::Base
     pm.save
 
     update_attributes(:rootlibrary_id => rp.id)
+
+  end
+
+  def superparent
+
+    if Project.exists?(self.parent_id) then parent = self.parent end
+
+    loop do
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+    parent
 
   end
 
@@ -103,6 +133,29 @@ class Project < ActiveRecord::Base
 
   end
 
+  def remove_reaction(reaction)
+    remove_reaction_only(reaction)
+    
+    parent.remove_reaction(reaction) unless !parent_exists?
+  end
+
+  def remove_reaction_only(reaction)
+
+    reactions.delete(reaction) if reactions.exists?(reaction)
+
+    self.children.each do |child|
+
+      child.remove_reaction_only(reaction)
+
+    end
+
+    reaction.samples.each do |s|
+      remove_sample_only(s)
+    end
+
+  end
+
+
   def add_molecule(molecule)
     molecules << molecule unless molecules.exists?(molecule)
     rootlibrary.add_molecule(molecule)
@@ -164,8 +217,6 @@ class Project < ActiveRecord::Base
 
     samples.delete(sample) if samples.exists?(sample)
 
-    # if no other samples exist with same molecule, remove it
-
     more_samples_with_same_molecule = false
 
     self.samples.each do |s|
@@ -175,9 +226,8 @@ class Project < ActiveRecord::Base
 
     molecules.delete(sample.molecule) if !more_samples_with_same_molecule
 
-    # remove library entries
 
-    # rootlibrary.remove_sample(sample) if rootlibrary.sample_exists?(sample)
+    self.rootlibrary.library_entries.where(["sample_id = ?", sample.id]).destroy_all
 
     sample.datasets.each do |ds|
       remove_dataset_only(ds)
