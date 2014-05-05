@@ -165,7 +165,7 @@ class Sample < ActiveRecord::Base
 
   def has_analytics?(reaction, methodpart)
 
-    datasets = self.datasets.where(["molecule_id = ? AND method ilike ?", self.molecule.id, "%"+methodpart+"%"])
+    datasets = self.datasets.where(["sample_id = ? AND method ilike ?", self.id, "%"+methodpart+"%"])
 
     return (datasets.length > 0)
 
