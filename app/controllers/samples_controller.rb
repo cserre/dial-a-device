@@ -2,7 +2,7 @@ class SamplesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:index, :show]
 
-  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature]
+  before_action :set_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature, :zip]
 
   before_action :set_project
 
@@ -111,6 +111,36 @@ class SamplesController < ApplicationController
 
   end
 
+  def zip
+
+    authorize @sample, :show?
+
+    temp_file = Tempfile.new(@sample.id.to_s+".zip")
+
+
+    Zip::OutputStream.open(temp_file.path) { |zos| 
+
+      zos.put_next_entry("sample_"+@sample.id.to_s+".json")
+      zos.print @sample.to_json
+
+        @sample.datasets.each do |dataset|
+
+          dataset.attachments.each do |a|
+            zos.put_next_entry(dataset.id.to_s+"/"+a.folder?+a.filename?)
+            zos.print a.file.read
+          end
+
+        end
+
+
+    }
+
+    temp_file.close
+
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => "sample_"+@sample.id.to_s+".zip")
+
+  end
+
 
   def destroy
     authorize @sample
@@ -142,6 +172,6 @@ class SamplesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sample_params
-      params.require(:sample).permit(:name, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
+      params.require(:sample).permit(:name, :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id)
     end
 end

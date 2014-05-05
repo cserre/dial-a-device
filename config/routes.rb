@@ -34,6 +34,9 @@ LsiRailsPrototype::Application.routes.draw do
   end
 
   resources :reactions do
+
+    get 'zip', on: :member
+
     get 'createdirect', on: :collection, as: :createdirect
 
     get 'assign', on: :member
@@ -41,6 +44,9 @@ LsiRailsPrototype::Application.routes.draw do
   end
 
   resources :samples do
+
+    get 'zip', on: :member
+    
     get 'assign', on: :member
     post 'assign', on: :member, as: :assign_to_project_do, :to => 'samples#assign_do'
 
@@ -146,6 +152,9 @@ LsiRailsPrototype::Application.routes.draw do
     get 'adduser/:user_id', :to => 'projects#adduser', :on => :member
     get 'adduser', :to => 'projects#adduser', :on => :member
     get 'invite', :to => 'projects#invite', :on => :member
+
+    get 'import' => 'projects#import', :on => :member
+    post 'import' => 'projects#importzip', :on => :member
   end
 
 

@@ -121,7 +121,7 @@
 <h4><%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small></h4>
 
 
-      <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.actual_amount.to_s+" "+sample.unit %>) </small>
+      <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.weight.to_s+" "+sample.unit %>) </small>
 
           <% if !sample.citations.empty? then %>
 

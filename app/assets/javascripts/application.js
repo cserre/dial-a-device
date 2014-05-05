@@ -19,3 +19,4 @@
 //= require bootstrap-wysiwyg
 //= require websocket_rails/main
 //= require jquery-hotkeys
+

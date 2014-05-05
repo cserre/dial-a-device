@@ -158,7 +158,7 @@ class DatasetsController < ApplicationController
 
     temp_file.close
 
-    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => @dataset.webdavpath.to_s+".zip")
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => "dataset_"+@dataset.webdavpath.to_s+".zip")
 
   end
 

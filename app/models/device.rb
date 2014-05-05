@@ -11,23 +11,32 @@ class Device < ActiveRecord::Base
 
   has_many :project_devices
   has_many :projects,
-    through: :project_devices
+    through: :project_devices, :dependent => :destroy
 
   def websockifygateway
 
-    vncrelay.host
+    if !vncrelay.nil? then 
+      vncrelay.host
+    end
     
   end
 
   def websockifygatewayport
 
-    vncrelay.port
+    if !vncrelay.nil? then 
+
+      vncrelay.port
+    end
     
   end
 
   def token
 
-    vncrelay.id.to_s + "-" + self.id.to_s
+    if !vncrelay.nil? then
+
+      vncrelay.id.to_s + "-" + self.id.to_s
+
+    end
     
   end
 

@@ -6,7 +6,8 @@ class Reaction < ActiveRecord::Base
   # belongs_to :task, :dependent => :destroy
 
   has_many :sample_reactions
-  has_many :samples, :dependent => :destroy, :through => :sample_reactions
+  has_many :samples,
+    :through => :sample_reactions, :dependent => :destroy
 
   has_many :educts, :through => :sample_reactions, :source => :sample, :conditions => {:is_virtual => true, :is_startingmaterial => true}
   has_many :reactants, :through => :sample_reactions, :source => :sample, :conditions => {:is_virtual => true, :is_startingmaterial => false}
@@ -20,12 +21,15 @@ class Reaction < ActiveRecord::Base
 
   has_many :reaction_datasets
   has_many :datasets,
-    through: :reaction_datasets
+    through: :reaction_datasets, :dependent => :destroy
 
 
   has_many :project_reactions
   has_many :projects,
-  	through: :project_reactions
+  	through: :project_reactions, :dependent => :destroy
+
+
+
 
 
   def has_unconfirmed_analytics?(current_user)
@@ -60,5 +64,9 @@ class Reaction < ActiveRecord::Base
 
     end
 
+  end
+
+  def as_json(options={})
+    super(:include => [:samples => {:include => [:molecule, :datasets => {:include => [:attachments => {:methods => [:filename, :filesize]}]}]}])
   end
 end

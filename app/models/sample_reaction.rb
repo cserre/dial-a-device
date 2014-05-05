@@ -2,7 +2,7 @@ class SampleReaction < ActiveRecord::Base
   attr_accessible :reaction_id, :sample_id
 
   belongs_to :reaction
-  belongs_to :sample
+  belongs_to :sample, :dependent => :destroy
 
   validates :reaction, :sample, presence: true
 

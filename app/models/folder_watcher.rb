@@ -3,7 +3,7 @@ class FolderWatcher < ActiveRecord::Base
 
   has_many :project_folder_watchers
   has_many :projects,
-  through: :project_folder_watchers
+  through: :project_folder_watchers, :dependent => :destroy
 
   def add_to_project (project_id)
 

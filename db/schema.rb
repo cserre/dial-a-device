@@ -11,7 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140403112353) do
+
+ActiveRecord::Schema.define(version: 20140501183239) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -231,6 +233,7 @@ ActiveRecord::Schema.define(version: 20140403112353) do
     t.datetime "published_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "fp",           limit: nil
   end
 
   create_table "organization_departments", force: true do |t|
@@ -377,6 +380,7 @@ ActiveRecord::Schema.define(version: 20140403112353) do
     t.boolean  "is_startingmaterial", default: false
     t.integer  "originsample_id"
     t.string   "name"
+    t.float    "tare_amount",         default: 0.0
   end
 
   create_table "user_affiliations", force: true do |t|

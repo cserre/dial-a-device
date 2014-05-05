@@ -2,7 +2,7 @@ class Dataset < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id
+  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id, :method_rank
   attr_accessible :jdx_file
 
   has_many :attachments, :dependent => :destroy
@@ -14,13 +14,13 @@ class Dataset < ActiveRecord::Base
 
   has_many :datasetgroup_datasets
   has_many :datasetgroups,
-    through: :datasetgroup_datasets
+    through: :datasetgroup_datasets, :dependent => :destroy
 
   has_many :reaction_datasets
   has_many :reactions,
     through: :reaction_datasets
 
-  has_many :commits
+  has_many :commits, :dependent => :destroy
 
   # acts_as_list scope: :datasetgroup_dataset
   def transfer_to_sample(sample)
@@ -38,23 +38,28 @@ class Dataset < ActiveRecord::Base
   def transfer_attachments_to_dataset(dataset)
     self.attachments.each do |a|
 
-      newattachment = Attachment.new(:dataset => dataset)
 
-      if Rails.env.localserver? or Rails.env.development? then
 
-        old_path = LsiRailsPrototype::Application.config.datasetroot + a.file_url
+          newattachment = Attachment.new(:dataset => dataset)
 
-        newattachment.file = File.new(old_path)
+          newattachment.folder = a.folder
 
-        new_path = LsiRailsPrototype::Application.config.datasetroot +  newattachment.file_url
-        puts new_path
+          if Rails.env.localserver? or Rails.env.development? then 
+
+            old_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}/#{a.folder}#{a.filename}"
+
+            new_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{dataset.id}/#{a.folder}#{a.filename}"
+
 
         FileUtils.mkdir_p(File.dirname(new_path))
         FileUtils.cp(old_path, new_path)
 
-      else
-      newattachment.remote_file_url = a.file_url
-      end
+            newattachment.file = File.new(new_path)
+
+          else
+            newattachment.remote_file_url = a.file_url
+          end
+
 
       newattachment.save
 
@@ -92,14 +97,20 @@ class Dataset < ActiveRecord::Base
   end
 
   def doi_identifier
-    if !sample.molecule.nil? then
+
+    if !sample.nil? then
+  	if !sample.molecule.nil? then 
+
 
       v = ""
       if (!version.blank? && !(version == "0")) then v = "."+version end
 
-      if !ENV['DOI_PREFIX'].nil? then
-        ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
-      end
+
+  		if !ENV['DOI_PREFIX'].nil? then
+  			ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
+  		end
+  	end
+
     end
 
   end
@@ -187,9 +198,8 @@ class Dataset < ActiveRecord::Base
   end
 
   has_many :project_datasets
-
   has_many :projects,
-  through: :project_datasets
+    through: :project_datasets, :dependent => :destroy
 
   def add_to_project_recursive (project_id)
 
@@ -394,6 +404,10 @@ class Dataset < ActiveRecord::Base
 
     end
 
+  end
+
+  def as_json(options={})
+    super(:include => [:attachments => {:methods => [:filename, :filesize]}])
   end
 
 end

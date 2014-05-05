@@ -1,5 +1,5 @@
 class Sample < ActiveRecord::Base
-  attr_accessible :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id, :name
+  attr_accessible :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, :molecule_attributes, :compound_id, :originsample_id, :name
 
   # has_many :task_samples
   # has_many :tasks, :through => :task_samples
@@ -17,7 +17,21 @@ class Sample < ActiveRecord::Base
   has_many :reactions,
   	:through => :sample_reactions
 
-  has_many :datasets
+  has_many :datasets, :dependent => :destroy
+
+  has_many :library_entries, :dependent => :destroy
+
+  before_destroy :cleanup_projects
+
+  
+  def cleanup_projects
+
+    self.projects.each do |p|
+
+      self.remove_from_project_recursive(p)
+    end
+
+  end
 
 
 
@@ -133,6 +147,11 @@ class Sample < ActiveRecord::Base
 
   end
 
+  def weight
+
+    self.actual_amount - self.tare_amount
+
+  end
 
   def role
 
@@ -160,9 +179,9 @@ class Sample < ActiveRecord::Base
 
   def has_analytics?(reaction, methodpart)
 
-    datasets = reaction.datasets.where(["molecule_id = ?", self.molecule.id])
+    datasets = self.datasets.where(["sample_id = ? AND method ilike ?", self.id, "%"+methodpart+"%"])
 
-    datasets.exists?(["method ilike ?", "%"+methodpart+"%"])
+    return (datasets.length > 0)
 
   end
 
@@ -182,7 +201,7 @@ class Sample < ActiveRecord::Base
 
   has_many :project_samples
   has_many :projects,
-  through: :project_samples
+  through: :project_samples, :dependent => :destroy
 
   def add_to_project_recursive (project_id)
 
@@ -209,5 +228,34 @@ class Sample < ActiveRecord::Base
 
   end
 
+  def remove_from_project_recursive(project)
+
+    project.remove_sample(self)
+
+    if Project.exists?(project.parent_id) then parent = project.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        parent.remove_sample(self)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+  end
+
+
+  def as_json(options={})
+    super(:include => [:molecule, :datasets => {:include => [:attachments => {:methods => [:filename, :filesize]}]}])
+    
+  end
  
 end

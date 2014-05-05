@@ -38,15 +38,18 @@
 
               <td>
                 <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
-                <p><%= dataset.description.html_safe %></p>
+                <p><% if !dataset.description.blank? then %><%= dataset.description.html_safe %><% end %></p>
                 <p>Virtual DOI: <%= dataset.doi_identifier %></p>
               
             </td>
 
             <td>
 
+              <% if !dataset.sample.nil? && !dataset.sample.molecule.nil? then %>
+
               <%= render "molecules/render", :molecule => dataset.sample.molecule, :width => "200", :height => "150" %>
 
+              <% end %>
               </td>
 
               <td>

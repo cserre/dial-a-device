@@ -1,0 +1,108 @@
+  <h1>Reaction <%=  @reaction.name %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %></h1>
+  
+<br/>
+<h4>Starting materials</h4>
+
+<table id="products-display-table" class="table" style="table-layout:fixed;">
+  <thead>
+      <th style="width:100px;">Molecule</th>
+      <th style="width:200px;">Details</th>
+      <th style="width:100px;">mmol</th>
+      <th style="width:100px;">Actual Amount</th>
+      <th style="width:100px;">Target Amount</th>
+  </thead>
+  <tbody>
+      <% @reaction.educts.each do |sample| %>
+
+            <tr id="sample_row_<%= sample.id %>" class="fields samplerow" onclick="$('#checkedinsamples').load('/devices/<%= @device.id %>/checkin?sample_id=<%= sample.id %>'); return false;">
+            <td>
+              <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
+            </td>
+            <td><strong><%= sample.molecule.mass %></strong><br>
+
+              <span class="glyphicon glyphicon-glass" /><%=  sample.longname %><br>
+
+              <span class="glyphicon glyphicon-map-picker" /><%=  sample.molecule.title %><br>
+
+            <%= sample.molecule.formula %>
+            </td>
+            <td><%= sample.mol %></td>
+            <td><%= sample.weight.to_s + " " + sample.unit %></td>
+            <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
+          </tr>
+      <% end %>
+  </tbody>
+</table>
+
+  <br/>
+
+  <h4>Reactants</h4>
+
+<table id="products-display-table" class="table" style="table-layout:fixed;">
+  <thead>
+      <th style="width:100px;">Molecule</th>
+      <th style="width:200px;">Details</th>
+      <th style="width:100px;">mmol</th>
+      <th style="width:100px;">Actual Amount</th>
+      <th style="width:100px;">Target Amount</th>
+  </thead>
+  <tbody>
+      <% @reaction.reactants.each do |sample| %>
+
+            <tr id="sample_row_<%= sample.id %>" class="fields samplerow" onclick="$('#checkedinsamples').load('/devices/<%= @device.id %>/checkin?sample_id=<%= sample.id %>'); return false;">
+            <td>
+              <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
+            </td>
+            <td><strong><%= sample.molecule.mass %></strong><br>
+
+              <span class="glyphicon glyphicon-glass" /><%=  sample.longname %><br>
+
+              <span class="glyphicon glyphicon-map-picker" /><%=  sample.molecule.title %><br>
+
+            <%= sample.molecule.formula %>
+            </td>
+            <td><%= sample.mol %></td>
+            <td><%= sample.weight.to_s + " " + sample.unit %></td>
+            <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
+          </tr>
+      <% end %>
+  </tbody>
+</table>
+
+<br/>
+
+<h4>Products</h4>
+
+<table id="products-display-table" class="table" style="table-layout:fixed;">
+  <thead>
+      <th style="width:100px;">Molecule</th>
+      <th style="width:200px;">Details</th>
+      <th style="width:100px;">mmol</th>
+      <th style="width:100px;">Actual Amount</th>
+      <th style="width:100px;">Target Amount</th>
+      <th style="width:100px;">Yield</th>
+  </thead>
+  <tbody>
+      <% @reaction.products.each do |sample| %>
+
+            <tr id="sample_row_<%= sample.id %>" class="fields samplerow" onclick="$('#checkedinsamples').load('/devices/<%= @device.id %>/checkin?sample_id=<%= sample.id %>'); return false;">
+            <td>
+              <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
+            </td>
+            <td><strong><%= sample.molecule.mass %></strong><br>
+
+              <span class="glyphicon glyphicon-glass" /><%=  sample.longname %><br>
+
+              <span class="glyphicon glyphicon-map-picker" /><%=  sample.molecule.title %><br>
+
+            <%= sample.molecule.formula %>
+            </td>
+            <td><%= sample.mol %></td>
+            <td><%= sample.weight.to_s + " " + sample.unit %></td>
+            <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
+            <td><%= sample.yield %></td>
+          </tr>
+      <% end %>
+  </tbody>
+</table>
+

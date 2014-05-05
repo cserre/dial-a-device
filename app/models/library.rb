@@ -6,7 +6,7 @@ class Library < ActiveRecord::Base
 
   has_many :project_libraries
   has_many :projects,
-  through: :project_libraries
+    through: :project_libraries, :dependent => :destroy
 
   def sample_exists?(sample)
     library_entries.exists?(["sample_id = ?", sample.id])

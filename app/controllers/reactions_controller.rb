@@ -2,7 +2,7 @@ class ReactionsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
+  before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
 
   # GET /reactions
   def index
@@ -34,12 +34,55 @@ class ReactionsController < ApplicationController
     redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
   end   
 
+  def zip
+
+    authorize @reaction, :show?
+
+    temp_file = Tempfile.new(@reaction.id.to_s+".zip")
+
+
+    Zip::OutputStream.open(temp_file.path) { |zos| 
+
+      zos.put_next_entry("reaction_"+@reaction.id.to_s+".json")
+      zos.print @reaction.to_json
+
+      @reaction.samples.each do |sample|
+
+        sample.datasets.each do |dataset|
+
+          dataset.attachments.each do |a|
+            zos.put_next_entry(dataset.id.to_s+"/"+a.folder?+a.filename?)
+            zos.print a.file.read
+          end
+
+        end
+
+      end
+
+
+    }
+
+    temp_file.close
+
+    send_data(File.read(temp_file.path), :type => 'application/zip', :filename => "reaction_"+@reaction.name.to_s+".zip")
+
+  end
 
   # GET /reactions/1
   def show
     authorize @reaction
 
     if !current_user.nil? then @owndatasets = @reaction.datasets end
+
+    if !params[:render].blank? && params[:render] == "inline" then 
+
+        @device = Device.find(params[:device_id])
+
+        render "showbalance", :layout => false
+
+        return
+
+    end
   end
 
   def createdirect
@@ -195,10 +238,10 @@ class ReactionsController < ApplicationController
     def reaction_params
       params.require(:reaction).permit(:name, :description, 
 
-        :products_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id], 
+        :products_attributes => [:id, :_destroy, :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id], 
 
-        :educts_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id],
+        :educts_attributes => [:id, :_destroy, :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id],
 
-        :reactants_attributes => [:id, :_destroy, :target_amount, :actual_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id])
+        :reactants_attributes => [:id, :_destroy, :target_amount, :actual_amount, :tare_amount, :unit, :mol, :equivalent, :yield, :is_virtual, :is_startingmaterial, {:molecule_attributes => [:id, :_destroy, :charge, :formula, :inchi, :inchikey, :mass, :molfile, :published_at, :spin, :smiles, :title]}, :molecule_id])
     end
 end

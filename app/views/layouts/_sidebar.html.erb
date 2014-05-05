@@ -16,7 +16,7 @@ function checkinSample (sampleid) {
 
 function loadTask (taskid, sampleid) {
 
-	$('#actionpane').load('/tasks/'+taskid+'?device_id=<%= @device.id unless @device == nil %>', function() {
+	$('#actionpane').load('/reactions/'+taskid+'?render=inline&device_id=<%= @device.id unless @device == nil %>', function() {
 
 		checkinSample (sampleid);
 
@@ -58,12 +58,14 @@ function detectedSample (sampleid, checkin) {
 
 </script>
 
+<% @showtasks = true %>
+
 <% if (@showtasks != nil && @showtasks) then %>
 
 <h4>My Tasks</h4>
 
 
-	<% tasks = current_user.tasks.where(["deviceclass_id = ?", @device.devicetype.deviceclass_id]) %>
+	<% tasks = current_user.reactions %>
 
 	<% if (tasks != nil && tasks.size == 0) then %>No tasks<% end %>
 
@@ -86,7 +88,7 @@ function detectedSample (sampleid, checkin) {
 
 	</script>
 
-	<button class="btn" id="btn_<%= task.id %>" onclick="loadTask('<%= task.id %>'); return false;" ><% if (task.reaction != nil) then %><i class="icon icon-fire"></i>&nbsp;<% else %><i class="icon icon-tint"></i>&nbsp;<% end %><%= task.description %></button>
+	<button class="btn" id="btn_<%= task.id %>" onclick="loadTask('<%= task.id %>'); return false;" ><i class="icon icon-fire"></i>&nbsp;<%= task.name %></button>
 
 
 	<% end %>

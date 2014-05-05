@@ -5,11 +5,25 @@ class User < ActiveRecord::Base
   if LsiRailsPrototype::Application.config.useldap == true then
     devise :ldap_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :invitable
+         :invitable
+
+    before_save :get_ldap_email
   else
     devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :invitable
+  end
+
+  def get_ldap_email
+
+    self.email = Devise::LDAP::Adapter.get_ldap_param(self.email, "mail").first
+
+    self.firstname = Devise::LDAP::Adapter.get_ldap_param(self.email, "givenname").first
+
+    self.lastname = Devise::LDAP::Adapter.get_ldap_param(self.email, "sn").first
+
+    self.sign = self.firstname[0] + self.lastname[0]
+
   end
 
   # Setup accessible (or protected) attributes for your model
@@ -26,7 +40,7 @@ class User < ActiveRecord::Base
 
   has_many :user_affiliations
   has_many :affiliations,
-    through: :user_affiliations
+    through: :user_affiliations, :dependent => :destroy
 
   accepts_nested_attributes_for :affiliations
 
@@ -82,7 +96,7 @@ class User < ActiveRecord::Base
   has_many :project_memberships, :foreign_key => :user_id
 
   has_many :projects,
-    through: :project_memberships, :foreign_key => :user_id
+    through: :project_memberships, :foreign_key => :user_id, :dependent => :destroy
 
   belongs_to :rootproject, :class_name => Project
 
