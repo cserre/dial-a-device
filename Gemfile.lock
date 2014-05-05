@@ -103,6 +103,11 @@ GIT
       rack (>= 1.1.0)
       uuidtools (~> 2.1.1)
 
+PATH
+  remote: /home/pi/workspace/kaitatari
+  specs:
+    kaitatari (0.0.2.23)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -295,6 +300,7 @@ DEPENDENCIES
   jquery-hotkeys-rails
   jquery-rails
   jquery-ui-rails
+  kaitatari!
   mini_magick
   noVNC!
   openbabel

@@ -2,7 +2,8 @@ class Dataset < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id, :jdx_file
+  attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id
+  attr_accessible :jdx_file
 
   has_many :attachments, :dependent => :destroy
 
