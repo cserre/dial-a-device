@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
   attr_accessible :parent_id, :title, :rootlibrary_id
 
-  has_many :project_memberships
+  has_many :project_memberships, :dependent => :destroy
 
   def rootlibrary
     Library.find(self.rootlibrary_id)
@@ -46,40 +46,40 @@ class Project < ActiveRecord::Base
 
   has_many :project_molecules
   has_many :molecules,
-    through: :project_molecules
+    through: :project_molecules, :dependent => :destroy
 
   has_many :project_datasets
   has_many :datasets,
-    through: :project_datasets
+    through: :project_datasets, :dependent => :destroy
 
   has_many :project_beaglebones
   has_many :beaglebones,
-    through: :project_beaglebones
+    through: :project_beaglebones, :dependent => :destroy
 
   has_many :project_folder_watchers
   has_many :folder_watchers,
-    through: :project_folder_watchers
+    through: :project_folder_watchers, :dependent => :destroy
 
     has_many :project_vncrelays
   has_many :vncrelays,
-    through: :project_vncrelays
+    through: :project_vncrelays, :dependent => :destroy
 
 
   has_many :project_devices
   has_many :devices,
-    through: :project_devices
+    through: :project_devices, :dependent => :destroy
 
   has_many :project_reactions
   has_many :reactions,
-    through: :project_reactions
+    through: :project_reactions, :dependent => :destroy
 
   has_many :project_samples
   has_many :samples,
-    through: :project_samples
+    through: :project_samples, :dependent => :destroy
 
   has_many :project_libraries
   has_many :libraries,
-    through: :project_libraries
+    through: :project_libraries, :dependent => :destroy
 
   def add_library(library)
 

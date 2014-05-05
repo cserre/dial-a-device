@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
 
   has_many :user_affiliations
   has_many :affiliations,
-    through: :user_affiliations
+    through: :user_affiliations, :dependent => :destroy
 
   accepts_nested_attributes_for :affiliations
 
@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
   has_many :project_memberships, :foreign_key => :user_id
 
   has_many :projects,
-    through: :project_memberships, :foreign_key => :user_id
+    through: :project_memberships, :foreign_key => :user_id, :dependent => :destroy
 
   belongs_to :rootproject, :class_name => Project
 
