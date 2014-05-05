@@ -13,13 +13,13 @@ class Dataset < ActiveRecord::Base
 
   has_many :datasetgroup_datasets
   has_many :datasetgroups,
-    through: :datasetgroup_datasets
+    through: :datasetgroup_datasets, :dependent => :destroy
 
   has_many :reaction_datasets
   has_many :reactions,
     through: :reaction_datasets
 
-  has_many :commits
+  has_many :commits, :dependent => :destroy
 
   # acts_as_list scope: :datasetgroup_dataset
 
@@ -192,9 +192,8 @@ def preview_url
   end
 
   has_many :project_datasets
-
   has_many :projects,
-  through: :project_datasets
+    through: :project_datasets, :dependent => :destroy
 
   def add_to_project_recursive (project_id)
 

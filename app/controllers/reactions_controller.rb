@@ -224,22 +224,6 @@ class ReactionsController < ApplicationController
   def destroy
     authorize @reaction
 
-    @reaction.samples.each do |s|
-
-      s.datasets.each do |ds|
-
-        ds.destroy
-
-        ds.datasetgroups.destroy_all
-
-      end
-
-      LibraryEntry.where(["sample_id = ?", s.id]).destroy_all
-
-      s.destroy
-
-    end
-
     @reaction.destroy
     redirect_to reactions_url, notice: 'Reaction was successfully destroyed.'
   end

@@ -18,8 +18,8 @@ class Molecule < ActiveRecord::Base
 
 
   has_many :molecule_samples
-  has_many :samples, :through => :molecule_samples, 
-    :dependent => :destroy
+  has_many :samples,
+    :through => :molecule_samples, :dependent => :destroy
 
 
   def as_json(options= {})
@@ -76,7 +76,7 @@ class Molecule < ActiveRecord::Base
 
   has_many :project_molecules
   has_many :projects,
-  through: :project_molecules
+  through: :project_molecules, :dependent => :destroy
 
   def add_to_project_recursive (project_id)
 

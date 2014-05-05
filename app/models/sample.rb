@@ -17,7 +17,9 @@ class Sample < ActiveRecord::Base
   has_many :reactions,
   	:through => :sample_reactions
 
-  has_many :datasets
+  has_many :datasets, :dependent => :destroy
+
+  has_many :library_entries, :dependent => :destroy
 
 
 
@@ -187,7 +189,7 @@ class Sample < ActiveRecord::Base
 
   has_many :project_samples
   has_many :projects,
-  through: :project_samples
+  through: :project_samples, :dependent => :destroy
 
   def add_to_project_recursive (project_id)
 

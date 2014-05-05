@@ -2,9 +2,8 @@ class Affiliation < ActiveRecord::Base
   attr_accessible :country_title, :organization_title, :department_title, :group_title
 
   has_many :user_affiliations
-
   has_many :users,
-  through: :user_affiliations
+    through: :user_affiliations, :dependent => :destroy
 
   belongs_to :country
   belongs_to :organization

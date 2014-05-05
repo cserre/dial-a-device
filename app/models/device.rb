@@ -11,7 +11,7 @@ class Device < ActiveRecord::Base
 
   has_many :project_devices
   has_many :projects,
-    through: :project_devices
+    through: :project_devices, :dependent => :destroy
 
   def websockifygateway
 

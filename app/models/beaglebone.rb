@@ -3,7 +3,7 @@ class Beaglebone < ActiveRecord::Base
 
   has_many :project_beaglebones
   has_many :projects,
-  through: :project_beaglebones
+  through: :project_beaglebones, :dependent => :destroy
 
   def add_to_project (project_id)
 
