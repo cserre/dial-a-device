@@ -21,7 +21,9 @@ class Project < ActiveRecord::Base
 
     roles.each do |r|
 
-      return r.role_id.to_s
+      if r.role_id == 99 then return "R+W" end
+
+      if r.role_id == 88 then return "R" end
 
     end
 

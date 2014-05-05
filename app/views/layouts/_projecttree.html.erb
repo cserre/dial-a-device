@@ -7,7 +7,7 @@
 	<a href="#">
 	<% end %>
 
-		<% if p.id == current_user.rootproject_id then t = current_user.firstname+"'s Project" else t = p.title end %> <%= p.role_str(current_user) %>
+		<% if p.id == current_user.rootproject_id then t = current_user.firstname+"'s Project" else t = p.title end %>
 
 		<% if !highlight.empty? then %>
 
@@ -32,7 +32,7 @@
 
    		<% end %>
 
-   		<%= t %>
+   		<%= t %> <small>(<%= p.role_str(current_user) %>)</small>
 
 	</a>
 
