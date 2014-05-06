@@ -28,7 +28,7 @@ class Sample < ActiveRecord::Base
 
     self.projects.each do |p|
 
-      self.remove_from_project_recursive(p)
+      self.remove_from_project(p)
     end
 
   end
