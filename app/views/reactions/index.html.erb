@@ -23,7 +23,7 @@
 <h1><% if @project.title.nil? then %>My Reactions<% else %>Reactions in <%= @project.title %><% end %><% if policy(@project).addreaction? then %>&nbsp;
 <%= link_to 'New Reaction', createdirect_reactions_path(:project_id => @project.id), :class => "btn btn-sm btn-success" %>&nbsp;<%= link_to 'Import', import_project_path(@project.id, :type => "reactions"), :class => "btn btn-sm btn-info" %><% end %></h1>
 
-<% if @reactions.length > 0 then %>
+<% if @project_reactions.length > 0 then %>
 
 <table class="table">
     
@@ -37,10 +37,12 @@
         <th></th>
     </thead>
     <tbody>
-        <% @reactions.each do |reaction| %>
+        <% @project_reactions.each do |project_reaction| %>
+
+        <% reaction = project_reaction.reaction %>
 
             <tr>
-                <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
+                <td><%= '<i class="icon-ok"/>'.html_safe if reaction %><%= project_reaction.id.to_s %></td>
     
                 <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
 
@@ -100,7 +102,7 @@
     </tbody>
 </table>
 
-<%= will_paginate @reactions, renderer: BootstrapPagination::Rails %>
+<%= will_paginate @project_reactions, renderer: BootstrapPagination::Rails %>
 
 <% else %>
 <p>You don't have any Reactions yet.</p>

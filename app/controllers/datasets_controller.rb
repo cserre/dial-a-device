@@ -8,10 +8,12 @@ class DatasetsController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+
   # GET /datasets
   # GET /datasets.json
   def index
-    @datasets =  policy_scope(Dataset).joins(:projects).where(["projects.id = ?", @project.id]).paginate(:page => params[:page])
+    @project_datasets = ProjectDataset.where(["project_id = ?", @project.id]).paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -21,7 +23,7 @@ class DatasetsController < ApplicationController
 
   def assign
 
-    authorize @dataset, :edit?
+    authorize @project_dataset, :edit?
 
     @projects = current_user.projects
 
@@ -33,7 +35,7 @@ class DatasetsController < ApplicationController
 
   def assign_do
 
-    authorize @dataset, :edit?
+    authorize @project_dataset, :edit?
 
     @project.add_dataset(@dataset)
 
@@ -144,7 +146,7 @@ class DatasetsController < ApplicationController
 
   def zip
 
-    authorize @dataset, :show?
+    authorize @project_dataset, :show?
 
     temp_file = Tempfile.new(@dataset.id.to_s+".zip")
 
@@ -165,7 +167,7 @@ class DatasetsController < ApplicationController
   # GET /datasets/1
   # GET /datasets/1.json
   def show
-    authorize @dataset
+    authorize @project_dataset
 
     @changerights = false
 
@@ -192,6 +194,8 @@ class DatasetsController < ApplicationController
   def new
     @dataset = Dataset.new
 
+    authorize project_dataset, :new?
+
     @dataset.molecule_id = params[:molecule_id]
 
     respond_to do |format|
@@ -202,14 +206,14 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1/edit
   def edit
-    authorize @dataset
+    authorize @project_dataset
 
     @reaction_id = params[:reaction_id]
   end
 
 
   def commit
-    authorize @dataset, :edit?
+    authorize @project_dataset, :edit?
 
     c = Commit.new
     c.dataset_id = @dataset.id
@@ -230,7 +234,7 @@ class DatasetsController < ApplicationController
   def create_direct
     @dataset = Dataset.new
 
-    authorize @dataset, :create?
+    authorize @project_dataset, :create?
 
     @dataset.molecule_id = params[:molecule_id]
 
@@ -296,7 +300,7 @@ class DatasetsController < ApplicationController
   def create
     @dataset = Dataset.new(params[:dataset])
 
-    authorize @dataset
+    authorize @project_dataset
 
     if !@dataset.molecule.nil? then 
 
@@ -355,6 +359,8 @@ class DatasetsController < ApplicationController
   # POST /datasets.json
   def fork
 
+    # TODO
+
     @olddataset = Dataset.find(params[:id])
 
     authorize @olddataset, :show?
@@ -383,7 +389,7 @@ class DatasetsController < ApplicationController
   # PUT /datasets/1
   # PUT /datasets/1.json
   def update
-    authorize @dataset
+    authorize @project_dataset
 
     assign_method_rank @dataset
 
@@ -405,7 +411,7 @@ class DatasetsController < ApplicationController
   # DELETE /datasets/1
   # DELETE /datasets/1.json
   def destroy
-    authorize @dataset
+    authorize @project_dataset
 
     @dataset.destroy
 
@@ -463,6 +469,10 @@ class DatasetsController < ApplicationController
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_project_dataset
+      @project_dataset = ProjectDataset.where(["project_id = ? AND dataset_id = ?", @project.id, @dataset.id]).first
     end
 
 end

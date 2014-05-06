@@ -6,6 +6,8 @@ class LibraryEntriesController < ApplicationController
 
   before_action :set_project
 
+  
+
   def sort
     params[:library_entry].each_with_index do |id, index|
       LibraryEntry.update_all({position: index+1}, {id: id})

@@ -6,6 +6,8 @@ class MoleculesController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_molecule, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
+
   
   class PubChem
     include HTTParty
@@ -592,6 +594,10 @@ class MoleculesController < ApplicationController
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_project_molecule
+      @project_molecule = ProjectMolecule.where(["project_id = ? AND molecule_id = ?", @project.id, @molecule.id]).first
     end
 
 

@@ -6,11 +6,12 @@ class SamplesController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature, :zip]
 
 
   def addliterature
 
-    authorize @sample, :edit?
+    authorize @project_sample, :edit?
 
     if params[:doi].nil? then 
 
@@ -28,7 +29,7 @@ class SamplesController < ApplicationController
   end
 
   def assign
-    authorize @sample, :edit?
+    authorize @project_sample, :edit?
 
     @projects = current_user.projects
 
@@ -39,7 +40,7 @@ class SamplesController < ApplicationController
   end
 
   def assign_do
-    authorize @sample, :edit?
+    authorize @project_sample, :edit?
 
 
     if !params[:remove].nil? then
@@ -104,7 +105,9 @@ class SamplesController < ApplicationController
 
     @library = @project.rootlibrary
 
-    @library_entries = @library.library_entries.paginate(:page => params[:page])
+    @project_library = ProjectLibrary.where(["library_id = ?",  @library.id]).first
+
+    @project_library_entries = @project_library.library.library_entries.paginate(:page => params[:page])
 
     render 'libraries/show', :id => @library.id
 
@@ -112,7 +115,7 @@ class SamplesController < ApplicationController
 
   def show
 
-    authorize @sample
+    authorize @project_sample, :show?
 
     @library_entry = LibraryEntry.all.where(["sample_id = ?",  @sample.id]).first
 
@@ -122,7 +125,7 @@ class SamplesController < ApplicationController
 
   def zip
 
-    authorize @sample, :show?
+    authorize @project_sample, :show?
 
     temp_file = Tempfile.new(@sample.id.to_s+".zip")
 
@@ -152,7 +155,7 @@ class SamplesController < ApplicationController
 
 
   def destroy
-    authorize @sample
+    authorize @project_sample
 
     @sample.destroy
 
@@ -177,6 +180,10 @@ class SamplesController < ApplicationController
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_project_sample
+      @project_sample = ProjectSample.where(["project_id = ? AND sample_id = ?", @project.id, @sample.id]).first
     end
 
     # Only allow a trusted parameter "white list" through.

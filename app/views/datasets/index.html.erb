@@ -25,19 +25,21 @@
 
 
 <h1>Datasets</h1>
-<%= will_paginate @datasets, renderer: BootstrapPagination::Rails %>
+<%= will_paginate @project_datasets, renderer: BootstrapPagination::Rails %>
 
-<% if @datasets.length > 0 then %>
+<% if @project_datasets.length > 0 then %>
 
 <table>
-  <% @datasets.each do |dataset| %>
+  <% @project_datasets.each do |ps| %>
+
+  <% dataset = ps.dataset %>
     <tr>
 
-              <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+              <td><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
               </td>
 
               <td>
-                <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+                <h4><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
                 <p><% if !dataset.description.blank? then %><%= dataset.description.html_safe %><% end %></p>
                 <p>Virtual DOI: <%= dataset.doi_identifier %></p>
               
