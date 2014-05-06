@@ -260,7 +260,7 @@ class Dataset < ActiveRecord::Base
   # analysis methods
 
   def detect_parameters
-
+    self.update_attribute(:jdx_file,nil)
     attachments.each do |a|
 
     #detect jdx

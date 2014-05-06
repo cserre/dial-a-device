@@ -1,5 +1,7 @@
 class DatasetsController < ApplicationController
-
+  
+  #helper_method :plotpoint
+   
   require 'zip'
 
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
@@ -164,22 +166,38 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1
   # GET /datasets/1.json
-  def plot
+  def plotpoint
      authorize @dataset
-     if @dxdata && @dxdata.is_a?(Kumara)  
-       puts "nice Kumara! " 
-       @plotjdx=@dx_data.chip_it #chip_it(abscissa range in point unit=0..-1,block=0,page=0,limit of point to be plotted=2048)
-      ##TODO have ajax request to update chip_it argument (to increase resolution while zooming)
-      puts @plotjdx.inspect.slice(0..300) 
-      @plotjdx.is_a?(Kumara) && @plotjdx.xy ||=[[10,10], [90,90], [50,50], [10,90],[90,10]]
+     puts "nice dataset"
+ 
+     file=@dataset.jdx_file 
+     dx_data=Kai.new(":file #{file} :tab all :process header spec param data point raw first_page ").flotr2_data
+      
+     
+     if dx_data.is_a?(Switchies::Ropere) 
+        
+        kumara=dx_data.to_kumara
+        puts kumara.inspect.slice(0..300)
+        puts "\nhello Kumara! \n" 
+        @plotdx=kumara.chip_it #chip_it(abscissa range in point unit=0..-1,block=0,page=0,limit of point to be plotted=2048)
+      else
+        puts "\nno strawberry!!\n"
+        @plotdx=Switchies::Kumara.blank.chip_it
       end
-    # if @plotjdx  #&& @dataset.plot
-         # render :partial => 'graph', :plotdx => @plotjdx
-    # end 
+      ##TODO have ajax request to update chip_it argument (to increase resolution while zooming)
+      
+      
+    
+        #  render :partial => 'plotpoint'#, :plotdx => @plotjdx
+         # respond_to do |format|
+           # format.html { render action: "plot" }
+      # format.json { render json: @dataset }
+         # end
+    
+    
   end
   
-  def show
-    #@dataset = Dataset.find(params[:id])
+   def show
     authorize @dataset
 
     @changerights = false
@@ -190,11 +208,11 @@ class DatasetsController < ApplicationController
 
     @attachment = Attachment.new(:dataset => @dataset)
 
-    # if @dataset.jdx_file 
-      # file=@dataset.jdx_file
-      # @dx_data=Kai.new(":file #{file} :tab all :process header spec param data point raw first_page ").flotr2_data.to_kumara
-     # end
-
+    
+    if Kai.test_file(@dataset.jdx_file)
+       puts"plotpoin"
+      plotpoint
+    end
     respond_to do |format|
       if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
 
@@ -206,6 +224,8 @@ class DatasetsController < ApplicationController
       format.json { render json: @dataset }
     end
   end
+
+
 
   # GET /datasets/new
   # GET /datasets/new.json

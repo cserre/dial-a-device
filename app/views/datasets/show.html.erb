@@ -184,10 +184,8 @@ $(document).ajaxSend(function(e, xhr, options) {
 <p><b>Details:</b>&nbsp;<%= @dataset.details.html_safe %></p>
 <% end %>
 
-
-<% if @dataset.jdx_file != nil then %> 
-<%= link_to 'Plot', @dataset, :method => :plot,  :class => "btn btn-sm btn-warning" %>   
-
+<% if Kai.test_file(@dataset.jdx_file) %>
+<%= render :partial => 'plotpoint', :action => "plotpoint",:locals => { :dataset => @dataset } %>
 <%end%>
 
 <%= image_tag(@dataset.preview_url, size: "450x300", alt: "preview") %>
