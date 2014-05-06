@@ -8,6 +8,8 @@ class ReactionsController < ApplicationController
 
   before_action :set_project_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
 
+  before_action :set_empty_project_reaction, only: [:createdirect, :create, :new]
+
   # GET /reactions
   def index
 
@@ -248,6 +250,10 @@ class ReactionsController < ApplicationController
 
     def set_project_reaction
       @project_reaction = ProjectReaction.where(["project_id = ? AND reaction_id = ?", @project.id, @reaction.id]).first
+    end
+
+    def set_empty_project_reaction
+      @project_reaction = ProjectReaction.new(:project_id => @project.id)
     end
 
     # Only allow a trusted parameter "white list" through.

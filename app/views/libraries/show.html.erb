@@ -36,9 +36,9 @@
    
 
 <ul id="library_entries" data-update-url="<%= sort_library_library_entries_url(:library_id => @library.id) %>" style="float:left; list-style-type: none;">
-<% @project_library_entries.each do |ple| %>
+<% @project_library_entries.each do |le| %>
 
-<% sample = Sample.find(ple.sample_id) %>
+<% sample = Sample.find(le.sample_id) %>
 
 <% molecule =  sample.molecule %>
   <%= content_tag_for :li, le, :style => "float:left;clear:left;" do %>
