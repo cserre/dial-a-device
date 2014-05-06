@@ -8,7 +8,9 @@ class DatasetsController < ApplicationController
 
   before_action :set_project
 
-  before_action :set_project_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+  before_action :set_project_dataset, only: [:show, :edit, :update, :destroy, :assign, :commit, :zip]
+
+  before_action :set_empty_project_dataset, only: [:create, :new, :assign_do]
 
   # GET /datasets
   # GET /datasets.json
@@ -23,7 +25,7 @@ class DatasetsController < ApplicationController
 
   def assign
 
-    authorize @project_dataset, :edit?
+    authorize @project_dataset, :show?
 
     @projects = current_user.projects
 
@@ -35,7 +37,7 @@ class DatasetsController < ApplicationController
 
   def assign_do
 
-    authorize @project_dataset, :edit?
+    authorize @project_dataset, :assign?
 
     @project.add_dataset(@dataset)
 
@@ -469,6 +471,10 @@ class DatasetsController < ApplicationController
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_empty_project_dataset
+      @project_dataset = ProjectDataset.new(:project_id => @project.id)
     end
 
     def set_project_dataset

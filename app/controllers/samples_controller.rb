@@ -6,7 +6,9 @@ class SamplesController < ApplicationController
 
   before_action :set_project
 
-  before_action :set_project_sample, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :split, :transfer, :addliterature, :zip]
+  before_action :set_project_sample, only: [:show, :edit, :update, :destroy, :assign, :split, :transfer, :addliterature, :zip]
+
+  before_action :set_empty_project_sample, only: [:createdirect, :create, :new, :assign_do]
 
 
   def addliterature
@@ -29,7 +31,8 @@ class SamplesController < ApplicationController
   end
 
   def assign
-    authorize @project_sample, :edit?
+
+    authorize @project_sample, :show?
 
     @projects = current_user.projects
 
@@ -40,20 +43,24 @@ class SamplesController < ApplicationController
   end
 
   def assign_do
-    authorize @project_sample, :edit?
+    authorize @project_sample, :assign?
 
 
     if !params[:remove].nil? then
 
       @project.remove_sample_only(@sample)
 
+      redirect_to samples_path(:project_id => params[:project_id]), notice: "Sample and corresponding datasets were removed from project."
+
     else
 
       @project.add_sample(@sample)
 
+      redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
+
     end
 
-    redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
+    
   end   
 
   def createfrommolecule
@@ -184,6 +191,10 @@ class SamplesController < ApplicationController
 
     def set_project_sample
       @project_sample = ProjectSample.where(["project_id = ? AND sample_id = ?", @project.id, @sample.id]).first
+    end
+
+    def set_empty_project_sample
+      @project_sample = ProjectSample.new(:project_id => @project.id)
     end
 
     # Only allow a trusted parameter "white list" through.

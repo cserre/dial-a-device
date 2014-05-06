@@ -10,11 +10,15 @@ class ProjectReactionPolicy < Struct.new(:user, :project_reaction)
   end
 
   def new?
-    true
+    ProjectPolicy.new(user, project_reaction.project).addreaction?
   end
 
   def create?
-    true
+    ProjectPolicy.new(user, project_reaction.project).addreaction?
+  end
+
+  def assign?
+    ProjectPolicy.new(user, project_reaction.project).addreaction?
   end
 
   def edit?
