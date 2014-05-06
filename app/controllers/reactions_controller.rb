@@ -6,16 +6,19 @@ class ReactionsController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
+
   # GET /reactions
   def index
 
-    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.where(["projects.id = ?", @project.id]).paginate(:page => params[:page])
+    @project_reactions = ProjectReaction.where(["project_id = ?", @project.id]).paginate(:page => params[:page])
 
     @analytics = nil
   end
 
    def assign
-    authorize @reaction, :edit?
+
+    authorize @project_reaction, :edit?
 
     @projects = current_user.projects
 
@@ -26,7 +29,7 @@ class ReactionsController < ApplicationController
   end
 
   def assign_do
-    authorize @reaction, :edit?
+    authorize @project_reaction, :edit?
 
     @project = Project.find(params[:project_id])
 
@@ -45,7 +48,7 @@ class ReactionsController < ApplicationController
 
   def zip
 
-    authorize @reaction, :show?
+    authorize @project_reaction, :show?
 
     temp_file = Tempfile.new(@reaction.id.to_s+".zip")
 
@@ -79,7 +82,7 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1
   def show
-    authorize @reaction, :show?
+    authorize @project_reaction, :show?
 
     if !current_user.nil? then @owndatasets = @reaction.datasets end
 
@@ -97,7 +100,7 @@ class ReactionsController < ApplicationController
   def createdirect
     @reaction = Reaction.new
 
-    authorize @reaction, :create?
+    authorize @project_reaction, :create?
 
     namearray = Array.new
 
@@ -140,7 +143,7 @@ class ReactionsController < ApplicationController
   def new
     @reaction = Reaction.new
 
-    authorize @reaction, :new
+    authorize @project_reaction, :new
 
     namearray = Array.new
 
@@ -172,14 +175,14 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1/edit
   def edit
-    authorize @reaction, :edit?
+    authorize @project_reaction, :edit?
   end
 
   # POST /reactions
   def create
     @reaction = Reaction.new(reaction_params)
 
-    authorize @reaction, :create?
+    authorize @project_reaction, :create?
 
 
     if @reaction.save
@@ -204,7 +207,7 @@ class ReactionsController < ApplicationController
 
   # PATCH/PUT /reactions/1
   def update
-    authorize @reaction, :update?
+    authorize @project_reaction, :update?
 
     if @reaction.update(reaction_params)
 
@@ -219,7 +222,7 @@ class ReactionsController < ApplicationController
 
   # DELETE /reactions/1
   def destroy
-    authorize @reaction, :destroy?
+    authorize @project_reaction, :destroy?
 
     @reaction.destroy
     redirect_to reactions_url, notice: 'Reaction was successfully destroyed.'
@@ -241,6 +244,10 @@ class ReactionsController < ApplicationController
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_project_reaction
+      @project_reaction = ProjectReaction.where(["project_id = ? AND reaction_id = ?", @project.id, @reaction.id]).first
     end
 
     # Only allow a trusted parameter "white list" through.
