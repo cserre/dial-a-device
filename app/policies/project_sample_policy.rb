@@ -12,16 +12,16 @@ class ProjectSamplePolicy < Struct.new(:user, :project_sample)
     result
   end
 
-  def create?
-    true
+  def new?
+    ProjectPolicy.new(user, project_sample.project).addsample?
   end
 
-  def new?
-    true
+  def create?
+    ProjectPolicy.new(user, project_sample.project).addsample?
   end
 
   def assign?
-    user.sampleowner_of?(project_sample.sample)
+    ProjectPolicy.new(user, project_sample.project).addsample?
   end
 
   def edit?

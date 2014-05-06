@@ -16,12 +16,16 @@ class ProjectDatasetPolicy < Struct.new(:user, :project_dataset)
     user.datasetowner_of?(project_dataset.dataset)
   end
 
-  def create?
-    true
+  def new?
+    ProjectPolicy.new(user, project_dataset.project).adddataset?
   end
 
-  def new?
-    true
+  def create?
+    ProjectPolicy.new(user, project_dataset.project).adddataset?
+  end
+
+  def assign?
+    ProjectPolicy.new(user, project_dataset.project).adddataset?
   end
 
   def update?

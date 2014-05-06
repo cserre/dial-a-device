@@ -6,9 +6,9 @@ class ReactionsController < ApplicationController
 
   before_action :set_project
 
-  before_action :set_project_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
+  before_action :set_project_reaction, only: [:show, :edit, :update, :destroy, :assign, :zip]
 
-  before_action :set_empty_project_reaction, only: [:createdirect, :create, :new]
+  before_action :set_empty_project_reaction, only: [:createdirect, :create, :new, :assign_do]
 
   # GET /reactions
   def index
@@ -20,7 +20,7 @@ class ReactionsController < ApplicationController
 
    def assign
 
-    authorize @project_reaction, :edit?
+    authorize @project_reaction, :show?
 
     @projects = current_user.projects
 
@@ -31,21 +31,24 @@ class ReactionsController < ApplicationController
   end
 
   def assign_do
-    authorize @project_reaction, :edit?
 
-    @project = Project.find(params[:project_id])
+    authorize @project_reaction, :assign?
 
     if !params[:remove].nil? then
 
       @project.remove_reaction_only(@reaction)
 
+      redirect_to reactions_path(:project_id => params[:project_id]), notice: "Reaction and corresponding samples were removed from project."
+
     else
 
       @project.add_reaction(@reaction)
 
+      redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
+
     end
 
-    redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
+    
   end   
 
   def zip
