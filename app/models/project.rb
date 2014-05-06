@@ -17,6 +17,8 @@ class Project < ActiveRecord::Base
 
   def role_str(user)
 
+    if !user.nil? then
+
     roles = ProjectMembership.where(["user_id = ? and project_id = ?", user.id, id])
 
     roles.each do |r|
@@ -26,6 +28,12 @@ class Project < ActiveRecord::Base
       if r.role_id == 95 then return "R+P" end
 
       if r.role_id == 88 then return "R" end
+
+    end
+
+    else
+
+      return "X"
 
     end
 

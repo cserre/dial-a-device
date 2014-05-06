@@ -41,6 +41,7 @@ class ProjectsController < ApplicationController
     pm = ProjectMembership.new
     pm.user = additionaluser
     pm.project = @project
+    
     pm.role_id = 88
     pm.save
 

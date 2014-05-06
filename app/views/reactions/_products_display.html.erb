@@ -15,7 +15,7 @@
             </td>
             <td><strong><%= sample.molecule.mass %></strong><br>
 
-              <%= link_to(sample_path(sample, :project_id => @projid)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %><br>
+              <%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %><br>
 
               <span class="glyphicon glyphicon-map-picker" /><%=  sample.molecule.title %><br>
 
