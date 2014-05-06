@@ -4,9 +4,9 @@ class DatasetsController < ApplicationController
 
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
 
-  before_action :set_project
-
   before_action :set_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+
+  before_action :set_project
 
   # GET /datasets
   # GET /datasets.json

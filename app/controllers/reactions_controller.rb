@@ -9,8 +9,7 @@ class ReactionsController < ApplicationController
   # GET /reactions
   def index
 
-    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
-    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.where(["projects.id = ?", projid]).paginate(:page => params[:page])
+    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.where(["projects.id = ?", @project.id]).paginate(:page => params[:page])
 
     @analytics = nil
   end
@@ -80,7 +79,7 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1
   def show
-    authorize @reaction
+    authorize @reaction, :show?
 
     if !current_user.nil? then @owndatasets = @reaction.datasets end
 
@@ -128,22 +127,10 @@ class ReactionsController < ApplicationController
 
     if @reaction.save
 
-        if params[:assign_to_project_id].nil? then 
+        @project.add_reaction(@reaction)
 
-          current_user.rootproject.add_reaction(@reaction)
+        redirect_to reaction_path(@reaction, :project_id => @project_id), notice: 'Reaction was successfully created.'
 
-          @projid = current_user.rootproject
-
-        else
-
-          Project.find(params[:assign_to_project_id]).add_reaction(@reaction)
-
-          @projid = params[:assign_to_project_id]
-
-        end
-
-
-      redirect_to reaction_path(@reaction, :project_id => @projid), notice: 'Reaction was successfully created.'
     else
       render action: 'new'
     end
@@ -153,7 +140,7 @@ class ReactionsController < ApplicationController
   def new
     @reaction = Reaction.new
 
-    authorize @reaction
+    authorize @reaction, :new
 
     namearray = Array.new
 
@@ -185,14 +172,14 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1/edit
   def edit
-    authorize @reaction
+    authorize @reaction, :edit?
   end
 
   # POST /reactions
   def create
     @reaction = Reaction.new(reaction_params)
 
-    authorize @reaction
+    authorize @reaction, :create?
 
 
     if @reaction.save
@@ -217,7 +204,7 @@ class ReactionsController < ApplicationController
 
   # PATCH/PUT /reactions/1
   def update
-    authorize @reaction
+    authorize @reaction, :update?
 
     if @reaction.update(reaction_params)
 
@@ -232,7 +219,7 @@ class ReactionsController < ApplicationController
 
   # DELETE /reactions/1
   def destroy
-    authorize @reaction
+    authorize @reaction, :destroy?
 
     @reaction.destroy
     redirect_to reactions_url, notice: 'Reaction was successfully destroyed.'

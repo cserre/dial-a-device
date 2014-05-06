@@ -4,43 +4,24 @@
 
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
 
-
-                <% if params[:project_id].nil? then %>
-
-          <% @projid = current_user.rootproject_id.to_s %>
-
-          <% else %>
-
-          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
-        
-          <% @projid = params[:project_id] %>
-
-          <% end %>
-
-          <% end %>
-
       <div class="well">
 
         <% @currentitem = "reactions" %>
 
-        <%= render 'layouts/moleculesmenu', :category => "reactions", :project_id => @projid %>
+        <%= render 'layouts/moleculesmenu', :category => "reactions", :project_id => @project.id %>
 
       </div>
 
 
-
-
-        <%= render 'layouts/projectsmenu', :category => "reactions", :project_id => @projid %>
+        <%= render 'layouts/projectsmenu', :category => "reactions", :project_id => @project.id %>
 
 
     </div>
   
 <% end %>
 
-<% project = Project.find(@projid) %>
-
-<h1><% if project.title.nil? then %>My Reactions<% else %>Reactions in <%= project.title %><% end %><% if policy(@project).addreaction? then %>&nbsp;
-<%= link_to 'New Reaction', createdirect_reactions_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %>&nbsp;<%= link_to 'Import', import_project_path(project.id, :type => "reactions"), :class => "btn btn-sm btn-info" %><% end %></h1>
+<h1><% if @project.title.nil? then %>My Reactions<% else %>Reactions in <%= @project.title %><% end %><% if policy(@project).addreaction? then %>&nbsp;
+<%= link_to 'New Reaction', createdirect_reactions_path(:project_id => @project.id), :class => "btn btn-sm btn-success" %>&nbsp;<%= link_to 'Import', import_project_path(@project.id, :type => "reactions"), :class => "btn btn-sm btn-info" %><% end %></h1>
 
 <% if @reactions.length > 0 then %>
 
@@ -61,9 +42,9 @@
             <tr>
                 <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
     
-                <td><%= link_to(reaction_path(reaction, :project_id => @projid), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
+                <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
 
-                <td><%= link_to(reaction_path(reaction, :project_id => @projid), :title => "View #{reaction.name}.") do %>
+                <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %>
 
                     <% reaction.products.each_with_index do |product, index| %>
       
