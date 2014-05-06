@@ -32,9 +32,8 @@
 <table>
   <% @project_datasets.each do |ps| %>
 
-  <% dataset = ps.dataset %>
+  <% dataset = Dataset.find(ps.dataset_id) %>
 
-  <% if !dataset.nil? then %>
     <tr>
 
               <td><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
@@ -69,7 +68,6 @@
     </tr>
 
     <% end %>
-  <% end %>
 </table>
 
 <% else %>
