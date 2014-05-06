@@ -39,7 +39,7 @@
     <tbody>
         <% @project_reactions.each do |project_reaction| %>
 
-        <% reaction = project_reaction.reaction %>
+        <% reaction = Reaction.find(project_reaction.reaction_id) %>
 
             <tr>
                 <td><%= '<i class="icon-ok"/>'.html_safe if reaction %><%= project_reaction.id.to_s %></td>
