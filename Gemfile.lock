@@ -6,9 +6,9 @@ GIT
 
 GIT
   remote: git://github.com/Cominch/dial-a-device-node.git
-  revision: e85f460d8f475ffeeb98f2d88d8a547610745fa5
+  revision: d35e12f5d3261833b102f245e1657bc2830e436d
   specs:
-    dial_a_device_node (0.0.25)
+    dial_a_device_node (0.0.26)
 
 GIT
   remote: git://github.com/Cominch/openbabel-heroku-gem.git
@@ -33,7 +33,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: fc8b67e170fa7fb6aa4068dcad0fc6c18a2bae74
+  revision: 3b03c984208b84f60c8c834a5fa49ca1c9076945
   branch: 4-0-stable
   specs:
     actionmailer (4.0.5)
