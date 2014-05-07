@@ -121,21 +121,21 @@ class Sample < ActiveRecord::Base
   has_many :citations,
     :through => :sample_citations
 
-  def add_dataset(dataset)
+  def add_dataset(dataset, user)
 
     self.datasets << dataset
 
     self.projects.each do |p|
-      p.add_dataset(dataset)
+      p.add_dataset(dataset, user)
     end
 
   end
 
-  def transfer_to_project(project)
+  def transfer_to_project(project, user)
 
     newsample = self.dup
 
-    project.add_sample(newsample)
+    project.add_sample(newsample, user)
 
     return newsample
 
@@ -240,10 +240,10 @@ class Sample < ActiveRecord::Base
   has_many :projects,
   through: :project_samples, :dependent => :destroy
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
     p = Project.find(project_id)
-    p.add_sample(self)
+    p.add_sample(self, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
@@ -251,7 +251,7 @@ class Sample < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.add_sample(self)
+        parent.add_sample(self, user)
 
       end
 

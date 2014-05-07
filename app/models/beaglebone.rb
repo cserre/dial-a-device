@@ -5,11 +5,12 @@ class Beaglebone < ActiveRecord::Base
   has_many :projects,
   through: :project_beaglebones, :dependent => :destroy
 
-  def add_to_project (project_id)
+  def add_to_project (project_id, user)
 
     pm = ProjectBeaglebone.new
     pm.beaglebone_id = self.id
     pm.project_id = project_id
+    pm.user_id = user.id
     pm.save
 
   end

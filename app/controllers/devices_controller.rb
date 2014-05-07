@@ -38,7 +38,7 @@ def assign
 
     @project = Project.find(params[:project_id])
 
-    @device.add_to_project(@project.id)
+    @device.add_to_project(@project.id, current_user)
 
     redirect_to device_path(@device), notice: "Device was assigned to project."
   end   
@@ -319,7 +319,7 @@ def assign
     respond_to do |format|
       if @device.save
 
-        @device.add_to_project(current_user.rootproject_id)
+        @device.add_to_project(current_user.rootproject_id, current_user)
 
         @device.locations << Location.create do |devloc|
           

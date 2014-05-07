@@ -39,7 +39,7 @@ class DatasetsController < ApplicationController
 
     authorize @project_dataset, :assign?
 
-    @project.add_dataset(@dataset)
+    @project.add_dataset(@dataset, current_user)
 
     redirect_to molecule_path(@molecule, :project_id => params[:project_id]), notice: "Dataset was assigned to project."
   end   
@@ -64,7 +64,7 @@ class DatasetsController < ApplicationController
       fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
 
       fw.projects.each do |p|
-        @dataset.add_to_project (p.id)
+        @dataset.add_to_project(p.id, nil)
       end
 
     end
@@ -278,7 +278,7 @@ class DatasetsController < ApplicationController
 
         end
 
-        @project.add_dataset(@dataset)
+        @project.add_dataset(@dataset, current_user)
 
         Sample.find(params[:sample_id]).add_dataset(@dataset)
 
@@ -315,7 +315,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       if @dataset.save
 
-        @dataset.add_to_project(current_user.rootproject_id)
+        @dataset.add_to_project(current_user.rootproject_id, current_user)
 
         if !@dataset.molecule.nil? then 
 
@@ -323,7 +323,7 @@ class DatasetsController < ApplicationController
           @dataset.molecule.projects.each do |p|
 
             if current_user.projects.exists?(p) then
-              @dataset.add_to_project(p.id)
+              @dataset.add_to_project(p.id, current_user)
             end
           end
 

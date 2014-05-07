@@ -41,10 +41,10 @@ class Reaction < ActiveRecord::Base
     return false
   end
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
     p = Project.find(project_id)
-    p.add_reaction(self)
+    p.add_reaction(self, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
@@ -52,7 +52,7 @@ class Reaction < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.add_reaction(self)
+        parent.add_reaction(self, user)
 
       end
 
@@ -66,7 +66,7 @@ class Reaction < ActiveRecord::Base
 
   end
 
-    def remove_from_project(project)
+  def remove_from_project(project)
 
     project.remove_reaction_only(self)
 

@@ -40,7 +40,7 @@ class LibrariesController < ApplicationController
     authorize @project_library
 
     if @library.save
-      @library.add_to_project(current_user.rootproject_id)
+      @library.add_to_project(current_user.rootproject_id, current_user)
 
       redirect_to @library, notice: 'Library was successfully created.'
     else

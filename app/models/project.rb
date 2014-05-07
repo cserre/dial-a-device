@@ -39,14 +39,11 @@ class Project < ActiveRecord::Base
 
   end
 
-  def create_rootlibrary
+  def create_rootlibrary(user)
     rp = Library.create!
     rp.save
 
-    pm = ProjectLibrary.new
-    pm.library_id = rp.id
-    pm.project_id = self.id
-    pm.save
+    ProjectLibrary.new(:project_id => self.id, :library_id => rp.id, :user_id => user.id).save
 
     update_attributes(:rootlibrary_id => rp.id)
 
@@ -123,7 +120,7 @@ class Project < ActiveRecord::Base
   has_many :libraries,
     through: :project_libraries, :dependent => :destroy
 
-  def add_library(library)
+  def add_library(library, user)
 
     pm = ProjectLibrary.new
     pm.library_id = self.id
@@ -132,16 +129,17 @@ class Project < ActiveRecord::Base
 
   end
 
-  def add_reaction(reaction)
-    reactions << reaction unless reactions.exists?(reaction)
+  def add_reaction(reaction, user)
+
+    ProjectReaction.new(:project_id => self.id, :reaction_id => reaction.id, :user_id => user.id).save unless reactions.exists?(reaction)
 
     reaction.samples.each do |s|
 
-      add_sample_only(s)
+      add_sample_only(s, user)
 
     end
 
-    parent.add_reaction(reaction) unless !parent_exists?
+    parent.add_reaction(reaction, user) unless !parent_exists?
 
   end
 
@@ -168,45 +166,48 @@ class Project < ActiveRecord::Base
   end
 
 
-  def add_molecule(molecule)
-    molecules << molecule unless molecules.exists?(molecule)
-    rootlibrary.add_molecule(molecule)
+  def add_molecule(molecule, user)
 
-    parent.add_molecule(molecule) unless !parent_exists?
+    ProjectMolecule.new(:project_id => self.id, :molecule_id => molecule.id, :user_id => user.id).save unless molecules.exists?(molecule)
+    
+    rootlibrary.add_molecule(molecule, user)
+
+    parent.add_molecule(molecule, user) unless !parent_exists?
 
   end
 
-  def add_sample_only(sample)
+  def add_sample_only(sample, user)
 
-    samples << sample unless samples.exists?(sample)
-    molecules << sample.molecule unless molecules.exists?(sample.molecule)
+    ProjectSample.new(:project_id => self.id, :sample_id => sample.id, :user_id => user.id).save unless samples.exists?(sample)
 
-    rootlibrary.add_sample(sample) unless rootlibrary.sample_exists?(sample)
+    ProjectMolecule.new(:project_id => self.id, :molecule_id => sample.molecule.id, :user_id => user.id).save unless molecules.exists?(sample.molecule)
+
+    rootlibrary.add_sample(sample, user) unless rootlibrary.sample_exists?(sample)
 
     sample.datasets.each do |ds|
-      add_dataset_only(ds)
+      add_dataset_only(ds, user)
     end
 
   end
 
-  def add_sample(sample)
+  def add_sample(sample, user)
 
-    add_sample_only(sample)
+    add_sample_only(sample, user)
     
-    parent.add_sample(sample) unless !parent_exists?
+    parent.add_sample(sample, user) unless !parent_exists?
   end
 
-  def add_dataset(dataset)
+  def add_dataset(dataset, user)
 
-    add_dataset_only(dataset)
+    add_dataset_only(dataset, user)
 
-    parent.add_dataset(dataset) unless !parent_exists?
+    parent.add_dataset(dataset, user) unless !parent_exists?
 
   end
 
-  def add_dataset_only(dataset)
+  def add_dataset_only(dataset, user)
 
-    datasets << dataset unless datasets.exists?(dataset)
+    ProjectDataset.new(:project_id => self.id, :dataset_id => dataset.id, :user_id => user.id).save unless datasets.exists?(dataset)
 
   end
 

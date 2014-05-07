@@ -42,7 +42,7 @@ class ReactionsController < ApplicationController
 
     else
 
-      @project.add_reaction(@reaction)
+      @project.add_reaction(@reaction, current_user)
 
       redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
 
@@ -135,7 +135,7 @@ class ReactionsController < ApplicationController
 
     if @reaction.save
 
-        @project.add_reaction(@reaction)
+        @project.add_reaction(@reaction, current_user)
 
         redirect_to reaction_path(@reaction, :project_id => @project_id), notice: 'Reaction was successfully created.'
 
@@ -196,12 +196,12 @@ class ReactionsController < ApplicationController
 
         @reaction.samples.each do |s|          
 
-          s.molecule.add_to_project(current_user.rootproject_id) 
-          s.add_to_project(current_user.rootproject_id)
+          s.molecule.add_to_project(current_user.rootproject_id, current_user) 
+          s.add_to_project(current_user.rootproject_id, current_user)
         end
 
 
-        @reaction.add_to_project(current_user.rootproject_id)
+        @reaction.add_to_project(current_user.rootproject_id, current_user)
 
 
       redirect_to @reaction, notice: 'Reaction was successfully created.'

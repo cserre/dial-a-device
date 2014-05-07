@@ -145,7 +145,7 @@ class MoleculesController < ApplicationController
 
     @project = Project.find(params[:project_id])
 
-    @project.add_molecule(@molecule)
+    @project.add_molecule(@molecule, current_user)
 
     redirect_to molecule_path(@molecule, :project_id => params[:project_id]), notice: "Molecule was assigned to project."
   end   
@@ -366,7 +366,7 @@ class MoleculesController < ApplicationController
           r.projects.each do |p|
 
             if current_user.projects.exists?(p) then
-              p.add_sample(s)
+              p.add_sample(s, current_user)
             end
 
           end
@@ -388,7 +388,7 @@ class MoleculesController < ApplicationController
 
           @molecule.samples << s
 
-          Project.find(params[:assign_to_project_id]).add_sample(s)
+          Project.find(params[:assign_to_project_id]).add_sample(s, current_user)
 
           format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
           format.json { render json: @molecule, status: :created, location: @molecule }
@@ -405,7 +405,7 @@ class MoleculesController < ApplicationController
 
           @molecule.samples << s
 
-          Project.find(params[:assign_to_project_id]).add_sample(s)
+          Project.find(params[:assign_to_project_id]).add_sample(s, current_user)
 
           format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
           format.json { render json: @molecule, status: :created, location: @molecule }
@@ -519,7 +519,7 @@ class MoleculesController < ApplicationController
 
               # newcompound.assign_attributes(lowercasemoldetails, :without_protection => true)
 
-              newcompound.add_to_project_recursive(current_user.rootproject_id)
+              newcompound.add_to_project_recursive(current_user.rootproject_id, current_user)
 
               newcompound.save
               

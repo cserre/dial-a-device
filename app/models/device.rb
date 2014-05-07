@@ -40,11 +40,12 @@ class Device < ActiveRecord::Base
     
   end
 
-  def add_to_project (project_id)
+  def add_to_project (project_id, user)
 
     pm = ProjectDevice.new
     pm.device_id = self.id
     pm.project_id = project_id
+    pm.user_id = user.id
     pm.save
 
   end

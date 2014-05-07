@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140501183239) do
+ActiveRecord::Schema.define(version: 20140507191256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_datasets", force: true do |t|
@@ -267,6 +268,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "dataset_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_devices", force: true do |t|
@@ -274,6 +276,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "device_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_folder_watchers", force: true do |t|
@@ -281,6 +284,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "folder_watcher_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_libraries", force: true do |t|
@@ -288,6 +292,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "library_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_memberships", force: true do |t|
@@ -303,6 +308,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "molecule_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_reactions", force: true do |t|
@@ -310,6 +316,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "reaction_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_samples", force: true do |t|
@@ -317,6 +324,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "sample_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "project_vncrelays", force: true do |t|
@@ -324,6 +332,7 @@ ActiveRecord::Schema.define(version: 20140501183239) do
     t.integer  "vncrelay_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "projects", force: true do |t|
