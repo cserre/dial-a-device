@@ -21,8 +21,19 @@ class Sample < ActiveRecord::Base
 
   has_many :library_entries, :dependent => :destroy
 
+  before_destroy :checkout_everywhere
+
   before_destroy :cleanup_projects
 
+  def cleanup_projects
+
+    Location.all.each do |l|
+
+      if l.sample_id == self.id then l.update_attribute(:sample_id, nil) end
+
+    end
+
+  end
   
   def cleanup_projects
 
