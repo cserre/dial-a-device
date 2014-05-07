@@ -1,17 +1,21 @@
 <div class = "navbar navbar-fixed-bottom navbar-inverse">
 	<div class="navbar-inner">
 		<div class="container">
-			<ul class ="nav" id="checkedinsamples">
+			<span class="navbar-form navbar-left">
+
+				<span class="form-group" id="checkedinsamples">
 		      		<%= render 'devices/samplelocations', :layout => false %>
-  			</ul>
 
-			<div class="navbar-form navbar-right">
+		      	</span>
+  			</span>
 
-	  			<div class="form-group">
+			<span class="navbar-form navbar-right">
+
+	  			<span class="form-group">
 	    			<a href="#">
-	    			<span id="connstatus" class="label">Connection Status</span></a>
-	  			</div>
-	  		</div>
+	    			<span id="connstatus" class="label label-default">Connection Status</span></a>
+	  			</span>
+	  		</span>
 		</div>
 	</div>
 </div>

@@ -4,8 +4,10 @@
 
         <% if ((location != nil) && (location.sample_id != nil)) then %>
 
+        <% sample = Sample.find(location.sample_id) %>
+
         <a href="#">
-        <i class="icon-map-marker icon-white"></i>&nbsp;Sample <%= location.sample_id %></a>
+        <span class="glyphicon glyphicon-glass" /><%=  sample.longname %>&nbsp; <a href="#" onclick=" $('#checkedinsamples').load('/devices/<%= @device.id %>/checkout?sample_id=<%= sample.id %>'); document.getElementById('actionpane').style.display = 'none'; return false;" class="btn btn-xs btn-warning">Check out</a>
 
         <script>
           // alert ("<%= location.sample_id %>");
