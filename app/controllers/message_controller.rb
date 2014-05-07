@@ -55,6 +55,8 @@ class MessageController < WebsocketRails::BaseController
 
 	    		begin
 
+	    		if data[:weight].nil? then data = data[0] end
+
 	    		Rails.logger.info ("Its a kern")
 
 	    		Rails.logger.info (data)
