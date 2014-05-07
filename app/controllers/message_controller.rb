@@ -57,7 +57,7 @@ class MessageController < WebsocketRails::BaseController
 
 	    		Rails.logger.info ("Its a kern")
 
-	    		Rails.logger.info (data[:weight])
+	    		Rails.logger.info (data[:weight][0].to_s)
 
 	    		weightstring = data[:weight][0].split(" ").first
 
