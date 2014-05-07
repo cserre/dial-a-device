@@ -49,7 +49,13 @@ class MessageController < WebsocketRails::BaseController
 
 	    @locations.each do |location|
 
+	    	puts "location "+location.id.to_s
+
 	    	if (mi[:devicetype] == "kern") then
+
+	    		puts "it's a kern"
+
+	    		puts "weight: "+data[:weight]
 
 	    		weightstring = data[:weight][0].split(" ").first
 
