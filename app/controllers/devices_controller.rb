@@ -2,7 +2,7 @@ class DevicesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:showcase, :showcaseindex]
 
-  before_action :set_device, only: [:assign, :assign_do, :show, :edit, :update, :destroy, :stoprun, :startrun, :control, :share, :invite, :checkin, :checkinselect, :connect, :connectit]
+  before_action :set_device, only: [:assign, :assign_do, :show, :edit, :update, :destroy, :stoprun, :startrun, :control, :share, :invite, :checkin, :checkinselect, :checkout, :connect, :connectit]
 
   # GET /devices
   # GET /devices.json
@@ -120,6 +120,17 @@ def assign
 
     l = @device.locations.first
     l.sample_id = @sample.id
+    l.save
+
+    redirect_to samplelocations_at_device_path(@device)
+  end
+
+  def checkout
+    authorize @device, :checkin?
+    @sample = Sample.find (params[:sample_id])
+
+    l = @device.locations.first
+    l.sample_id = nil
     l.save
 
     redirect_to samplelocations_at_device_path(@device)
