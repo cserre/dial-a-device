@@ -49,13 +49,23 @@ class MessageController < WebsocketRails::BaseController
 
 	    @locations.each do |location|
 
-	    	puts "location "+location.id.to_s
-
 	    	if (mi[:devicetype] == "kern") then
 
 	    		begin
 
-	    		if data[:weight].nil? then data = data[0] end
+	    			Rails.logger.info (data[:weight])
+
+	    		rescue
+
+	    			Rails.logger.info ("Error occured")
+
+	    			data = data[0]
+
+	    		ensure
+
+	    			Rails.logger.info ("Mapping performed")
+
+	    		end
 
 	    		Rails.logger.info ("Its a kern")
 
@@ -111,17 +121,7 @@ class MessageController < WebsocketRails::BaseController
 
 	    		s.unit = myunit
 
-	    		s.save
-
-	    		rescue
-
-	    			Rails.logger.info ("Error occured")
-
-	    		ensure
-
-	    			Rails.logger.info ("Message processed")
-
-	    		end
+	    		s.save	    		
 
     		end
 	    	
