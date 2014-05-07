@@ -51,7 +51,7 @@ class MessageController < WebsocketRails::BaseController
 
 	    	if (mi[:devicetype] == "kern") then
 
-	    		weightstring = data[:weight]
+	    		weightstring = data[:weight][0].split(" ").first
 
 	    		myvalue = weightstring.gsub(/[\[,\],g,m]/, '')
 
