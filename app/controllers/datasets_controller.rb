@@ -280,7 +280,7 @@ class DatasetsController < ApplicationController
 
         @project.add_dataset(@dataset, current_user)
 
-        Sample.find(params[:sample_id]).add_dataset(@dataset)
+        Sample.find(params[:sample_id]).add_dataset(@dataset, current_user)
 
 
         dsg = Datasetgroup.new
