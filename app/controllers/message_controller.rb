@@ -53,9 +53,15 @@ class MessageController < WebsocketRails::BaseController
 
 	    		weightstring = data[:weight][0].split(" ").first
 
+	    		puts "weightstring "+weightstring
+
 	    		myvalue = weightstring.gsub(/[\[,\],g,m]/, '')
 
+	    		puts "myvalue "+myvalue
+
 	    		myunit = weightstring.gsub(/[0-9,\[,\],\.]/, '')
+
+	    		puts "myunit "+myunit
 
 	    		if myunit == "g" then
 
@@ -67,8 +73,12 @@ class MessageController < WebsocketRails::BaseController
 
 	    		end
 
+	    		puts "weight value conversion done"
+
 
 	    		s = Sample.find(location.sample_id)
+
+	    		puts "location.sample_id "+location.sample_id.to_s
 
 	    		Rails.logger.info ("Weight: ")
     			Rails.logger.info (data[:weight])
