@@ -53,6 +53,8 @@ class MessageController < WebsocketRails::BaseController
 
 	    	if (mi[:devicetype] == "kern") then
 
+	    		begin
+
 	    		Rails.logger.info ("Its a kern")
 
 	    		Rails.logger.info (data[:weight])
@@ -106,6 +108,16 @@ class MessageController < WebsocketRails::BaseController
 	    		s.unit = myunit
 
 	    		s.save
+
+	    		rescue
+
+	    			Rails.logger.info ("Error occured")
+
+	    		ensure
+
+	    			Rails.logger.info ("Message processed")
+
+	    		end
 
     		end
 	    	
