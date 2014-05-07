@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
 
   before_action :set_project_dataset, only: [:show, :edit, :update, :destroy, :assign, :commit, :zip]
 
-  before_action :set_empty_project_dataset, only: [:create, :new, :assign_do]
+  before_action :set_empty_project_dataset, only: [:create, :create_direct, :new, :assign_do]
 
   # GET /datasets
   # GET /datasets.json
