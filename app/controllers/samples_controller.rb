@@ -54,7 +54,7 @@ class SamplesController < ApplicationController
 
     else
 
-      @project.add_sample(@sample)
+      @project.add_sample(@sample, current_user)
 
       redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
 
@@ -103,7 +103,7 @@ class SamplesController < ApplicationController
       s.datasets << ds
     end
 
-    @project.add_sample(s)
+    @project.add_sample(s, current_user)
 
     redirect_to sample_path(s, :project_id => params[:project_id]), notice: "Sample was splitted."
   end

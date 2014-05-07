@@ -82,7 +82,7 @@ class FolderWatchersController < ApplicationController
 
     @project = Project.find(params[:project_id])
 
-    @folder_watcher.add_to_project(@project.id)
+    @folder_watcher.add_to_project(@project.id, current_user)
 
     redirect_to folder_watcher_path(@folder_watcher), notice: "Folder Watcher was assigned to project."
   end   
@@ -140,7 +140,7 @@ class FolderWatchersController < ApplicationController
     respond_to do |format|
       if @folder_watcher.save
 
-        @folder_watcher.add_to_project(current_user.rootproject_id)
+        @folder_watcher.add_to_project(current_user.rootproject_id, current_user)
 
         format.html { redirect_to @folder_watcher, notice: 'Folder watcher was successfully created.' }
         format.json { render json: @folder_watcher, status: :created, location: @folder_watcher }

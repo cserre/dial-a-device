@@ -5,11 +5,12 @@ class Vncrelay < ActiveRecord::Base
   has_many :projects,
   through: :project_vncrelays, :dependent => :destroy
 
-  def add_to_project (project_id)
+  def add_to_project (project_id, user)
 
     pm = ProjectVncrelay.new
     pm.vncrelay_id = self.id
     pm.project_id = project_id
+    pm.user_id = user.id
     pm.save
 
   end

@@ -5,11 +5,12 @@ class FolderWatcher < ActiveRecord::Base
   has_many :projects,
   through: :project_folder_watchers, :dependent => :destroy
 
-  def add_to_project (project_id)
+  def add_to_project (project_id, user)
 
     pm = ProjectFolderWatcher.new
     pm.folder_watcher_id = self.id
     pm.project_id = project_id
+    pm.user_id = user.id
     pm.save
 
   end

@@ -1,5 +1,5 @@
 class ProjectSample < ActiveRecord::Base
-  attr_accessible :sample_id, :project_id
+  attr_accessible :sample_id, :project_id, :user_id
 
   belongs_to :project
   belongs_to :sample

@@ -120,7 +120,7 @@ class ProjectsController < ApplicationController
         pm.role_id = 99
         pm.save
 
-        @project.create_rootlibrary
+        @project.create_rootlibrary(current_user)
 
         format.html { redirect_to projects_path, notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }
@@ -233,7 +233,7 @@ class ProjectsController < ApplicationController
         end
 
 
-        @project.add_reaction(reaction)
+        @project.add_reaction(reaction, current_user)
         
 
 
@@ -327,7 +327,7 @@ class ProjectsController < ApplicationController
 
             end
 
-            project.add_dataset(dataset)
+            project.add_dataset(dataset, current_user)
 
             return dataset
 
@@ -388,11 +388,11 @@ class ProjectsController < ApplicationController
 
           dx.each do |ds|
 
-            sample.add_dataset(adddataset(project, ds, zip_file))
+            sample.add_dataset(adddataset(project, ds, zip_file), current_user)
 
           end
 
-          project.add_sample(sample)
+          project.add_sample(sample, current_user)
 
         end
 
