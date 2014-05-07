@@ -71,9 +71,11 @@ class MessageController < WebsocketRails::BaseController
 
 	    		Rails.logger.info (data)
 
-	    		Rails.logger.info (data[:weight])
+	    		w = data[:weight]
 
-	    		weightstring = data[:weight][0].split(" ").first
+	    		if w.is_a?(Array) then w = w[0] end
+
+	    		weightstring = w.split(" ").first
 
 	    		Rails.logger.info (weightstring)
 
