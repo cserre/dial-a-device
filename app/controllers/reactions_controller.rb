@@ -137,7 +137,7 @@ class ReactionsController < ApplicationController
 
         @project.add_reaction(@reaction, current_user)
 
-        redirect_to reaction_path(@reaction, :project_id => @project_id), notice: 'Reaction was successfully created.'
+        redirect_to reaction_path(@reaction, :project_id => @project.id), notice: 'Reaction was successfully created.'
 
     else
       render action: 'new'
