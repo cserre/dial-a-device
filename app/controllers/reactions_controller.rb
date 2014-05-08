@@ -230,7 +230,7 @@ class ReactionsController < ApplicationController
     authorize @project_reaction, :destroy?
 
     @reaction.destroy
-    redirect_to reactions_url, notice: 'Reaction was successfully destroyed.'
+    redirect_to reactions_path(:project_id => @project.id), notice: 'Reaction was successfully destroyed.'
   end
 
   private
