@@ -25,7 +25,7 @@ class Sample < ActiveRecord::Base
 
   before_destroy :cleanup_projects
 
-  def cleanup_projects
+  def checkout_everywhere
 
     Location.all.each do |l|
 
