@@ -122,6 +122,8 @@
 
 
           <p>Element Creator: <%= User.find(@project_dataset.user_id).firstname + " "+ User.find(@project_dataset.user_id).lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
             
           </div>
         </div>

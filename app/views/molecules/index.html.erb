@@ -17,6 +17,8 @@
 
 
           <p>Project Creator: <%= @project.owner.firstname + " "+ @project.owner.lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
             
           </div>
         </div>
