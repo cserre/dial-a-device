@@ -42,7 +42,7 @@
         <% reaction = Reaction.find(project_reaction.reaction_id) %>
 
             <tr>
-                <td><%= '<i class="icon-ok"/>'.html_safe if reaction %><%= project_reaction.id.to_s %></td>
+                <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
     
                 <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
 
