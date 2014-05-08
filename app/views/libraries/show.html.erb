@@ -1,3 +1,29 @@
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Permissions</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+          <p>Element Creator: <%= User.find(@project_library.user_id).firstname + " "+ User.find(@project_library.user_id).lastname %></p>
+            
+          </div>
+        </div>
+    </div>
+</div>
+  
+<% end %>
+
 <% content_for :sidenav_switch do @shownavbar = true end %>
 
 <% content_for :sidenav do %>
