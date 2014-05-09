@@ -7,7 +7,7 @@ class ProjectPolicy < Struct.new(:user, :project)
 
   class JointScope < Struct.new(:user, :scope)
     def resolve
-      user.projects.includes(:project_memberships).where(["project_memberships.role_id = ?", 88]).uniq
+      user.projects.includes(:project_memberships).where(["project_memberships.role_id < ?", 99]).uniq
     end
   end
 

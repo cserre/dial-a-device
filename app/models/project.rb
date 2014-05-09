@@ -3,6 +3,14 @@ class Project < ActiveRecord::Base
 
   has_many :project_memberships, :dependent => :destroy
 
+  def title
+
+    if self.read_attribute(:title).nil? then 
+      self.owner.firstname.to_s+"'s Project"
+    else self.read_attribute(:title) end
+
+  end
+
   def rootlibrary
     Library.find(self.rootlibrary_id)
   end
@@ -62,6 +70,8 @@ class Project < ActiveRecord::Base
       parent = Project.find(parent.parent_id)
 
     end
+
+    if parent.nil? then parent = self end
 
     parent
 
