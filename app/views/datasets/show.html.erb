@@ -182,7 +182,7 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
+<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip?project_id=<%= @project.id %>", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
 
     <%= link_to 'Edit metadata', edit_dataset_path(@dataset, :reaction_id => params[:reaction_id]), :class => "btn btn-sm btn-success" %>
     &nbsp;<%= link_to("Delete", @dataset, :method => :delete, :confirm => "Are you sure?", :title => "Delete Dataset.", :class => "btn btn-sm btn-warning") %>

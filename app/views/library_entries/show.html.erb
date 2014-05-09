@@ -91,7 +91,7 @@
 
 
 <h1>
-  <span class="glyphicon glyphicon-glass" /><%=  sample.longname %>&nbsp;<%= link_to "/samples/"+sample.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %>
+  <span class="glyphicon glyphicon-glass" /><%=  sample.longname %>&nbsp;<%= link_to "/samples/"+sample.id.to_s+"/zip?project_id=<%= @project.id %>", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %>
 </h1>
 
 <h3><%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.weight.to_s+" "+sample.unit %>) </small></h3>
