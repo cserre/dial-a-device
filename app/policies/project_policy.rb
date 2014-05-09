@@ -131,6 +131,8 @@ class ProjectPolicy < Struct.new(:user, :project)
       project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
 
       if project_membership.role_id >= 99 then result = true end
+
+      if user.rootproject_id == project.id then result = false end
     end
 
     result
