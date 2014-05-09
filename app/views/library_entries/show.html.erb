@@ -18,23 +18,23 @@
         <div class="panel-body">
 
 
-      <% current_user.topprojects.each do |p| %>
+            <% current_user.topprojects.each do |p| %>
 
               <ul class="nav nav-pills nav-stacked">
 
                 <%= render 'layouts/projecttree', :highlight => @sample.projects, :p => p, :project_id => -1, :category => "samples", :level => 0 %>
 
 
-          </ul>
+              </ul>
 
-      <% end %>
+            <% end %>
 
 
             
           </div>
         </div>
     </div>
-</div>
+
 
 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
           
@@ -50,11 +50,13 @@
           <p>Element Creator: <%= User.find(@project_sample.user_id).firstname + " "+ User.find(@project_sample.user_id).lastname %></p>
 
           <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+
+          <p>Your element permission: <%= @project_sample.permission_str(current_user) %></p>    
             
           </div>
         </div>
     </div>
-</div>
+
   
 <% end %>
 

@@ -5,10 +5,6 @@ class ProjectReactionPolicy < Struct.new(:user, :project_reaction)
     end
   end
 
-  def show?
-    user.reactionviewer_of?(project_reaction.reaction)
-  end
-
   def new?
     ProjectPolicy.new(user, project_reaction.project).addreaction?
   end
@@ -21,19 +17,44 @@ class ProjectReactionPolicy < Struct.new(:user, :project_reaction)
     ProjectPolicy.new(user, project_reaction.project).addreaction?
   end
 
+  def show?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_reaction.project.id, user.id]).first
+
+    if project_membership.role_id >= 88 then return true end
+
+    return false
+  
+  end
+
   def edit?
-    user.reactionowner_of?(project_reaction.reaction)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_reaction.project.id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def update?
-    user.reactionowner_of?(project_reaction.reaction)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_reaction.project.id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def destroy?
-    user.reactionowner_of?(project_reaction.reaction)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_reaction.project.id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def delete?
-    user.reactionowner_of?(project_reaction.reaction)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_reaction.project.id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 end

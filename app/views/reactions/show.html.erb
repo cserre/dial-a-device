@@ -33,7 +33,6 @@
           </div>
         </div>
     </div>
-</div>
 
 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
           
@@ -49,11 +48,13 @@
           <p>Element Creator: <%= User.find(@project_reaction.user_id).firstname + " "+ User.find(@project_reaction.user_id).lastname %></p>
 
           <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+
+          <p>Your element permission: <%= @project_reaction.permission_str(current_user) %></p>          
             
           </div>
         </div>
     </div>
-</div>
+
   
 <% end %>
 
@@ -84,7 +85,7 @@
 
 <script src="/assets/canvasmol/canvasmol.js" type="text/javascript"></script>
 
-<h1>Reaction <%= @reaction.name %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %>&nbsp;<%= link_to "/reactions/"+@reaction.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %></h1>
+<h1>Reaction <%= @reaction.name %><% if policy(@project_reaction).edit? then %> <%= link_to("Edit", edit_reaction_path(@reaction), :class => "btn btn-primary", :title => "Edit #{ @reaction.name }.") %><% end %>&nbsp;<%= link_to "/reactions/"+@reaction.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %></h1>
 <div class="form-horizontal">
 
 
@@ -92,21 +93,21 @@
 
 
 <fieldset>
-  <h3>Starting materials&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "educt"), :class => "btn btn-primary" %></h3>
+  <h3>Starting materials<% if policy(@project_reaction).edit? then %>&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "educt"), :class => "btn btn-primary" %><% end %></h3>
   <%= render('educts_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Reactants&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "reactant"), :class => "btn btn-primary" %></h3>
+  <h3>Reactants<% if policy(@project_reaction).edit? then %>&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "reactant"), :class => "btn btn-primary" %><% end %></h3>
   <%= render('reactants_display') %>
 </fieldset>
 
 <br/>
 
 <fieldset>
-  <h3>Products&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "product"), :class => "btn btn-primary" %></h3>
+  <h3>Products<% if policy(@project_reaction).edit? then %>&nbsp;<%= link_to "Add", addtoreaction_molecules_path(:project_id => @project.id, :reaction_id => @reaction.id, :role => "product"), :class => "btn btn-primary" %><% end %></h3>
   <%= render('products_display') %>
 </fieldset>
 
@@ -179,7 +180,7 @@
 
 <% molecule =  sample.molecule %>
 
-<h4><%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small>  <%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :molecule_id => sample.molecule.id, :reaction_id => @reaction.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %></h4>
+<h4><%= link_to(sample_path(sample, :project_id => @project.id)) do %><span class="glyphicon glyphicon-glass" /><%=  sample.longname %><% end %> <% if !sample.reactions.first.nil? then %><small><% sample.reactions.each do |r| %><em> <%= sample.role %> in </em> <%= link_to reaction_path(r, :project_id => @project.id) do %><span class="glyphicon glyphicon-flash" /><%= r.name %><% end %><% end %><% end %></small>  <% if policy(@project_reaction).edit? then %><%= link_to 'Add Dataset', create_direct_datasets_path(:sample_id => sample.id, :molecule_id => sample.molecule.id, :reaction_id => @reaction.id, :project_id => @project.id), :class => "btn btn-default btn-sm" %><% end %></h4>
 
 
       <%= sample.target_amount.to_s+" "+sample.unit %>  <small> (<%= sample.weight.to_s+" "+sample.unit %>) </small>
