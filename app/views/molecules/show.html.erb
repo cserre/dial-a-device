@@ -31,7 +31,7 @@
           </div>
         </div>
     </div>
-</div>
+
 
 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
           
@@ -47,11 +47,13 @@
           <p>Element Creator: <%= User.find(@project_molecule.user_id).firstname + " "+ User.find(@project_molecule.user_id).lastname %></p>
 
           <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+
+          <p>Your element permission: <%= @project_molecule.permission_str(current_user) %></p>    
             
           </div>
         </div>
     </div>
-</div>
+
   
 <% end %>
 

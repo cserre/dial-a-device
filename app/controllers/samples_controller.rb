@@ -6,7 +6,7 @@ class SamplesController < ApplicationController
 
   before_action :set_project
 
-  before_action :set_project_sample, only: [:show, :edit, :update, :destroy, :assign, :split, :transfer, :addliterature, :zip]
+  before_action :set_project_sample, only: [:destroy, :show, :edit, :update, :destroy, :assign, :split, :transfer, :addliterature, :zip]
 
   before_action :set_empty_project_sample, only: [:createdirect, :create, :new, :assign_do]
 

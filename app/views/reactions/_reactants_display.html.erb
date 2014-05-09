@@ -11,7 +11,7 @@
 
           <tr class="fields">
             <td>
-              <%= render "molecules/render", :molecule => sample.molecule, :width => "100", :height => "100" %>
+              <%= render "molecules/render", :project => @project, :molecule => sample.molecule, :width => "100", :height => "100" %>
             </td>
             <td><strong><%= sample.molecule.mass %></strong><br><%= link_to(sample_path(sample, :project_id => @project.id)) do %><%= sample.molecule.title %><% end %><br>
             <%= sample.molecule.formula %>
@@ -19,7 +19,7 @@
             <td><%= sample.equivalent %></td>
             <td><%= sample.mol %></td>
             <td><%= sample.target_amount.to_s + " " + sample.unit %></td>
-            <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, sample_path(sample, :reaction_id => @reaction.id), :method => :delete, :confirm => "Are you sure you want to remove this molecule from #{@reaction.name}?", :title => "Delete #{sample.molecule.title}.") %></td>
+            <td><% if policy(@project_reaction).edit? then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, sample_path(sample, :project_id => @project.id, :reaction_id => @reaction.id), :method => :delete, :confirm => "Are you sure you want to remove this molecule from #{@reaction.name}?", :title => "Delete #{sample.molecule.title}.") %><% end %></td>
           </tr>
       <% end %>
   </tbody>

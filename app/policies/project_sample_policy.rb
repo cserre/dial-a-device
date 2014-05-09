@@ -5,13 +5,6 @@ class ProjectSamplePolicy < Struct.new(:user, :project_sample)
     end
   end
 
-  def show?
-    result = false
-    if !user.nil? && user.sampleviewer_of?(project_sample.sample) then result = true end
-
-    result
-  end
-
   def new?
     ProjectPolicy.new(user, project_sample.project).addsample?
   end
@@ -24,19 +17,45 @@ class ProjectSamplePolicy < Struct.new(:user, :project_sample)
     ProjectPolicy.new(user, project_sample.project).addsample?
   end
 
-  def edit?
-    result = false
-    if !user.nil? && user.sampleowner_of?(project_sample.sample) then result = true end
+  def show?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_sample.project_id, user.id]).first
 
-    result
+    if project_membership.role_id >= 88 then return true end
+
+    return false
+  
+  end
+
+  def edit?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_sample.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def update?
-    user.sampleowner_of?(project_sample.sample)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_sample.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def destroy?
-    user.sampleowner_of?(project_sample.sample)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_sample.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
+  end
+
+  def delete?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_sample.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
 end

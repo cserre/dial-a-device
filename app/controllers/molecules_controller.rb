@@ -6,7 +6,9 @@ class MoleculesController < ApplicationController
 
   before_action :set_project
 
-  before_action :set_project_molecule, only: [:show, :edit, :update, :destroy, :assign, :assign_do]
+  before_action :set_project_molecule, only: [:show, :edit, :update, :destroy, :assign]
+
+  before_action :set_empty_project_molecule, only: [:create, :new, :assign_do]
 
   
   class PubChem
@@ -129,7 +131,7 @@ class MoleculesController < ApplicationController
 
   def assign
 
-    authorize @molecule, :assign?
+    authorize @project_molecule, :assign?
 
     @projects = current_user.projects
 
@@ -141,7 +143,7 @@ class MoleculesController < ApplicationController
 
   def assign_do
 
-    authorize @molecule, :assign?
+    authorize @project_molecule, :assign?
 
     @project = Project.find(params[:project_id])
 
@@ -223,10 +225,7 @@ class MoleculesController < ApplicationController
   # GET /molecules/1
   # GET /molecules/1.json
   def show
-    authorize @molecule
-
-    if !current_user.nil? then @owndatasets = current_user.datasets.where(["molecule_id = ?", @molecule.id]) end
-
+    authorize @molecule, :show?
 
     respond_to do |format|
       format.html # show.html.erb
@@ -262,7 +261,7 @@ class MoleculesController < ApplicationController
   def new
     @molecule = Molecule.new
 
-    authorize @molecule
+    authorize @project_molecule, :new?
 
     @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
 
@@ -278,7 +277,11 @@ class MoleculesController < ApplicationController
   def addtoreaction
     @molecule = Molecule.new
 
-    authorize @molecule, :new?
+    @reaction = Reaction.find(params[:reaction_id])
+
+    @project_reaction = ProjectReaction.where(["project_id = ? and reaction_id = ?", @project.id, @reaction.id]).first
+
+    authorize @project_reaction, :edit?
 
     @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
 
@@ -292,7 +295,7 @@ class MoleculesController < ApplicationController
   # GET /molecules/1/edit
   def edit
     
-    authorize @molecule
+    authorize @project_molecule, :edit?
   end
 
   # POST /molecules
@@ -309,7 +312,23 @@ class MoleculesController < ApplicationController
 
     @molecule = Molecule.new(params[:molecule])
 
-    authorize @molecule
+    create_mode = "addtoreaction"
+
+    if Reaction.exists?(reaction_id) then 
+
+      @reaction = Reaction.find(reaction_id)
+
+      @project_reaction = ProjectReaction.where(["project_id = ? and reaction_id = ?", @project.id, @reaction.id]).first
+
+      authorize @project_reaction, :edit?
+
+    else
+
+      authorize @project_molecule, :create?
+
+      create_mode = "create"
+
+    end
 
     virtualmolecule = Rubabel::Molecule.from_string(@molecule.molfile, :mdl)
     
@@ -330,70 +349,47 @@ class MoleculesController < ApplicationController
     respond_to do |format|
       if success
 
-        if Reaction.exists?(reaction_id) then
-
-          r = Reaction.find(reaction_id)
-
-          rp = ReactionPolicy.new(current_user, r)
-
-          if rp.edit? then 
+        if create_mode == "addtoreaction" then
 
 
-          s = Sample.new
-          s.molecule = @molecule
-          s.target_amount = "0"
-          s.unit = "mg"
-          s.name = r.name
-          
+            s = Sample.new
+            s.molecule = @molecule
+            s.target_amount = "0"
+            s.unit = "mg"
+            s.name = @reaction.name
+            
 
-          if role == "educt" then 
-            s.is_virtual = true
-            s.is_startingmaterial = true
-          end
-          if role == "reactant" then 
-            s.is_virtual = true
-            s.is_startingmaterial = false
-          end
-          if role == "product" then 
-            s.is_virtual = false
-            s.is_startingmaterial = false
-          end
-
-          s.save
-
-          @molecule.samples << s
-
-          r.projects.each do |p|
-
-            if current_user.projects.exists?(p) then
-              p.add_sample(s, current_user)
+            if role == "educt" then 
+              s.is_virtual = true
+              s.is_startingmaterial = true
+            end
+            if role == "reactant" then 
+              s.is_virtual = true
+              s.is_startingmaterial = false
+            end
+            if role == "product" then 
+              s.is_virtual = false
+              s.is_startingmaterial = false
             end
 
-          end
+            s.save
 
-          r.samples << s
+            @molecule.samples << s
 
-          r.update_attribute(:updated_at, DateTime.now)
+            @reaction.projects.each do |p|
 
-          format.html { redirect_to reaction_path(Reaction.find(reaction_id), :project_id => project_id), notice: 'Molecule was successfully added.' }
-          format.json { render json: @molecule, status: :created, location: @molecule }
+              if current_user.projects.exists?(p) then
+                p.add_sample(s, current_user)
+              end
 
-        else
+            end
 
-          s = Sample.new
-          s.molecule = @molecule
-          s.target_amount = "0"
-          s.unit = "mg"
-          s.save
+            @reaction.samples << s
 
-          @molecule.samples << s
+            @reaction.update_attribute(:updated_at, DateTime.now)
 
-          Project.find(params[:assign_to_project_id]).add_sample(s, current_user)
-
-          format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
-          format.json { render json: @molecule, status: :created, location: @molecule }
-
-        end
+            format.html { redirect_to reaction_path(@reaction, :project_id => project_id), notice: 'Molecule was successfully added.' }
+            format.json { render json: @reaction, status: :created, location: @molecule }
 
         else
 
@@ -407,8 +403,8 @@ class MoleculesController < ApplicationController
 
           Project.find(params[:assign_to_project_id]).add_sample(s, current_user)
 
-          format.html { redirect_to molecule_path(@molecule, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
-          format.json { render json: @molecule, status: :created, location: @molecule }
+          format.html { redirect_to sample_path(s, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
+          format.json { render json: s, status: :created, location: @molecule }
 
         end
       else
@@ -421,7 +417,7 @@ class MoleculesController < ApplicationController
   # PUT /molecules/1
   # PUT /molecules/1.json
   def update
-    authorize @molecule
+    authorize @project_molecule
 
     respond_to do |format|
       if @molecule.update_attributes(params[:molecule])
@@ -437,7 +433,7 @@ class MoleculesController < ApplicationController
   # DELETE /molecules/1
   # DELETE /molecules/1.json
   def destroy
-    authorize @molecule
+    authorize @project_molecule
 
     current_user.projects.each do |p|
 
@@ -598,6 +594,10 @@ class MoleculesController < ApplicationController
 
     def set_project_molecule
       @project_molecule = ProjectMolecule.where(["project_id = ? AND molecule_id = ?", @project.id, @molecule.id]).first
+    end
+
+    def set_empty_project_molecule
+      @project_molecule = ProjectMolecule.new(:project_id => @project.id)
     end
 
 

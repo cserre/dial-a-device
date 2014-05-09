@@ -23,7 +23,6 @@
           </div>
         </div>
     </div>
-</div>
   
 <% end %>
 
@@ -123,8 +122,8 @@
                   <% end %>
                 </td>
 
-                <td><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %></td>
-                <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction_path(reaction, :project_id => @project.id), :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %></td>
+                <td><% if policy(project_reaction).edit? then %><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %><% end %></td>
+                <td><% if policy(project_reaction).destroy? then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction_path(reaction, :project_id => @project.id), :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %><% end %></td>
 
             </tr>
         <% end %>

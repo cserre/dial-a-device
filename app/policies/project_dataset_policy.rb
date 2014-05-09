@@ -5,17 +5,6 @@ class ProjectDatasetPolicy < Struct.new(:user, :project_dataset)
     end
   end
 
-  def show?
-    result = false
-    if !user.nil? && user.datasetviewer_of?(project_dataset.dataset) then result = true end
-
-    result
-  end
-
-  def edit?
-    user.datasetowner_of?(project_dataset.dataset)
-  end
-
   def new?
     ProjectPolicy.new(user, project_dataset.project).adddataset?
   end
@@ -28,12 +17,45 @@ class ProjectDatasetPolicy < Struct.new(:user, :project_dataset)
     ProjectPolicy.new(user, project_dataset.project).adddataset?
   end
 
+  def show?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_dataset.project_id, user.id]).first
+
+    if project_membership.role_id >= 88 then return true end
+
+    return false
+  
+  end
+
+  def edit?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_dataset.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
+  end
+
   def update?
-    user.datasetowner_of?(project_dataset.dataset)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_dataset.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
   def destroy?
-    user.datasetowner_of?(project_dataset.dataset)
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_dataset.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
+  end
+
+  def delete?
+    project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project_dataset.project_id, user.id]).first
+
+    if project_membership.role_id >= 99 then return true end
+
+    return false
   end
 
 end
