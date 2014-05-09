@@ -581,11 +581,15 @@ class MoleculesController < ApplicationController
     end
 
     def set_project
-      if current_user. nil? then 
+      if current_user.nil? then 
         @project = Project.where(["title = ?", "chemotion"]).first
       else
         if params[:project_id].nil? || params[:project_id].empty? then
-          @project = current_user.rootproject
+          if Project.where(["title = ?", "chemotion"]).length > 0 then
+            @project = Project.where(["title = ?", "chemotion"]).first
+          else
+            @project = current_user.rootproject
+          end
         else
           @project = Project.find(params[:project_id])
         end
