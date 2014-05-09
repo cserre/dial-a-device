@@ -49,7 +49,7 @@ class AttachmentsController < ApplicationController
   end
 
   def serve
-    puts "serve"
+    line = "--------------------------\n#{caller(0)[0..1]}\n"
     @dataset = Dataset.find(params[:dataset_id])
 
     if params[:extension].blank? then
@@ -63,20 +63,13 @@ class AttachmentsController < ApplicationController
     else
       folder = params[:folder]+"/"
     end
-
-
-    puts "folder "+folder
-
     filename = fn.split("/").last
-
-    puts "filename "+filename
-
     version = nil
-
-    puts "serve folder "+folder+"-"+filename
-
-
-    puts "full name "+fn
+    
+    line << "got <folder:#{folder}> and <filename:#{filename}> "
+    line << "\nserve folder: #{folder}-#{filename}" <<"\n<full name:#{fn}>"
+    line << "\n end of \n#{caller(0)[0]}\n--------------------------"
+    puts line
     
     @attachment = @dataset.attachments.where(["file = ? and folder = ?", filename, folder]).first
 
