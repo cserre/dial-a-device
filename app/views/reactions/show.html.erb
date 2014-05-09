@@ -196,10 +196,10 @@
 <table>
   <% ms.each do |m| %>
     <tr>
-      <td><%= link_to dataset_path(:id => m.dataset.id, :reaction_id => @reaction.id) do %><%= image_tag(m.dataset.preview_url, size: "150x100") %><% end %>
+      <td><%= link_to dataset_path(:id => m.dataset.id, :project_id => @project.id, :reaction_id => @reaction.id) do %><%= image_tag(m.dataset.preview_url, size: "150x100") %><% end %>
       </td>
       <td>
-      <h4><%= link_to dataset_path(:id => m.dataset.id, :reaction_id => @reaction.id) do %><b><%= m.dataset.method %></b><% if !m.dataset.title.blank? then %> - <%= m.dataset.title %><% end %><% end %></h4>
+      <h4><%= link_to dataset_path(:id => m.dataset.id, :project_id => @project.id, :reaction_id => @reaction.id) do %><b><%= m.dataset.method %></b><% if !m.dataset.title.blank? then %> - <%= m.dataset.title %><% end %><% end %></h4>
       <% if !m.dataset.description.blank? then %>
       <p><%= m.dataset.description.html_safe %></p>
       <% end %>
