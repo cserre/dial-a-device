@@ -28,10 +28,10 @@
    <% else %>This project is private.
    <% end %>
 
-    <% if (project.id != @current_user.rootproject_id) then %><br/><%= link_to 'Invite someone', invite_project_path(project), :class => "btn btn-success btn-sm" %><% end %>
+    <% if policy(project).adduser? then %><br/><%= link_to 'Invite someone', invite_project_path(project), :class => "btn btn-success btn-sm" %><% end %>
                 </td>
 
-                 <td><% if project.id != @current_user.rootproject_id then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, project, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{project.title}.") %><% end %></td>
+                 <td><% if policy(project).destroy? then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, project, :method => :delete, :confirm => "Are you sure?", :title => "Delete #{project.title}.") %><% end %></td>
 
 
 </tr>
