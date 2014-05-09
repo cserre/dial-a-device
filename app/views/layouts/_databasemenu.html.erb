@@ -1,0 +1,61 @@
+
+<% database_id = @project.superparent.id %>
+
+<% if !current_user.nil? then %>
+ <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Databases</h3>
+        </div>
+
+        <div class="panel-body">
+
+          <% current_user.all_databases.each do |pid| %>
+
+            <% accessible = pid[1] %>
+
+            <% p = Project.find(pid[0]) %>
+
+                    <ul class="nav nav-pills nav-stacked">
+
+                    	<% if Project.find(project_id).superparent.id.to_s == p.id.to_s then %><li class="active" style="left:0px;"><% else %><li style="left:0px;"><% end %>
+
+                      <% if accessible < 0 then %>
+                      <a href="/<%= category %>?project_id=<%= p.id %>">
+                        <% else %>
+
+                        <a href="/<%= category %>?project_id=<%= accessible %>">
+
+                        <% end %>
+
+                <% if p.read_attribute(:title).nil? then t = p.owner.firstname+"'s Database" else t = p.title end %>
+
+                    <% if ProjectPolicy::Scope.new(current_user, Project).resolve.include?(p) then %>
+
+                      <span class="glyphicon glyphicon-star"></span>
+
+                    <% else %>
+
+                    <span class="glyphicon glyphicon-star-empty"></span>
+
+                    <% end %>
+
+                  <%= t %>
+
+                      </a>
+
+                      <li>
+
+            		</ul>
+
+
+          <% end %>
+
+
+        <br>
+
+        </div>
+
+      </div>
+
+<% end %>
