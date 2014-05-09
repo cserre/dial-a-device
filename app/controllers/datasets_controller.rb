@@ -167,17 +167,15 @@ class DatasetsController < ApplicationController
   # GET /datasets/1
   # GET /datasets/1.json
   def plotpoint
-     authorize @dataset
+     @dataset =  Dataset.where(["id = ?",params[:dataset_id]]).first
      puts "nice dataset"
+     #authorize @dataset
+     file=@dataset.jdx_file
  
-     file=@dataset.jdx_file 
-     dx_data=Kai.new(":file #{file} :tab all :process header spec param data point raw first_page ").flotr2_data
-      
-     
+     #file=params[:jdxfile] 
+     dx_data=Kai.new(":file #{file} :tab all :process header spec param data point raw first_page ").flotr2_data 
      if dx_data.is_a?(Switchies::Ropere) 
-        
         kumara=dx_data.to_kumara
-        puts kumara.inspect.slice(0..300)
         puts "\nhello Kumara! \n" 
         @plotdx=kumara.chip_it #chip_it(abscissa range in point unit=0..-1,block=0,page=0,limit of point to be plotted=2048)
       else
@@ -186,13 +184,14 @@ class DatasetsController < ApplicationController
       end
       ##TODO have ajax request to update chip_it argument (to increase resolution while zooming)
       
-      
+       @plotdx||=Switchies::Kumara.blank.chip_it
     
-        #  render :partial => 'plotpoint'#, :plotdx => @plotjdx
-         # respond_to do |format|
-           # format.html { render action: "plot" }
-      # format.json { render json: @dataset }
-         # end
+      # render :partial => 'plot', :plotdx => @plotdx
+    respond_to do |format|
+     
+      format.html { render action: "plot" }
+      format.json { render json: @dataset }
+    end
     
     
   end
@@ -208,11 +207,11 @@ class DatasetsController < ApplicationController
 
     @attachment = Attachment.new(:dataset => @dataset)
 
-    
-    if Kai.test_file(@dataset.jdx_file)
-       puts"plotpoin"
-      plotpoint
-    end
+    @plotdx=Switchies::Kumara.blank.chip_it
+    # if Kai.test_file(@dataset.jdx_file)
+       # puts"plotpoin"
+      # plotpoint
+    # end
     respond_to do |format|
       if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
 
