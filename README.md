@@ -1,6 +1,32 @@
 dial-a-device
 =============
 
+## instant setup on heroku from windows
+
+* Install Heroku Toolbelt
+
+		https://toolbelt.heroku.com/windows
+		
+* Open a command shell
+		
+		git clone https://github.com/Cominch/dial-a-device
+		
+		cd dial-a-device
+		
+		heroku login
+
+		heroku create
+		
+		heroku ...
+		
+		git push heroku master
+		
+* Open a web browser and start using dial-a-device
+
+		http://yourappname.herokuapp.com
+
+
+
 ## set up your own dial-a-device server on Ubuntu 13.04
 
 
@@ -40,8 +66,8 @@ dial-a-device
 		sudo service postgresql restart
 		
 * Install additional libraries
-* 
-	sudo apt-get install libpq-dev openbabel imagemagick
+ 
+		sudo apt-get install libpq-dev openbabel imagemagick
 
 * Clone the project and set it up
 
