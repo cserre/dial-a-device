@@ -88,8 +88,8 @@ dial-a-device
 * Go!
 
 	Start the rails server ("thin" webserver)
-
-		rails s
+		
+		RAILS_ENV=localserver rails s
 
 	If rails is not detected, update your bash profile again:
 
