@@ -55,11 +55,18 @@ dial-a-device
 	Perform the following postgresql command:
 		
 		CREATE ROLE dialadevice SUPERUSER LOGIN PASSWORD 'dialadevice';
+		
+	Close the postgresql console
+	
+		\q
 
 	Edit /etc/postgresql/9.1/main/pg_hba.conf
+	
+		sudo nano /etc/postgresql/9.1/main/pg_hba.conf
 		
-		Replace line "local 	all		all		peer"
-		by "local 	all		all		md5"
+		
+	In nano, Replace line "local 	all		all		peer"
+	by "local 	all		all		md5"
 
 	Restart the postgres server
 
