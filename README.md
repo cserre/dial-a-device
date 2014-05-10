@@ -66,7 +66,7 @@ dial-a-device
 		
 		
 	In nano, Replace line "local 	all		all		peer"
-	by "local 	all		all		md5"
+	by "local 	all		all		md5" (Save with CTRL+O, Enter, CTRL+X)
 
 	Restart the postgres server
 
