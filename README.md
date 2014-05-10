@@ -95,6 +95,10 @@ dial-a-device
 
 		. ~/.bash_profile
 		
+	Open your webbrowser:
+	
+		http://localhost:300/
+		
 ## deploy on your local server
 
 * Customize parameters
@@ -127,7 +131,13 @@ dial-a-device
 
 * create an account on heroku and install toolbelt
 
-	TODO: explain deploy procedure
+	Create an account on heroku.com
+	
+	TODO: Explain how to install heroku toolbelt
+	
+		cd dial-a-device
+
+		heroku login
 
 * create your app on heroku
 
