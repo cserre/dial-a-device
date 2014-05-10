@@ -97,7 +97,7 @@ dial-a-device
 		
 	Open your webbrowser:
 	
-		http://localhost:300/
+		http://localhost:3000/
 		
 ## deploy on your local server
 
