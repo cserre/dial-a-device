@@ -306,6 +306,9 @@ class MoleculesController < ApplicationController
     role = params[:molecule][:role]
     project_id = params[:molecule][:project_id]
 
+    @project = Project.find(params[:molecule][:project_id])
+    @project_molecule = ProjectMolecule.new(:project_id => @project.id)
+
     params[:molecule].delete :reaction_id
     params[:molecule].delete :role
     params[:molecule].delete :project_id
@@ -388,7 +391,7 @@ class MoleculesController < ApplicationController
 
             @reaction.update_attribute(:updated_at, DateTime.now)
 
-            format.html { redirect_to reaction_path(@reaction, :project_id => project_id), notice: 'Molecule was successfully added.' }
+            format.html { redirect_to reaction_path(@reaction, :project_id => @project.id), notice: 'Molecule was successfully added.' }
             format.json { render json: @reaction, status: :created, location: @molecule }
 
         else
@@ -401,9 +404,9 @@ class MoleculesController < ApplicationController
 
           @molecule.samples << s
 
-          Project.find(params[:project_id]).add_sample(s, current_user)
+          @project.add_sample(s, current_user)
 
-          format.html { redirect_to sample_path(s, :project_id => params[:project_id]), notice: 'Molecule was successfully created.' }
+          format.html { redirect_to sample_path(s, :project_id => @project.id, notice: 'Molecule was successfully created.' }
           format.json { render json: s, status: :created, location: @molecule }
 
         end
