@@ -263,7 +263,7 @@ class MoleculesController < ApplicationController
 
     authorize @project_molecule, :new?
 
-    @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
+    @assign_to_project_id = params[:project_id] || current_user.rootproject_id
 
 
     respond_to do |format|
@@ -283,7 +283,7 @@ class MoleculesController < ApplicationController
 
     authorize @project_reaction, :edit?
 
-    @assign_to_project_id = params[:assign_to_project_id] || current_user.rootproject_id
+    @assign_to_project_id = params[:project_id] || current_user.rootproject_id
 
 
     respond_to do |format|
@@ -401,9 +401,9 @@ class MoleculesController < ApplicationController
 
           @molecule.samples << s
 
-          Project.find(params[:assign_to_project_id]).add_sample(s, current_user)
+          Project.find(params[:project_id]).add_sample(s, current_user)
 
-          format.html { redirect_to sample_path(s, :project_id => params[:assign_to_project_id]), notice: 'Molecule was successfully created.' }
+          format.html { redirect_to sample_path(s, :project_id => params[:project_id]), notice: 'Molecule was successfully created.' }
           format.json { render json: s, status: :created, location: @molecule }
 
         end
