@@ -287,7 +287,7 @@ class DatasetsController < ApplicationController
         dsg.save
         dsg.datasets << @dataset
 
-        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id] , notice: 'Dataset was successfully created.') }
+        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id], :project_id => @project.id , notice: 'Dataset was successfully created.') }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }
