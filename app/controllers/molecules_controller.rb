@@ -406,7 +406,7 @@ class MoleculesController < ApplicationController
 
           @project.add_sample(s, current_user)
 
-          format.html { redirect_to sample_path(s, :project_id => @project.id, notice: 'Molecule was successfully created.' }
+          format.html { redirect_to sample_path(s, :project_id => @project.id), notice: 'Molecule was successfully created.' }
           format.json { render json: s, status: :created, location: @molecule }
 
         end
