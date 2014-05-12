@@ -1,6 +1,32 @@
 dial-a-device
 =============
 
+## instant setup on heroku from windows
+
+* Install Heroku Toolbelt
+
+		https://toolbelt.heroku.com/windows
+		
+* Open a command shell
+		
+		git clone https://github.com/Cominch/dial-a-device
+		
+		cd dial-a-device
+		
+		heroku login
+
+		heroku create
+		
+		heroku ...
+		
+		git push heroku master
+		
+* Open a web browser and start using dial-a-device
+
+		http://yourappname.herokuapp.com
+
+
+
 ## set up your own dial-a-device server on Ubuntu 13.04
 
 
@@ -28,20 +54,27 @@ dial-a-device
 
 	Perform the following postgresql command:
 		
-		CREATE ROLE dialadevice SUPERUSER LOGIN PASSWORD 'dialadevice';
+		CREATE ROLE lsirailsprototype SUPERUSER LOGIN PASSWORD 'lsirailsprototype';
+		
+	Close the postgresql console
+	
+		\q
 
 	Edit /etc/postgresql/9.1/main/pg_hba.conf
+	
+		sudo nano /etc/postgresql/9.1/main/pg_hba.conf
 		
-		Replace line "local 	all		all		peer"
-		by "local 	all		all		md5"
+		
+	In nano, Replace line "local 	all		all		peer"
+	by "local 	all		all		md5" (Save with CTRL+O, Enter, CTRL+X)
 
 	Restart the postgres server
 
 		sudo service postgresql restart
 		
 * Install additional libraries
-* 
-	sudo apt-get install libpq-dev openbabel imagemagick
+ 
+		sudo apt-get install libpq-dev openbabel imagemagick
 
 * Clone the project and set it up
 
@@ -55,19 +88,23 @@ dial-a-device
 * Go!
 
 	Start the rails server ("thin" webserver)
-
-		rails s
+		
+		RAILS_ENV=localserver rails s
 
 	If rails is not detected, update your bash profile again:
 
 		. ~/.bash_profile
+		
+	Open your webbrowser:
+	
+		http://localhost:3000/
 		
 ## deploy on your local server
 
 * Customize parameters
 	
 	host name etc. in
-		
+
 		config/initializers/x-customization.rb
 
 	mail server in
@@ -79,12 +116,14 @@ dial-a-device
 		rvmsudo foreman export upstart /etc/init -f Procfile.localserver -a dial-a-devie -u yourusername
 		
 * Enable port forwarding
+
 		iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 5000
 
 * Make iptables permanent
+
 		sudo su
 		iptables-save > /etc/iptables.conf
-
+		
 		nano /etc/network/interfaces
 		
 		-- add this line after each adapter:
@@ -94,7 +133,13 @@ dial-a-device
 
 * create an account on heroku and install toolbelt
 
-	TODO: explain deploy procedure
+	Create an account on heroku.com
+	
+	TODO: Explain how to install heroku toolbelt
+	
+		cd dial-a-device
+
+		heroku login
 
 * create your app on heroku
 
@@ -121,7 +166,7 @@ dial-a-device
 ## access legacy devices via vnc
 
 * set up websockify gateway
-	
+
 		git clone https://github.com/hsanjuan/websockify
 
 
