@@ -518,12 +518,7 @@ class DatasetsController < ApplicationController
       end
     end
 
-<<<<<<< HEAD
 
-
-    
-
-=======
     def set_empty_project_dataset
       @project_dataset = ProjectDataset.new(:project_id => @project.id)
     end
@@ -531,6 +526,6 @@ class DatasetsController < ApplicationController
     def set_project_dataset
       @project_dataset = ProjectDataset.where(["project_id = ? AND dataset_id = ?", @project.id, @dataset.id]).first
     end
->>>>>>> upstream/master
+
 
 end
