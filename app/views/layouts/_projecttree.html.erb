@@ -32,7 +32,7 @@
 
    		<% end %>
 
-   		<%= t %>
+   		<%= t %> <small>(<%= p.role_str(current_user) %>)</small>
 
 	</a>
 
@@ -42,7 +42,10 @@
 
 <% p.children.each do |cp| %>
 
+<% if current_user.projects.include?(cp) then %>
+
 <%= render 'layouts/projecttree', :highlight => highlight, :p => cp, :project_id => project_id, :category => category, :level => level+1 %>
 
+<% end %>
 
 <% end %>

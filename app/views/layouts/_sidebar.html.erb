@@ -14,6 +14,7 @@ function checkinSample (sampleid) {
 
 }
 
+
 function loadTask (taskid, sampleid) {
 
 	$('#actionpane').load('/reactions/'+taskid+'?render=inline&device_id=<%= @device.id unless @device == nil %>', function() {

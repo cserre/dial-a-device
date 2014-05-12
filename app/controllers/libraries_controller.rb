@@ -6,6 +6,8 @@ class LibrariesController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_library, only: [:show, :edit, :update, :destroy]
+
 
   # GET /libraries
   def index
@@ -14,31 +16,31 @@ class LibrariesController < ApplicationController
 
   # GET /libraries/1
   def show
-    authorize @library
+    authorize @project_library
 
-    @library_entries = @library.library_entries
+    @project_library_entries = ProjectLibrary.where(["project_id = ? AND library_id = ?", @project.id, @library.id]).first.library_entries.paginate(:page => params[:page])
   end
 
   # GET /libraries/new
   def new
     @library = Library.new
 
-    authorize @library
+    authorize @project_library
   end
 
   # GET /libraries/1/edit
   def edit
-    authorize @library
+    authorize @project_library
   end
 
   # POST /libraries
   def create
     @library = Library.new(library_params)
 
-    authorize @library
+    authorize @project_library
 
     if @library.save
-      @library.add_to_project(current_user.rootproject_id)
+      @library.add_to_project(current_user.rootproject_id, current_user)
 
       redirect_to @library, notice: 'Library was successfully created.'
     else
@@ -48,7 +50,8 @@ class LibrariesController < ApplicationController
 
   # PATCH/PUT /libraries/1
   def update
-    authorize @library
+    authorize @project_library
+
     if @library.update(library_params)
       redirect_to @library, notice: 'Library was successfully updated.'
     else
@@ -58,7 +61,7 @@ class LibrariesController < ApplicationController
 
   # DELETE /libraries/1
   def destroy
-    authorize @library
+    authorize @project_library
     @library.destroy
     redirect_to libraries_url, notice: 'Library was successfully destroyed.'
   end
@@ -81,6 +84,9 @@ class LibrariesController < ApplicationController
       end
     end
 
+    def set_project_library
+      @project_library = ProjectLibrary.where(["project_id = ? AND library_id = ?", @project.id, @library.id]).first
+    end
 
     # Only allow a trusted parameter "white list" through.
     def library_params

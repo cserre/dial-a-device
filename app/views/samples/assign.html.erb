@@ -24,7 +24,11 @@
 
    <% if project.samples.exists?(["sample_id = ?", @sample.id]) %>
 
-	<p>Already assigned.</p>
+   <% if project.parent_exists? then %>
+
+  <%= link_to "Remove #{@sample.molecule.title}", assign_to_project_do_sample_path(@sample, project_id: project.id, :remove => true), method: :post, :class => "btn btn-danger" %>
+
+  <% end %>
 	
 	<% else %>
   <%= link_to "Add #{@sample.molecule.title}", assign_to_project_do_sample_path(@sample, project_id: project.id), method: :post, :class => "btn btn-success" %>

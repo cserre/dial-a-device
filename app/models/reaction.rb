@@ -41,10 +41,10 @@ class Reaction < ActiveRecord::Base
     return false
   end
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
     p = Project.find(project_id)
-    p.add_reaction(self)
+    p.add_reaction(self, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
@@ -52,7 +52,7 @@ class Reaction < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.add_reaction(self)
+        parent.add_reaction(self, user)
 
       end
 
@@ -61,6 +61,50 @@ class Reaction < ActiveRecord::Base
       break if parent.parent_id.nil?
 
       parent = Project.find(parent.parent_id)
+
+    end
+
+  end
+
+  def remove_from_project(project)
+
+    project.remove_reaction_only(self)
+
+  end
+
+  def remove_from_project_database(project)
+
+    self.remove_from_project(project)
+
+    if Project.exists?(project.parent_id) then parent = project.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        self.remove_from_project(parent)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+    self.remove_from_project_children(project)
+
+  end
+
+  def remove_from_project_children(project)
+
+    self.remove_from_project(project)
+
+    project.children.each do |child|
+
+      self.remove_from_project_children(child)
 
     end
 

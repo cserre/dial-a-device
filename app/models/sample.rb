@@ -21,14 +21,51 @@ class Sample < ActiveRecord::Base
 
   has_many :library_entries, :dependent => :destroy
 
+  before_destroy :checkout_everywhere
+
   before_destroy :cleanup_projects
 
+  def checkout_everywhere
+
+    Location.all.each do |l|
+
+      if l.sample_id == self.id then l.update_attribute(:sample_id, nil) end
+
+    end
+
+  end
   
   def cleanup_projects
 
     self.projects.each do |p|
 
-      self.remove_from_project_recursive(p)
+      self.remove_from_project(p)
+    end
+
+  end
+
+  def cleanup_projects_database(project)
+
+    p = Project.find(project_id)
+
+    p.add_sample(self)
+
+    if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
+
+    loop do
+
+      if !parent.nil? then
+
+        parent.add_sample(self)
+
+      end
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
     end
 
   end
@@ -84,21 +121,21 @@ class Sample < ActiveRecord::Base
   has_many :citations,
     :through => :sample_citations
 
-  def add_dataset(dataset)
+  def add_dataset(dataset, user)
 
     self.datasets << dataset
 
     self.projects.each do |p|
-      p.add_dataset(dataset)
+      p.add_dataset(dataset, user)
     end
 
   end
 
-  def transfer_to_project(project)
+  def transfer_to_project(project, user)
 
     newsample = self.dup
 
-    project.add_sample(newsample)
+    project.add_sample(newsample, user)
 
     return newsample
 
@@ -203,10 +240,10 @@ class Sample < ActiveRecord::Base
   has_many :projects,
   through: :project_samples, :dependent => :destroy
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
     p = Project.find(project_id)
-    p.add_sample(self)
+    p.add_sample(self, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
@@ -214,7 +251,7 @@ class Sample < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.add_sample(self)
+        parent.add_sample(self, user)
 
       end
 
@@ -228,9 +265,15 @@ class Sample < ActiveRecord::Base
 
   end
 
-  def remove_from_project_recursive(project)
+  def remove_from_project(project)
 
-    project.remove_sample(self)
+    project.remove_sample_only(self)
+
+  end
+
+  def remove_from_project_database(project)
+
+    self.remove_from_project(project)
 
     if Project.exists?(project.parent_id) then parent = project.parent end
 
@@ -238,7 +281,7 @@ class Sample < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.remove_sample(self)
+        self.remove_from_project(parent)
 
       end
 
@@ -247,6 +290,20 @@ class Sample < ActiveRecord::Base
       break if parent.parent_id.nil?
 
       parent = Project.find(parent.parent_id)
+
+    end
+
+    self.remove_from_project_children(project)
+
+  end
+
+  def remove_from_project_children(project)
+
+    self.remove_from_project(project)
+
+    project.children.each do |child|
+
+      self.remove_from_project_children(child)
 
     end
 

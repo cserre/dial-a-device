@@ -51,11 +51,41 @@ class MessageController < WebsocketRails::BaseController
 
 	    	if (mi[:devicetype] == "kern") then
 
-	    		weightstring = data[:weight]
+	    		begin
+
+	    			Rails.logger.info (data[:weight])
+
+	    		rescue
+
+	    			Rails.logger.info ("Error occured")
+
+	    			data = data[0]
+
+	    		ensure
+
+	    			Rails.logger.info ("Mapping performed")
+
+	    		end
+
+	    		Rails.logger.info ("Its a kern")
+
+	    		Rails.logger.info (data)
+
+	    		w = data[:weight]
+
+	    		if w.is_a?(Array) then w = w[0] end
+
+	    		weightstring = w.split(" ").first
+
+	    		Rails.logger.info (weightstring)
 
 	    		myvalue = weightstring.gsub(/[\[,\],g,m]/, '')
 
+	    		Rails.logger.info (myvalue)
+
 	    		myunit = weightstring.gsub(/[0-9,\[,\],\.]/, '')
+
+	    		Rails.logger.info (myunit)
 
 	    		if myunit == "g" then
 
@@ -67,8 +97,12 @@ class MessageController < WebsocketRails::BaseController
 
 	    		end
 
+	    		Rails.logger.info ("Conversion done")
+
 
 	    		s = Sample.find(location.sample_id)
+
+	    		Rails.logger.info ("location.sample_id "+location.sample_id.to_s)
 
 	    		Rails.logger.info ("Weight: ")
     			Rails.logger.info (data[:weight])
@@ -89,7 +123,7 @@ class MessageController < WebsocketRails::BaseController
 
 	    		s.unit = myunit
 
-	    		s.save
+	    		s.save	    		
 
     		end
 	    	

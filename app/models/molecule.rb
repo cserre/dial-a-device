@@ -78,10 +78,10 @@ class Molecule < ActiveRecord::Base
   has_many :projects,
   through: :project_molecules, :dependent => :destroy
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
     p = Project.find(project_id)
-    p.add_molecule(self)
+    p.add_molecule(self, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = p.parent end
 
@@ -89,7 +89,7 @@ class Molecule < ActiveRecord::Base
 
       if !parent.nil? then
 
-        parent.add_molecule(self)
+        parent.add_molecule(self, user)
 
       end
 

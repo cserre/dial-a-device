@@ -4,17 +4,23 @@ class ReactionsController < ApplicationController
 
   before_action :set_reaction, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :zip]
 
+  before_action :set_project
+
+  before_action :set_project_reaction, only: [:show, :edit, :update, :destroy, :assign, :zip]
+
+  before_action :set_empty_project_reaction, only: [:createdirect, :create, :new, :assign_do]
+
   # GET /reactions
   def index
 
-    if params[:project_id].nil? then projid = current_user.rootproject_id else projid = params[:project_id] end
-    @reactions = ReactionPolicy::Scope.new(current_user, Reaction).resolve.where(["projects.id = ?", projid]).paginate(:page => params[:page])
+    @project_reactions = ProjectReaction.where(["project_id = ?", @project.id]).paginate(:page => params[:page])
 
     @analytics = nil
   end
 
    def assign
-    authorize @reaction, :edit?
+
+    authorize @project_reaction, :show?
 
     @projects = current_user.projects
 
@@ -25,18 +31,29 @@ class ReactionsController < ApplicationController
   end
 
   def assign_do
-    authorize @reaction, :edit?
 
-    @project = Project.find(params[:project_id])
+    authorize @project_reaction, :assign?
 
-    @project.add_reaction(@reaction)
+    if !params[:remove].nil? then
 
-    redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
+      @project.remove_reaction_only(@reaction)
+
+      redirect_to reactions_path(:project_id => params[:project_id]), notice: "Reaction and corresponding samples were removed from project."
+
+    else
+
+      @project.add_reaction(@reaction, current_user)
+
+      redirect_to reaction_path(@reaction, :project_id => params[:project_id]), notice: "Reaction and corresponding samples were assigned to project."
+
+    end
+
+    
   end   
 
   def zip
 
-    authorize @reaction, :show?
+    authorize @project_reaction, :show?
 
     temp_file = Tempfile.new(@reaction.id.to_s+".zip")
 
@@ -70,7 +87,7 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1
   def show
-    authorize @reaction
+    authorize @project_reaction, :show?
 
     if !current_user.nil? then @owndatasets = @reaction.datasets end
 
@@ -88,7 +105,7 @@ class ReactionsController < ApplicationController
   def createdirect
     @reaction = Reaction.new
 
-    authorize @reaction, :create?
+    authorize @project_reaction, :create?
 
     namearray = Array.new
 
@@ -118,22 +135,10 @@ class ReactionsController < ApplicationController
 
     if @reaction.save
 
-        if params[:assign_to_project_id].nil? then 
+        @project.add_reaction(@reaction, current_user)
 
-          current_user.rootproject.add_reaction(@reaction)
+        redirect_to reaction_path(@reaction, :project_id => @project.id), notice: 'Reaction was successfully created.'
 
-          @projid = current_user.rootproject
-
-        else
-
-          Project.find(params[:assign_to_project_id]).add_reaction(@reaction)
-
-          @projid = params[:assign_to_project_id]
-
-        end
-
-
-      redirect_to reaction_path(@reaction, :project_id => @projid), notice: 'Reaction was successfully created.'
     else
       render action: 'new'
     end
@@ -143,7 +148,7 @@ class ReactionsController < ApplicationController
   def new
     @reaction = Reaction.new
 
-    authorize @reaction
+    authorize @project_reaction, :new
 
     namearray = Array.new
 
@@ -175,14 +180,14 @@ class ReactionsController < ApplicationController
 
   # GET /reactions/1/edit
   def edit
-    authorize @reaction
+    authorize @project_reaction, :edit?
   end
 
   # POST /reactions
   def create
     @reaction = Reaction.new(reaction_params)
 
-    authorize @reaction
+    authorize @project_reaction, :create?
 
 
     if @reaction.save
@@ -191,12 +196,12 @@ class ReactionsController < ApplicationController
 
         @reaction.samples.each do |s|          
 
-          s.molecule.add_to_project(current_user.rootproject_id) 
-          s.add_to_project(current_user.rootproject_id)
+          s.molecule.add_to_project(current_user.rootproject_id, current_user) 
+          s.add_to_project(current_user.rootproject_id, current_user)
         end
 
 
-        @reaction.add_to_project(current_user.rootproject_id)
+        @reaction.add_to_project(current_user.rootproject_id, current_user)
 
 
       redirect_to @reaction, notice: 'Reaction was successfully created.'
@@ -207,7 +212,7 @@ class ReactionsController < ApplicationController
 
   # PATCH/PUT /reactions/1
   def update
-    authorize @reaction
+    authorize @project_reaction, :update?
 
     if @reaction.update(reaction_params)
 
@@ -222,16 +227,40 @@ class ReactionsController < ApplicationController
 
   # DELETE /reactions/1
   def destroy
-    authorize @reaction
+    authorize @project_reaction, :destroy?
 
     @reaction.destroy
-    redirect_to reactions_url, notice: 'Reaction was successfully destroyed.'
+    redirect_to reactions_path(:project_id => @project.id), notice: 'Reaction was successfully destroyed.'
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_reaction
       @reaction = Reaction.find(params[:id])
+    end
+
+    def set_project
+      if current_user. nil? then 
+        @project = Project.where(["title = ?", "chemotion"]).first
+      else
+        if params[:project_id].nil? || params[:project_id].empty? then
+          if Project.where(["title = ?", "chemotion"]).length > 0 then
+            @project = Project.where(["title = ?", "chemotion"]).first
+          else
+            @project = current_user.rootproject
+          end
+        else
+          @project = Project.find(params[:project_id])
+        end
+      end
+    end
+
+    def set_project_reaction
+      @project_reaction = ProjectReaction.where(["project_id = ? AND reaction_id = ?", @project.id, @reaction.id]).first
+    end
+
+    def set_empty_project_reaction
+      @project_reaction = ProjectReaction.new(:project_id => @project.id)
     end
 
     # Only allow a trusted parameter "white list" through.

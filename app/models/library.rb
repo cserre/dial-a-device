@@ -13,7 +13,7 @@ class Library < ActiveRecord::Base
   end
 
 
-  def add_molecule(molecule)
+  def add_molecule(molecule, user)
 
     s = Sample.new
     s.molecule = molecule 
@@ -22,11 +22,11 @@ class Library < ActiveRecord::Base
     s.save
 
 
-    add_sample(s)
+    add_sample(s, user)
 
   end
 
-  def add_sample(sample)
+  def add_sample(sample, user)
 
     le = LibraryEntry.new
     le.molecule_id = sample.molecule.id

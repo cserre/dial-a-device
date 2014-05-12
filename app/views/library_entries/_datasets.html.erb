@@ -5,10 +5,10 @@
         <table>
           <% sampledatasets.order("method_rank ASC").each do |dataset| %>
             <tr>
-              <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+              <td><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
               </td>
               <td>
-              <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+              <h4><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
               <p><%= dataset.description.html_safe %></p>
               <p>Virtual DOI: <%= dataset.doi_identifier %></p>
               

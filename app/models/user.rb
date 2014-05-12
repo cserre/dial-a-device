@@ -102,7 +102,57 @@ class User < ActiveRecord::Base
 
   def topprojects
 
+    ProjectPolicy::Scope.new(self, Project).resolve.where(["parent_id is null"])
+
+  end
+
+  def joint_topprojects
+
+    ProjectPolicy::JointScope.new(self, Project).resolve.where(["parent_id is null"])
+  end
+
+  def joint_projects
+
+    ProjectPolicy::JointScope.new(self, Project).resolve
+
+  end
+
+  def all_topprojects
+
     projects.where(["parent_id is null"])
+
+  end
+
+  def filtered_topprojects
+
+    ProjectPolicy::Scope.new(self, Project).resolve.where(["parent_id is null"])
+
+  end
+
+  def all_databases
+
+    dbs = []
+
+    projects.all.each do |pr|
+
+      exists = false
+      dbs.each do |d|
+
+        if d[0] == pr.superparent.id then exists = true end
+
+      end
+
+      if !exists then 
+
+        if projects.include?(pr.id) then x = -1 else x = pr.id end
+
+        dbs << [pr.superparent.id, x]
+
+      end
+
+    end
+
+    dbs
 
   end
 
@@ -116,7 +166,7 @@ class User < ActiveRecord::Base
     pm.role_id = 99
     pm.save
 
-    rp.create_rootlibrary
+    rp.create_rootlibrary(self)
 
     update_attributes(:rootproject_id => rp.id)
 

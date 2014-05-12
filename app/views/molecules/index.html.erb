@@ -1,3 +1,32 @@
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Permissions</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+          <p>Project Creator: <%= @project.owner.firstname + " "+ @project.owner.lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+            
+          </div>
+        </div>
+    </div>
+  
+<% end %>
+
+
 <% content_for :sidenav_switch do @shownavbar = true end %>
 
 <% content_for :sidenav do %>
@@ -13,6 +42,7 @@
 
       </div>
 
+      <%= render 'layouts/databasemenu', :category => "molecules", :project_id => @project.id %>
 
         <%= render 'layouts/projectsmenu', :category => "molecules", :project_id => @project.id %>
 
@@ -98,8 +128,8 @@
 <% end %>
 
 
-<h1><% if @project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= @project.title %><% end %>&nbsp;
-<!-- <%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => @project.id), :class => "btn btn-sm btn-success" %>--></h1>
+<h1><% if @project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= @project.title %><% end %><% if policy(@project).addmolecule? then %>&nbsp;
+<%= link_to 'New Molecule', new_molecule_path(:project_id => @project.id), :class => "btn btn-sm btn-success" %><% end %></h1>
 
 <%= will_paginate @molecules, renderer: BootstrapPagination::Rails %>
 

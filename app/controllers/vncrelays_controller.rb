@@ -73,7 +73,7 @@ class VncrelaysController < ApplicationController
 
     if @vncrelay.save
 
-      @vncrelay.add_to_project(current_user.rootproject_id)
+      @vncrelay.add_to_project(current_user.rootproject_id, current_user)
 
       redirect_to @vncrelay, notice: 'Vncrelay was successfully created.'
     else

@@ -6,11 +6,14 @@ class SamplesController < ApplicationController
 
   before_action :set_project
 
+  before_action :set_project_sample, only: [:destroy, :show, :edit, :update, :destroy, :assign, :split, :transfer, :addliterature, :zip]
+
+  before_action :set_empty_project_sample, only: [:createdirect, :create, :new, :assign_do]
 
 
   def addliterature
 
-    authorize @sample, :edit?
+    authorize @project_sample, :edit?
 
     if params[:doi].nil? then 
 
@@ -28,7 +31,8 @@ class SamplesController < ApplicationController
   end
 
   def assign
-    authorize @sample, :edit?
+
+    authorize @project_sample, :show?
 
     @projects = current_user.projects
 
@@ -39,11 +43,24 @@ class SamplesController < ApplicationController
   end
 
   def assign_do
-    authorize @sample, :edit?
+    authorize @project_sample, :assign?
 
-    @project.add_sample(@sample)
 
-    redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
+    if !params[:remove].nil? then
+
+      @project.remove_sample_only(@sample)
+
+      redirect_to samples_path(:project_id => params[:project_id]), notice: "Sample and corresponding datasets were removed from project."
+
+    else
+
+      @project.add_sample(@sample, current_user)
+
+      redirect_to sample_path(@sample, :project_id => params[:project_id]), notice: "Sample and corresponding datasets were assigned to project."
+
+    end
+
+    
   end   
 
   def createfrommolecule
@@ -86,7 +103,7 @@ class SamplesController < ApplicationController
       s.datasets << ds
     end
 
-    @project.add_sample(s)
+    @project.add_sample(s, current_user)
 
     redirect_to sample_path(s, :project_id => params[:project_id]), notice: "Sample was splitted."
   end
@@ -95,7 +112,9 @@ class SamplesController < ApplicationController
 
     @library = @project.rootlibrary
 
-    @library_entries = @library.library_entries.paginate(:page => params[:page])
+    @project_library = ProjectLibrary.where(["library_id = ?",  @library.id]).first
+
+    @project_library_entries = @project_library.library.library_entries.paginate(:page => params[:page])
 
     render 'libraries/show', :id => @library.id
 
@@ -103,7 +122,7 @@ class SamplesController < ApplicationController
 
   def show
 
-    authorize @sample
+    authorize @project_sample, :show?
 
     @library_entry = LibraryEntry.all.where(["sample_id = ?",  @sample.id]).first
 
@@ -113,7 +132,7 @@ class SamplesController < ApplicationController
 
   def zip
 
-    authorize @sample, :show?
+    authorize @project_sample, :show?
 
     temp_file = Tempfile.new(@sample.id.to_s+".zip")
 
@@ -143,7 +162,7 @@ class SamplesController < ApplicationController
 
 
   def destroy
-    authorize @sample
+    authorize @project_sample
 
     @sample.destroy
 
@@ -163,11 +182,23 @@ class SamplesController < ApplicationController
         @project = Project.where(["title = ?", "chemotion"]).first
       else
         if params[:project_id].nil? || params[:project_id].empty? then
-          @project = current_user.rootproject
+          if Project.where(["title = ?", "chemotion"]).length > 0 then
+            @project = Project.where(["title = ?", "chemotion"]).first
+          else
+            @project = current_user.rootproject
+          end
         else
           @project = Project.find(params[:project_id])
         end
       end
+    end
+
+    def set_project_sample
+      @project_sample = ProjectSample.where(["project_id = ? AND sample_id = ?", @project.id, @sample.id]).first
+    end
+
+    def set_empty_project_sample
+      @project_sample = ProjectSample.new(:project_id => @project.id)
     end
 
     # Only allow a trusted parameter "white list" through.

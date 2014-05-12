@@ -1,3 +1,34 @@
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Permissions</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+          <p>Project Creator: <%= @project.owner.firstname + " "+ @project.owner.lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+            
+          </div>
+        </div>
+    </div>
+
+  
+<% end %>
+
+
+
 <% content_for :sidenav_switch do @shownavbar = true end %>
 
 <% content_for :sidenav do %>
@@ -14,7 +45,7 @@
       </div>
 
 
-
+<%= render 'layouts/databasemenu', :category => "datasets", :project_id => @project.id %>
 
         <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @project.id %>
 
@@ -25,19 +56,22 @@
 
 
 <h1>Datasets</h1>
-<%= will_paginate @datasets, renderer: BootstrapPagination::Rails %>
+<%= will_paginate @project_datasets, renderer: BootstrapPagination::Rails %>
 
-<% if @datasets.length > 0 then %>
+<% if @project_datasets.length > 0 then %>
 
 <table>
-  <% @datasets.each do |dataset| %>
+  <% @project_datasets.each do |ps| %>
+
+  <% dataset = Dataset.find(ps.dataset_id) %>
+
     <tr>
 
-              <td><%= link_to dataset do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
+              <td><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><%= image_tag(dataset.preview_url, size: "150x100") %><% end %>
               </td>
 
               <td>
-                <h4><%= link_to dataset do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
+                <h4><%= link_to(dataset_path(dataset, :project_id => @project.id)) do %><b><%= dataset.method %></b><% if !dataset.title.empty? then %> - <%= dataset.title %><% end %><% end %></h4>
                 <p><% if !dataset.description.blank? then %><%= dataset.description.html_safe %><% end %></p>
                 <p>Virtual DOI: <%= dataset.doi_identifier %></p>
               
@@ -63,7 +97,8 @@
             </td>
             
     </tr>
-  <% end %>
+
+    <% end %>
 </table>
 
 <% else %>

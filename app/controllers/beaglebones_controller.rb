@@ -69,7 +69,7 @@ class BeaglebonesController < ApplicationController
 
     @project = Project.find(params[:project_id])
 
-    @beaglebone.add_to_project(@project.id)
+    @beaglebone.add_to_project(@project.id, current_user)
 
     redirect_to beaglebone_path(@beaglebone), notice: "BeagleBone was assigned to project."
   end   
@@ -114,7 +114,7 @@ class BeaglebonesController < ApplicationController
     respond_to do |format|
       if @beaglebone.save
 
-        @beaglebone.add_to_project(current_user.rootproject_id)
+        @beaglebone.add_to_project(current_user.rootproject_id, current_user)
 
         format.html { redirect_to @beaglebone, notice: 'Beaglebone was successfully created.' }
         format.json { render json: @beaglebone, status: :created, location: @beaglebone }

@@ -2,7 +2,7 @@ class DevicesController < ApplicationController
 
   before_filter :authenticate_user!, except: [:showcase, :showcaseindex]
 
-  before_action :set_device, only: [:assign, :assign_do, :show, :edit, :update, :destroy, :stoprun, :startrun, :control, :share, :invite, :checkin, :checkinselect, :connect, :connectit]
+  before_action :set_device, only: [:assign, :assign_do, :show, :edit, :update, :destroy, :stoprun, :startrun, :control, :share, :invite, :checkin, :checkinselect, :checkout, :connect, :connectit]
 
   # GET /devices
   # GET /devices.json
@@ -38,7 +38,7 @@ def assign
 
     @project = Project.find(params[:project_id])
 
-    @device.add_to_project(@project.id)
+    @device.add_to_project(@project.id, current_user)
 
     redirect_to device_path(@device), notice: "Device was assigned to project."
   end   
@@ -120,6 +120,17 @@ def assign
 
     l = @device.locations.first
     l.sample_id = @sample.id
+    l.save
+
+    redirect_to samplelocations_at_device_path(@device)
+  end
+
+  def checkout
+    authorize @device, :checkin?
+    @sample = Sample.find (params[:sample_id])
+
+    l = @device.locations.first
+    l.sample_id = nil
     l.save
 
     redirect_to samplelocations_at_device_path(@device)
@@ -308,7 +319,7 @@ def assign
     respond_to do |format|
       if @device.save
 
-        @device.add_to_project(current_user.rootproject_id)
+        @device.add_to_project(current_user.rootproject_id, current_user)
 
         @device.locations << Location.create do |devloc|
           

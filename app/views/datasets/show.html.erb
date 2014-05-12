@@ -106,7 +106,30 @@
     <% end %>
 
 
-</div>
+
+
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Permissions</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+          <p>Element Creator: <%= User.find(@project_dataset.user_id).firstname + " "+ User.find(@project_dataset.user_id).lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+
+          <p>Your element permission: <%= @project_dataset.permission_str(current_user) %></p>    
+            
+          </div>
+        </div>
+    </div>
+
+
   
 <% end %>
 
@@ -127,6 +150,7 @@
 
       </div>
 
+<%= render 'layouts/databasemenu', :category => "datasets", :project_id => @project.id %>
 
         <%= render 'layouts/projectsmenu', :category => "datasets", :project_id => @project.id %>
 
@@ -159,7 +183,7 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip", :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
+<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip?project_id="+@project.id.to_s, :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
 
     <%= link_to 'Edit metadata', edit_dataset_path(@dataset, :reaction_id => params[:reaction_id]), :class => "btn btn-sm btn-success" %>
     &nbsp;<%= link_to("Delete", @dataset, :method => :delete, :confirm => "Are you sure?", :title => "Delete Dataset.", :class => "btn btn-sm btn-warning") %>

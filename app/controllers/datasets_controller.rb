@@ -1,19 +1,22 @@
 class DatasetsController < ApplicationController
   
-  #helper_method :plotpoint
    
   require 'zip'
 
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
 
+  before_action :set_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+
   before_action :set_project
 
-  before_action :set_dataset, only: [:show, :edit, :update, :destroy, :assign, :assign_do, :commit, :zip]
+  before_action :set_project_dataset, only: [:show, :edit, :update, :destroy, :assign, :commit, :zip]
+
+  before_action :set_empty_project_dataset, only: [:create, :create_direct, :new, :assign_do]
 
   # GET /datasets
   # GET /datasets.json
   def index
-    @datasets =  policy_scope(Dataset).joins(:projects).where(["projects.id = ?", @project.id]).paginate(:page => params[:page])
+    @project_datasets = ProjectDataset.where(["project_id = ?", @project.id]).paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -23,7 +26,7 @@ class DatasetsController < ApplicationController
 
   def assign
 
-    authorize @dataset, :edit?
+    authorize @project_dataset, :show?
 
     @projects = current_user.projects
 
@@ -35,9 +38,9 @@ class DatasetsController < ApplicationController
 
   def assign_do
 
-    authorize @dataset, :edit?
+    authorize @project_dataset, :assign?
 
-    @project.add_dataset(@dataset)
+    @project.add_dataset(@dataset, current_user)
 
     redirect_to molecule_path(@molecule, :project_id => params[:project_id]), notice: "Dataset was assigned to project."
   end   
@@ -62,7 +65,7 @@ class DatasetsController < ApplicationController
       fw = FolderWatcher.where(["serialnumber = ?", params[:serialnumber]]).first
 
       fw.projects.each do |p|
-        @dataset.add_to_project (p.id)
+        @dataset.add_to_project(p.id, nil)
       end
 
     end
@@ -146,7 +149,7 @@ class DatasetsController < ApplicationController
 
   def zip
 
-    authorize @dataset, :show?
+    authorize @project_dataset, :show?
 
     temp_file = Tempfile.new(@dataset.id.to_s+".zip")
 
@@ -166,6 +169,7 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1
   # GET /datasets/1.json
+
   def plotpoint
      @dataset =  Dataset.where(["id = ?",params[:dataset_id]]).first
      puts "nice dataset"
@@ -196,8 +200,10 @@ class DatasetsController < ApplicationController
     
   end
   
-   def show
-    authorize @dataset
+
+  def show
+    authorize @project_dataset
+
 
     @changerights = false
 
@@ -231,6 +237,8 @@ class DatasetsController < ApplicationController
   def new
     @dataset = Dataset.new
 
+    authorize project_dataset, :new?
+
     @dataset.molecule_id = params[:molecule_id]
 
     respond_to do |format|
@@ -241,14 +249,14 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1/edit
   def edit
-    authorize @dataset
+    authorize @project_dataset
 
     @reaction_id = params[:reaction_id]
   end
 
 
   def commit
-    authorize @dataset, :edit?
+    authorize @project_dataset, :edit?
 
     c = Commit.new
     c.dataset_id = @dataset.id
@@ -269,7 +277,7 @@ class DatasetsController < ApplicationController
   def create_direct
     @dataset = Dataset.new
 
-    authorize @dataset, :create?
+    authorize @project_dataset, :create?
 
     @dataset.molecule_id = params[:molecule_id]
 
@@ -311,16 +319,16 @@ class DatasetsController < ApplicationController
 
         end
 
-        @project.add_dataset(@dataset)
+        @project.add_dataset(@dataset, current_user)
 
-        Sample.find(params[:sample_id]).add_dataset(@dataset)
+        Sample.find(params[:sample_id]).add_dataset(@dataset, current_user)
 
 
         dsg = Datasetgroup.new
         dsg.save
         dsg.datasets << @dataset
 
-        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id] , notice: 'Dataset was successfully created.') }
+        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id], :project_id => @project.id , notice: 'Dataset was successfully created.') }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }
@@ -335,7 +343,7 @@ class DatasetsController < ApplicationController
   def create
     @dataset = Dataset.new(params[:dataset])
 
-    authorize @dataset
+    authorize @project_dataset
 
     if !@dataset.molecule.nil? then 
 
@@ -348,7 +356,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       if @dataset.save
 
-        @dataset.add_to_project(current_user.rootproject_id)
+        @dataset.add_to_project(current_user.rootproject_id, current_user)
 
         if !@dataset.molecule.nil? then 
 
@@ -356,7 +364,7 @@ class DatasetsController < ApplicationController
           @dataset.molecule.projects.each do |p|
 
             if current_user.projects.exists?(p) then
-              @dataset.add_to_project(p.id)
+              @dataset.add_to_project(p.id, current_user)
             end
           end
 
@@ -394,6 +402,8 @@ class DatasetsController < ApplicationController
   # POST /datasets.json
   def fork
 
+    # TODO
+
     @olddataset = Dataset.find(params[:id])
 
     authorize @olddataset, :show?
@@ -422,7 +432,7 @@ class DatasetsController < ApplicationController
   # PUT /datasets/1
   # PUT /datasets/1.json
   def update
-    authorize @dataset
+    authorize @project_dataset
 
     assign_method_rank @dataset
 
@@ -444,7 +454,7 @@ class DatasetsController < ApplicationController
   # DELETE /datasets/1
   # DELETE /datasets/1.json
   def destroy
-    authorize @dataset
+    authorize @project_dataset
 
     @dataset.destroy
 
@@ -497,16 +507,30 @@ class DatasetsController < ApplicationController
         @project = Project.where(["title = ?", "chemotion"]).first
       else
         if params[:project_id].nil? || params[:project_id].empty? then
-          @project = current_user.rootproject
+          if Project.where(["title = ?", "chemotion"]).length > 0 then
+            @project = Project.where(["title = ?", "chemotion"]).first
+          else
+            @project = current_user.rootproject
+          end
         else
           @project = Project.find(params[:project_id])
         end
       end
     end
 
+<<<<<<< HEAD
 
 
     
 
+=======
+    def set_empty_project_dataset
+      @project_dataset = ProjectDataset.new(:project_id => @project.id)
+    end
+
+    def set_project_dataset
+      @project_dataset = ProjectDataset.where(["project_id = ? AND dataset_id = ?", @project.id, @dataset.id]).first
+    end
+>>>>>>> upstream/master
 
 end

@@ -76,7 +76,9 @@ gem 'actionmailer'
 
 gem 'simple_form', github: "plataformatec/simple_form"
 
-gem 'websocket-rails', :git => 'git://github.com/DanKnox/websocket-rails.git'
+#gem 'websocket-rails', :git => 'git://github.com/DanKnox/websocket-rails.git'
+
+gem 'websocket-rails', '~> 0.6.2'
 
 gem 'dial_a_device_node', :git => 'git://github.com/Cominch/dial-a-device-node.git'
 

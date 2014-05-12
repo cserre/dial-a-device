@@ -1,69 +1,46 @@
+<% database_id = @project.superparent.id %>
+
 
 <% if !current_user.nil? then %>
- <div class="panel panel-default">
+      <div class="panel panel-default">
 
         <div class="panel-heading">
-          <h3 class="panel-title"><%= category %> in my projects</h3>
+          <h3 class="panel-title">Projects (<%= category %>)</h3>
         </div>
 
         <div class="panel-body">
 
-<% current_user.topprojects.each do |p| %>
+          <% p = @project.superparent %>
 
-        <ul class="nav nav-pills nav-stacked">
-
-        	<%= render 'layouts/projecttree', :highlight => [], :p => p, :project_id => project_id, :category => category, :level => 0 %>
-
-
-		</ul>
-
-
-<% end %>
-
-
-<br>
-
-        </div>
-
-      </div>
-
-<% end %>
-
-
-
-      <% if !current_user.nil? then %>
-
-
-          <% if ProjectPolicy::JointScope.new(current_user, Project).resolve.length > 0 then %>
-
-
-           <div class="panel panel-default">
-
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Joint Projects</h3>
-                  </div>
-
-                  <div class="panel-body">
-
-
-          <% ProjectPolicy::JointScope.new(current_user, Project).resolve.order("created_at ASC").each do |p| %>
+          <% if current_user.projects.include?(p) then %>
 
                   <ul class="nav nav-pills nav-stacked">
 
                   	<%= render 'layouts/projecttree', :highlight => [], :p => p, :project_id => project_id, :category => category, :level => 0 %>
 
 
-          		</ul>
+          		    </ul>
+
+            <% else %>
+
+              <% p.children.each do |cp| %>
 
 
-          <% end %>
+                <ul class="nav nav-pills nav-stacked">
+
+                      <%= render 'layouts/projecttree', :highlight => [], :p => cp, :project_id => project_id, :category => category, :level => 0 %>
+
+
+                </ul>
+
+              <% end %>
+
+            <% end %>
 
           <br>
 
-          </div>
-
         </div>
 
-      <% end %>
+      </div>
 
 <% end %>

@@ -1,48 +1,59 @@
+
+<% @showsidebar = true %>
+
+<% content_for :sidebar_switch do @showsidebar = true end %>
+
+<% content_for :sidebar do %>
+
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          
+  <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">Permissions</h3>
+        </div>
+
+        <div class="panel-body">
+
+
+          <p>Project Creator: <%= @project.owner.firstname + " "+ @project.owner.lastname %></p>
+
+          <p>Your role in the current project: <%= @project.role_str(current_user) %></p>
+            
+          </div>
+        </div>
+    </div>
+  
+<% end %>
+
+
 <% content_for :sidenav_switch do @shownavbar = true end %>
 
 <% content_for :sidenav do %>
 
     <div class="navbar navbar-fixed-left col-xs-12 col-sm-2 col-md-2 bs-sidebar">
 
-
-                <% if params[:project_id].nil? then %>
-
-          <% @projid = current_user.rootproject_id.to_s %>
-
-          <% else %>
-
-          <% if params[:project_id].empty? then @projid = current_user.rootproject_id.to_s else %>
-        
-          <% @projid = params[:project_id] %>
-
-          <% end %>
-
-          <% end %>
-
       <div class="well">
 
         <% @currentitem = "reactions" %>
 
-        <%= render 'layouts/moleculesmenu', :category => "reactions", :project_id => @projid %>
+        <%= render 'layouts/moleculesmenu', :category => "reactions", :project_id => @project.id %>
 
       </div>
 
+        <%= render 'layouts/databasemenu', :category => "reactions", :project_id => @project.id %>
 
-
-
-        <%= render 'layouts/projectsmenu', :category => "reactions", :project_id => @projid %>
+        <%= render 'layouts/projectsmenu', :category => "reactions", :project_id => @project.id %>
 
 
     </div>
   
 <% end %>
 
-<% project = Project.find(@projid) %>
+<h1><% if @project.title.nil? then %>My Reactions<% else %>Reactions in <%= @project.title %><% end %><% if policy(@project).addreaction? then %>&nbsp;
+<%= link_to 'New Reaction', createdirect_reactions_path(:project_id => @project.id), :class => "btn btn-sm btn-success" %>&nbsp;<%= link_to 'Import', import_project_path(@project.id, :type => "reactions"), :class => "btn btn-sm btn-info" %><% end %></h1>
 
-<h1><% if project.title.nil? then %>My Reactions<% else %>Reactions in <%= project.title %><% end %>&nbsp;
-<%= link_to 'New Reaction', createdirect_reactions_path(:assign_to_project_id => project.id), :class => "btn btn-sm btn-success" %>&nbsp;<%= link_to 'Import', import_project_path(project.id, :type => "reactions"), :class => "btn btn-sm btn-info" %></h1>
-
-<% if @reactions.length > 0 then %>
+<% if @project_reactions.length > 0 then %>
 
 <table class="table">
     
@@ -56,14 +67,16 @@
         <th></th>
     </thead>
     <tbody>
-        <% @reactions.each do |reaction| %>
+        <% @project_reactions.each do |project_reaction| %>
+
+        <% reaction = Reaction.find(project_reaction.reaction_id) %>
 
             <tr>
                 <td><%= '<i class="icon-ok"/>'.html_safe if reaction %></td>
     
-                <td><%= link_to(reaction_path(reaction, :project_id => @projid), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
+                <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %><%= reaction.name %><% end %></td>
 
-                <td><%= link_to(reaction_path(reaction, :project_id => @projid), :title => "View #{reaction.name}.") do %>
+                <td><%= link_to(reaction_path(reaction, :project_id => @project.id), :title => "View #{reaction.name}.") do %>
 
                     <% reaction.products.each_with_index do |product, index| %>
       
@@ -110,8 +123,8 @@
                   <% end %>
                 </td>
 
-                <td><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %></td>
-                <td><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction, :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %></td>
+                <td><% if policy(project_reaction).edit? then %><%= link_to('<span class="glyphicon glyphicon-edit"/>'.html_safe, edit_reaction_path(reaction), :title => "Edit #{reaction.name}.") %><% end %></td>
+                <td><% if policy(project_reaction).destroy? then %><%= link_to('<span class="glyphicon glyphicon-remove"/>'.html_safe, reaction_path(reaction, :project_id => @project.id), :method => :delete, :confirm => "Are you sure you want to permanently delete then #{reaction.name} and all its associated Samples?", :title => "Delete #{reaction.name}.") %><% end %></td>
 
             </tr>
         <% end %>
@@ -119,7 +132,7 @@
     </tbody>
 </table>
 
-<%= will_paginate @reactions, renderer: BootstrapPagination::Rails %>
+<%= will_paginate @project_reactions, renderer: BootstrapPagination::Rails %>
 
 <% else %>
 <p>You don't have any Reactions yet.</p>

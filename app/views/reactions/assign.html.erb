@@ -26,7 +26,11 @@
 
    <% if project.reactions.exists?(["reaction_id = ?", @reaction.id]) %>
 
-	<p>Already assigned.</p>
+   <% if project.parent_exists? then %>
+
+	<%= link_to "Remove #{@reaction.name}", assign_to_project_do_reaction_path(@reaction, project_id: project.id, :remove => true), method: :post, :class => "btn btn-danger" %>
+
+  <% end %>
 	
 	<% else %>
   <%= link_to "Add #{@reaction.name}", assign_to_project_do_reaction_path(@reaction, project_id: project.id), method: :post, :class => "btn btn-success" %>

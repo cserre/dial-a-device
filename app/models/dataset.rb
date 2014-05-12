@@ -201,9 +201,9 @@ class Dataset < ActiveRecord::Base
   has_many :projects,
     through: :project_datasets, :dependent => :destroy
 
-  def add_to_project_recursive (project_id)
+  def add_to_project_recursive (project_id, user)
 
-    add_to_project(project_id)
+    add_to_project(project_id, user)
 
     if Project.exists?(Project.find(project_id).parent_id) then parent = Project.find(Project.find(project_id).parent_id) end
 
@@ -211,7 +211,7 @@ class Dataset < ActiveRecord::Base
 
       if !parent.nil? then
 
-        add_to_project(parent.id)
+        add_to_project(parent.id, user)
 
       end
 
@@ -225,11 +225,16 @@ class Dataset < ActiveRecord::Base
 
   end
 
-  def add_to_project (project_id)
+  def add_to_project (project_id, user)
 
     pm = ProjectDataset.new
     pm.dataset_id = self.id
     pm.project_id = project_id
+
+    if !user.nil? then
+      pm.user_id = user.id
+    end
+    
     pm.save
 
   end

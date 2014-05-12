@@ -7,12 +7,21 @@ class ProjectPolicy < Struct.new(:user, :project)
 
   class JointScope < Struct.new(:user, :scope)
     def resolve
-      user.projects.includes(:project_memberships).where(["project_memberships.role_id = ?", 88]).uniq
+      user.projects.includes(:project_memberships).where(["project_memberships.role_id < ?", 99]).uniq
     end
   end
 
   def show?
-    user.projectowner_of?(project)
+        result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 88 then result = true end
+    end
+
+    result
+
   end
 
   def create?
@@ -26,26 +35,108 @@ class ProjectPolicy < Struct.new(:user, :project)
   def addsample?
     result = false
 
-    if !user.nil? then result = user.projectowner_of?(project) end
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 96 then result = true end
+    end
+
+    result
+
+  end
+
+  def addmolecule?
+    result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 96 then result = true end
+    end
+
+    result
+
+  end
+
+  def addreaction?
+    result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 96 then result = true end
+    end
+
+    result
+
+
+  end
+
+  def adddataset?
+    result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 96 then result = true end
+    end
 
     result
 
   end
 
   def adduser?
-    user.projectowner_of?(project)
+        result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 99 then result = true end
+    end
+
+    result
+
   end
 
   def edit?
-    user.projectowner_of?(project)
+        result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 99 then result = true end
+    end
+
+    result
+
   end
 
   def update?
-    user.projectowner_of?(project)
+        result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 99 then result = true end
+    end
+
+    result
+
   end
 
   def destroy?
-    user.projectowner_of?(project)
+        result = false
+
+    if !user.nil? then
+      project_membership = ProjectMembership.where(["project_id = ? and user_id = ?", project.id, user.id]).first
+
+      if project_membership.role_id >= 99 then result = true end
+
+      if user.rootproject_id == project.id then result = false end
+    end
+
+    result
+
   end
 
 end

@@ -9,7 +9,7 @@
 
 <a href="#" id="link__<%= uid %>" style="position: absolute;" onclick="javascript:$('#dialog_<%= uid %>').dialog();" ><small>m</small></a>
 
-<%= image_tag( molecule_path(molecule, format: :svg, highlight: highlight), id: "img_"+uid, height: height, width: width ) %>
+<%= image_tag( molecule_path(molecule, format: :svg, highlight: highlight, project_id: project.id), id: "img_"+uid, height: height, width: width ) %>
 
 <% end %>
 

@@ -3,6 +3,14 @@ class Project < ActiveRecord::Base
 
   has_many :project_memberships, :dependent => :destroy
 
+  def title
+
+    if self.read_attribute(:title).nil? then 
+      self.owner.firstname.to_s+"'s Project"
+    else self.read_attribute(:title) end
+
+  end
+
   def rootlibrary
     Library.find(self.rootlibrary_id)
   end
@@ -15,16 +23,57 @@ class Project < ActiveRecord::Base
   	User.joins(:project_memberships).where(["role_id = ? and project_id = ?", 99, id]).first
   end
 
-  def create_rootlibrary
+  def role_str(user)
+
+    if !user.nil? then
+
+    roles = ProjectMembership.where(["user_id = ? and project_id = ?", user.id, id])
+
+    roles.each do |r|
+
+      if r.role_id == 99 then return "R+W" end
+
+      if r.role_id == 95 then return "R+P" end
+
+      if r.role_id == 88 then return "R" end
+
+    end
+
+    else
+
+      return "X"
+
+    end
+
+  end
+
+  def create_rootlibrary(user)
     rp = Library.create!
     rp.save
 
-    pm = ProjectLibrary.new
-    pm.library_id = rp.id
-    pm.project_id = self.id
-    pm.save
+    ProjectLibrary.new(:project_id => self.id, :library_id => rp.id, :user_id => user.id).save
 
     update_attributes(:rootlibrary_id => rp.id)
+
+  end
+
+  def superparent
+
+    if Project.exists?(self.parent_id) then parent = self.parent end
+
+    loop do
+
+      break if parent.nil?
+
+      break if parent.parent_id.nil?
+
+      parent = Project.find(parent.parent_id)
+
+    end
+
+    if parent.nil? then parent = self end
+
+    parent
 
   end
 
@@ -81,7 +130,7 @@ class Project < ActiveRecord::Base
   has_many :libraries,
     through: :project_libraries, :dependent => :destroy
 
-  def add_library(library)
+  def add_library(library, user)
 
     pm = ProjectLibrary.new
     pm.library_id = self.id
@@ -90,58 +139,85 @@ class Project < ActiveRecord::Base
 
   end
 
-  def add_reaction(reaction)
-    reactions << reaction unless reactions.exists?(reaction)
+  def add_reaction(reaction, user)
+
+    ProjectReaction.new(:project_id => self.id, :reaction_id => reaction.id, :user_id => user.id).save unless reactions.exists?(reaction)
 
     reaction.samples.each do |s|
 
-      add_sample_only(s)
+      add_sample_only(s, user)
 
     end
 
-    parent.add_reaction(reaction) unless !parent_exists?
+    parent.add_reaction(reaction, user) unless !parent_exists?
 
   end
 
-  def add_molecule(molecule)
-    molecules << molecule unless molecules.exists?(molecule)
-    rootlibrary.add_molecule(molecule)
+  def remove_reaction(reaction)
+    remove_reaction_only(reaction)
+    
+    parent.remove_reaction(reaction) unless !parent_exists?
+  end
 
-    parent.add_molecule(molecule) unless !parent_exists?
+  def remove_reaction_only(reaction)
+
+    reactions.delete(reaction) if reactions.exists?(reaction)
+
+    self.children.each do |child|
+
+      child.remove_reaction_only(reaction)
+
+    end
+
+    reaction.samples.each do |s|
+      remove_sample_only(s)
+    end
 
   end
 
-  def add_sample_only(sample)
 
-    samples << sample unless samples.exists?(sample)
-    molecules << sample.molecule unless molecules.exists?(sample.molecule)
+  def add_molecule(molecule, user)
 
-    rootlibrary.add_sample(sample) unless rootlibrary.sample_exists?(sample)
+    ProjectMolecule.new(:project_id => self.id, :molecule_id => molecule.id, :user_id => user.id).save unless molecules.exists?(molecule)
+    
+    rootlibrary.add_molecule(molecule, user)
+
+    parent.add_molecule(molecule, user) unless !parent_exists?
+
+  end
+
+  def add_sample_only(sample, user)
+
+    ProjectSample.new(:project_id => self.id, :sample_id => sample.id, :user_id => user.id).save unless samples.exists?(sample)
+
+    ProjectMolecule.new(:project_id => self.id, :molecule_id => sample.molecule.id, :user_id => user.id).save unless molecules.exists?(sample.molecule)
+
+    rootlibrary.add_sample(sample, user) unless rootlibrary.sample_exists?(sample)
 
     sample.datasets.each do |ds|
-      add_dataset_only(ds)
+      add_dataset_only(ds, user)
     end
 
   end
 
-  def add_sample(sample)
+  def add_sample(sample, user)
 
-    add_sample_only(sample)
+    add_sample_only(sample, user)
     
-    parent.add_sample(sample) unless !parent_exists?
+    parent.add_sample(sample, user) unless !parent_exists?
   end
 
-  def add_dataset(dataset)
+  def add_dataset(dataset, user)
 
-    add_dataset_only(dataset)
+    add_dataset_only(dataset, user)
 
-    parent.add_dataset(dataset) unless !parent_exists?
+    parent.add_dataset(dataset, user) unless !parent_exists?
 
   end
 
-  def add_dataset_only(dataset)
+  def add_dataset_only(dataset, user)
 
-    datasets << dataset unless datasets.exists?(dataset)
+    ProjectDataset.new(:project_id => self.id, :dataset_id => dataset.id, :user_id => user.id).save unless datasets.exists?(dataset)
 
   end
 
@@ -164,8 +240,6 @@ class Project < ActiveRecord::Base
 
     samples.delete(sample) if samples.exists?(sample)
 
-    # if no other samples exist with same molecule, remove it
-
     more_samples_with_same_molecule = false
 
     self.samples.each do |s|
@@ -175,9 +249,8 @@ class Project < ActiveRecord::Base
 
     molecules.delete(sample.molecule) if !more_samples_with_same_molecule
 
-    # remove library entries
 
-    # rootlibrary.remove_sample(sample) if rootlibrary.sample_exists?(sample)
+    self.rootlibrary.library_entries.where(["sample_id = ?", sample.id]).destroy_all
 
     sample.datasets.each do |ds|
       remove_dataset_only(ds)
