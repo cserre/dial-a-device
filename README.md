@@ -54,7 +54,7 @@ dial-a-device
 
 	Perform the following postgresql command:
 		
-		CREATE ROLE dialadevice SUPERUSER LOGIN PASSWORD 'dialadevice';
+		CREATE ROLE lsirailsprototype SUPERUSER LOGIN PASSWORD 'lsirailsprototype';
 		
 	Close the postgresql console
 	
@@ -166,7 +166,7 @@ dial-a-device
 ## access legacy devices via vnc
 
 * set up websockify gateway
-	
+
 		git clone https://github.com/hsanjuan/websockify
 
 
