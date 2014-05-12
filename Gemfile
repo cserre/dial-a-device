@@ -118,4 +118,4 @@ gem 'will_paginate-bootstrap'
 
 gem 'rubyzip'
 
-gem 'kaitatari', :path => "/home/pi/workspace/kaitatari"  #:git => 'git://github.com/awayanyway/kaitatari.git' :branch => "ntuple"
+gem 'kaitatari', :git => 'git://github.com/awayanyway/kaitatari.git' # :branch => "ntuple"
