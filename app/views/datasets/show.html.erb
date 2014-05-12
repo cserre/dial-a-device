@@ -183,7 +183,10 @@ $(document).ajaxSend(function(e, xhr, options) {
 
 </script>
 
-<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %>&nbsp;<%= link_to "/datasets/"+@dataset.id.to_s+"/zip?project_id="+@project.id.to_s, :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
+<h1><span class="glyphicon glyphicon-paperclip" /><%= @dataset.method %><% if !@dataset.title.blank? then %> - <%= @dataset.title %><% end %></h1>
+
+<h2>
+<%= link_to "/datasets/"+@dataset.id.to_s+"/zip?project_id="+@project.id.to_s, :class => "btn btn-info" do %><span class="glyphicon glyphicon-compressed"></span>Download as ZIP<% end %><% if @changerights then %>&nbsp;
 
     <%= link_to 'Edit metadata', edit_dataset_path(@dataset, :reaction_id => params[:reaction_id], :project_id => @project.id), :class => "btn btn-sm btn-success" %>
     &nbsp;<%= link_to("Delete", dataset_path(@dataset, :project_id => @project.id), :method => :delete, :confirm => "Are you sure?", :title => "Delete Dataset.", :class => "btn btn-sm btn-warning") %>
@@ -197,7 +200,7 @@ $(document).ajaxSend(function(e, xhr, options) {
     <%= link_to "Commit", commit_dataset_url(@dataset, :project_id => @project.id), :method => :post,  :class => "btn btn-sm btn-warning" %>
     <% end %>
 
-    </h1>
+    </h2>
 
 
 <% if !@dataset.description.blank? then %>
@@ -217,9 +220,7 @@ var uploadurl = "<%= dataset_path(@dataset) %>/attachments";
     <%if Kai.test_file(@dataset.jdx_file) %>
           <%= button_to "interactive plot",{ action: "plotpoint",:dataset_id => @dataset.id}, :class => "btn btn-xs btn-default" %>
     <%end%>
-  <div class="well"> 
- 
-  </div>
+
     <%= image_tag(@dataset.preview_url, size: "450x300", alt: "preview") %> 
 </div>
 
