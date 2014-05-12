@@ -1,5 +1,6 @@
 class DatasetsController < ApplicationController
-
+  
+   
   require 'zip'
 
   before_filter :authenticate_user!, except: [:show, :filter, :find, :finalize]
@@ -168,8 +169,41 @@ class DatasetsController < ApplicationController
 
   # GET /datasets/1
   # GET /datasets/1.json
+
+  def plotpoint
+     @dataset =  Dataset.where(["id = ?",params[:dataset_id]]).first
+     puts "nice dataset"
+     #authorize @dataset
+     file=@dataset.jdx_file
+ 
+     #file=params[:jdxfile] 
+     dx_data=Kai.new(":file #{file} :tab all :process header spec param data point raw first_page ").flotr2_data 
+     if dx_data.is_a?(Switchies::Ropere) 
+        kumara=dx_data.to_kumara
+        puts "\nhello Kumara! \n" 
+        @plotdx=kumara.chip_it #chip_it(abscissa range in point unit=0..-1,block=0,page=0,limit of point to be plotted=2048)
+      else
+        puts "\nno strawberry!!\n"
+        @plotdx=Switchies::Kumara.blank.chip_it
+      end
+      ##TODO have ajax request to update chip_it argument (to increase resolution while zooming)
+      
+       @plotdx||=Switchies::Kumara.blank.chip_it
+    
+      # render :partial => 'plot', :plotdx => @plotdx
+    respond_to do |format|
+     
+      format.html { render action: "plot" }
+      format.json { render json: @dataset }
+    end
+    
+    
+  end
+  
+
   def show
     authorize @project_dataset
+
 
     @changerights = false
 
@@ -179,6 +213,11 @@ class DatasetsController < ApplicationController
 
     @attachment = Attachment.new(:dataset => @dataset)
 
+    @plotdx=Switchies::Kumara.blank.chip_it
+    # if Kai.test_file(@dataset.jdx_file)
+       # puts"plotpoin"
+      # plotpoint
+    # end
     respond_to do |format|
       if !(Commit.exists?(["dataset_id = ?", @dataset.id])) then flash.now[:notice] = 'Dataset is in editing mode. Commit your changes after you\'re done.' end
 
@@ -190,6 +229,8 @@ class DatasetsController < ApplicationController
       format.json { render json: @dataset }
     end
   end
+
+
 
   # GET /datasets/new
   # GET /datasets/new.json
@@ -287,7 +328,7 @@ class DatasetsController < ApplicationController
         dsg.save
         dsg.datasets << @dataset
 
-        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id] , notice: 'Dataset was successfully created.') }
+        format.html { redirect_to dataset_path(@dataset.id, :reaction_id => params[:reaction_id], :project_id => @project.id , notice: 'Dataset was successfully created.') }
         format.json { render json: @dataset, status: :created, location: @dataset }
       else
         format.html { render action: "new" }
@@ -395,7 +436,7 @@ class DatasetsController < ApplicationController
 
     assign_method_rank @dataset
 
-
+  
 
     respond_to do |format|
       if @dataset.update_attributes(params[:dataset])
@@ -477,6 +518,7 @@ class DatasetsController < ApplicationController
       end
     end
 
+
     def set_empty_project_dataset
       @project_dataset = ProjectDataset.new(:project_id => @project.id)
     end
@@ -484,5 +526,6 @@ class DatasetsController < ApplicationController
     def set_project_dataset
       @project_dataset = ProjectDataset.where(["project_id = ? AND dataset_id = ?", @project.id, @dataset.id]).first
     end
+
 
 end

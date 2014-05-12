@@ -17,6 +17,12 @@ GIT
     openbabel-heroku (2.3.2.0)
 
 GIT
+  remote: git://github.com/awayanyway/kaitatari.git
+  revision: 3b9db2df0c2b62a625a27266c68b8783b9a13744
+  specs:
+    kaitatari (0.0.2.23)
+
+GIT
   remote: git://github.com/davidw/noVNCgem.git
   revision: 50f1826e9d1d9f37e7adfc992a12eca409c885bb
   specs:
@@ -291,6 +297,7 @@ DEPENDENCIES
   jquery-hotkeys-rails
   jquery-rails
   jquery-ui-rails
+  kaitatari!
   mini_magick
   noVNC!
   openbabel

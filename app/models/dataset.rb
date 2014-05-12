@@ -3,6 +3,7 @@ class Dataset < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
   attr_accessible :attachments, :molecule_id, :title, :description, :method, :details, :preview_id, :recorded_at, :dataset_id, :sample_id, :method_rank
+  attr_accessible :jdx_file
 
   has_many :attachments, :dependent => :destroy
 
@@ -22,7 +23,6 @@ class Dataset < ActiveRecord::Base
   has_many :commits, :dependent => :destroy
 
   # acts_as_list scope: :datasetgroup_dataset
-
   def transfer_to_sample(sample)
 
     newdataset = self.dup
@@ -38,18 +38,21 @@ class Dataset < ActiveRecord::Base
   def transfer_attachments_to_dataset(dataset)
     self.attachments.each do |a|
 
+
+
           newattachment = Attachment.new(:dataset => dataset)
 
           newattachment.folder = a.folder
 
-          if Rails.env.localserver? then 
+          if Rails.env.localserver? or Rails.env.development? then 
 
             old_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}/#{a.folder}#{a.filename}"
 
             new_path = LsiRailsPrototype::Application.config.datasetroot + "datasets/#{dataset.id}/#{a.folder}#{a.filename}"
 
-            FileUtils.mkdir_p(File.dirname(new_path))
-            FileUtils.cp(old_path, new_path)
+
+        FileUtils.mkdir_p(File.dirname(new_path))
+        FileUtils.cp(old_path, new_path)
 
             newattachment.file = File.new(new_path)
 
@@ -57,9 +60,10 @@ class Dataset < ActiveRecord::Base
             newattachment.remote_file_url = a.file_url
           end
 
-          newattachment.save
 
-          dataset.add_attachment(newattachment)
+      newattachment.save
+
+      dataset.add_attachment(newattachment)
 
     end
 
@@ -71,7 +75,6 @@ class Dataset < ActiveRecord::Base
 
   end
 
-
   def zipit
 
     # create zip file
@@ -82,95 +85,98 @@ class Dataset < ActiveRecord::Base
 
   def ziplocation?
 
-    if Rails.env.localserver? then 
-       LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}.zip"
-     else
-       "datasets/#{self.id}.zip"
-     end
+    if Rails.env.localserver? or Rails.env.development? then
+      LsiRailsPrototype::Application.config.datasetroot + "datasets/#{self.id}.zip"
+    else
+      "datasets/#{self.id}.zip"
+    end
   end
 
   def oai_dc_identifier
-  	"http://dx.doi.org/"+doi_identifier
+    "http://dx.doi.org/"+doi_identifier
   end
 
   def doi_identifier
+
     if !sample.nil? then
   	if !sample.molecule.nil? then 
 
+
       v = ""
       if (!version.blank? && !(version == "0")) then v = "."+version end
+
 
   		if !ENV['DOI_PREFIX'].nil? then
   			ENV['DOI_PREFIX']+"/"+sample.molecule.inchikey+"/"+method+v
   		end
   	end
+
     end
 
   end
 
+  def webdavpath
 
-    def webdavpath
+    beautify(self.id.to_s+"-"+self.method + "-" +self.title)
 
-      beautify(self.id.to_s+"-"+self.method + "-" +self.title)
-
-    end
-
-def beautify(path)
-      newpath = path.gsub("/", "_")
-      newpath = newpath.gsub(" ", "_")
-      newpath
-end
-
-def allfolders?
-
-  res = []
-
-  self.attachments.each do |at|
-
-    f = "/"+at.folder?[0..-2]
-
-    if !res.include?(f) then
-
-            res <<f
-    end
-
-    f.split("/").each do |nf|
-
-    if !res.include?("/"+nf) then
-
-            res << "/"+nf
-    end
-  end
   end
 
-  return res
+  def beautify(path)
+    newpath = path.gsub("/", "_")
+    newpath = newpath.gsub(" ", "_")
+    newpath
+  end
 
-end
+  def allfolders?
 
-def uniquefolders?
+    res = []
 
-  res = []
+    self.attachments.each do |at|
 
-  self.attachments.each do |at|
+      f = "/"+at.folder?[0..-2]
 
-    f = at.folder?[0..-1]
+      if !res.include?(f) then
 
-    if !res.include?(f) then
+      res << f
+      end
 
-      if !f.nil? && f != "" then
+      f.split("/").each do |nf|
 
-            res << f
+        if !res.include?("/"+nf) then
 
+          res << "/"+nf
+        end
       end
     end
 
+    return res
+
   end
 
-  return res
+  def uniquefolders?
 
-end
+    res = []
 
-def preview_url
+    self.attachments.each do |at|
+
+      f = at.folder?[0..-1]
+
+      if !res.include?(f) then
+
+        if !f.nil? && f != "" then
+
+        res << f
+
+        end
+      end
+
+    end
+
+    return res
+
+  end
+
+  def preview_url
     if !preview_id.nil? then
       at = Attachment.find(preview_id).first
     else
@@ -179,12 +185,12 @@ def preview_url
       if (at.nil?) then
         # select the best fit
 
-        at = attachments.where(["file ilike ? or file ilike ? or file ilike ?", "%jpg", "%pdf", "%gif"]).first        
+        at = attachments.where(["file ilike ? or file ilike ? or file ilike ? or file ilike ? or file ilike ? or file ilike ?", "%jpg", "%pdf", "%gif", "%ps", "%dx", "%jdx"]).first
       end
     end
 
     if (!at.nil?) then
-      at.file.thumb.url
+    at.file.thumb.url
     else
       "/nopreview.jpg"
     end
@@ -259,8 +265,35 @@ def preview_url
   # analysis methods
 
   def detect_parameters
-
+    self.update_attribute(:jdx_file,nil)
     attachments.each do |a|
+
+    #detect jdx
+      if a.folder == "" && a.read_attribute(:file).downcase =~ /j?dx\z/ then
+        extract_label="TITLE, DATA TYPE,.OBSERVE NUCLEUS,.SOLVENT NAME,.PULSE SEQUENCE,.OBSERVE FREQUENCY"
+        jdx_data = Jcampdx.load_jdx(":file #{a.file.path.to_s} :process  extract #{extract_label}, extract_first ").last[:extract]
+       
+        
+        title = (jdx_data[:"TITLE"] && jdx_data[:"TITLE"][0] ) || "n.d." 
+        if jdx_data[:"DATA TYPE"] && jdx_data[:"DATA TYPE"][0] =~ /NMR/
+          m = "NMR/"
+          m << jdx_data[:".OBSERVE NUCLEUS"][0].gsub(/\^/,"") if jdx_data[:".OBSERVE NUCLEUS"]
+          m << "/"
+          m << jdx_data[:".SOLVENT NAME"][0] if jdx_data[:".SOLVENT NAME"]
+          m << "/"
+          m <<  jdx_data[:".OBSERVE FREQUENCY"][0].to_f.round.to_s if jdx_data[:".OBSERVE FREQUENCY"]
+          title << "-" + jdx_data[:".PULSE SEQUENCE"][0]  if jdx_data[:".PULSE SEQUENCE"]
+         
+        else
+          m = (jdx_data[:"DATA TYPE"] && jdx_data[:"DATA TYPE"][0]) || "n.d."  
+        end
+
+        self.update_attribute(:title, title) if title
+        self.update_attribute(:method, m)    if m
+        self.update_attribute(:jdx_file, "jdx|"+a.file.path.to_s)
+
+      end
+
       if a.folder == "pdata/1/" && a.read_attribute(:file) == "proc" then
 
         self.update_attribute(:recorded_at, a.filechange)
@@ -273,7 +306,7 @@ def preview_url
 
             if "\#\#\$TI".start_with?(key.to_s) then
               t = value.to_s.strip.delete("<>")
-              if !(t.blank?) then 
+              if !(t.blank?) then
                 self.update_attribute(:title, t)
               end
             end
@@ -300,12 +333,12 @@ def preview_url
         self.update_attribute(:recorded_at, a.filechange)
 
         content = a.file.read
-          t = content.squish
-          puts t
-          if !(t.blank?) then 
-            self.update_attribute(:title, t)
-          end
-    
+        t = content.squish
+        puts t
+        if !(t.blank?) then
+          self.update_attribute(:title, t)
+        end
+
       end
 
       ## detect Agilent GCMS
@@ -318,10 +351,10 @@ def preview_url
 
           if (line.squish.start_with?("Sample Name")) then
             k, v = line.split("=")
-            
+
             t = v.squish
 
-            if !(t.blank?) then 
+            if !(t.blank?) then
               if !(t.start_with?("Blank")) then
                 self.update_attribute(:title, t)
               end
@@ -330,21 +363,20 @@ def preview_url
 
           if (line.squish.start_with?("Methfile")) then
             k, v = line.split("=")
-            
+
             t = v.squish
             t = t[0..-3]
 
-            if !(t.blank?) then 
+            if !(t.blank?) then
               if !(t.start_with?("Blank")) then
                 self.update_attribute(:method, "GCMS/"+t)
               end
             end
           end
-    
-        end
-    
-      end
 
+        end
+
+      end
 
       ## detect Agilent HPLC
 
@@ -362,16 +394,16 @@ def preview_url
 
           if (line.squish.start_with?("Sample Name")) then
             k, v = line.split(":")
-            
+
             t = v.squish
 
-            if !(t.blank?) then 
+            if !(t.blank?) then
               if !(t.start_with?("Blank")) then
                 self.update_attribute(:title, t)
               end
             end
           end
-    
+
         end
       end
 

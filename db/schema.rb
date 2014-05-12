@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20140507191256) do
     t.integer  "position"
     t.datetime "recorded_at"
     t.integer  "sample_id"
+    t.string   "jdx_file"
   end
 
   create_table "department_groups", force: true do |t|

@@ -97,17 +97,17 @@ LsiRailsPrototype::Application.routes.draw do
     post 'assign_reaction', on: :member
   end
 
+  controller :datasets do
+    post 'datasets/:id/plot' => :plotpoint
+  end
+  
   resources :datasets do
-
     get 'zip', on: :member
-
     get 'fork', on: :member
     post 'commit', on: :member
-    
-    #get 'assign', on: :member
-    #post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
-
-
+   #get 'assign', on: :member
+   #post 'assign', on: :member, as: :assign_to_project_do, :to => 'datasets#assign_do'
+   
     resources :attachments do
       post 'link', :on => :collection
     end
@@ -115,9 +115,9 @@ LsiRailsPrototype::Application.routes.draw do
 
     get 'find', :on => :collection
     get 'finalize', :on => :collection
-
+    
     get 'createdirect', :on => :collection, as: :create_direct, :to => "datasets#create_direct"
-
+   
 
   end
 

@@ -128,8 +128,8 @@
 <% end %>
 
 
-<h1><% if @project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= @project.title %><% end %>&nbsp;
-<!-- <%= link_to 'New Molecule', new_molecule_path(:assign_to_project_id => @project.id), :class => "btn btn-sm btn-success" %>--></h1>
+<h1><% if @project.title.nil? then %>Molecules in <%= current_user.firstname %> Project<% else %>Molecules in <%= @project.title %><% end %><% if policy(@project).addmolecule? then %>&nbsp;
+<%= link_to 'New Molecule', new_molecule_path(:project_id => @project.id), :class => "btn btn-sm btn-success" %><% end %></h1>
 
 <%= will_paginate @molecules, renderer: BootstrapPagination::Rails %>
 
